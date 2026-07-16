@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { imagetools } from 'vite-imagetools'
 import { validateContent } from './plugins/validate-content'
+import { contentPortal } from './plugins/content-portal'
 
 validateContent()
 
@@ -9,5 +10,5 @@ validateContent()
 // repo is renamed (see README). Dev always serves from /.
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? (process.env.VITE_BASE ?? '/shawarmania/') : '/',
-  plugins: [react(), imagetools()],
+  plugins: [react(), imagetools(), contentPortal()],
 }))

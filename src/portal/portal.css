@@ -1,0 +1,248 @@
+/* Portal: utilitarian, on-brand dark. Plain CSS (dev-only tool, no modules needed). */
+
+.p-shell {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-text);
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+}
+
+.p-header {
+  padding: var(--space-md) var(--gutter) 0;
+}
+
+.p-header h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+
+.p-header h1 span {
+  background: var(--gradient-flame);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.p-header p {
+  color: var(--cream-dim);
+  font-size: var(--fs-small);
+  margin-top: var(--space-2xs);
+}
+
+.p-header code,
+.p-note code {
+  background: var(--bg-raised);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+}
+
+.p-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--gutter);
+  position: sticky;
+  top: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(8px);
+  z-index: 10;
+}
+
+.p-tabs button {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--cream-faint);
+  color: var(--cream-dim);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.p-tabs button.active {
+  background: var(--gradient-flame);
+  border-color: transparent;
+  color: var(--bg);
+}
+
+.p-main {
+  padding: var(--space-md) var(--gutter) var(--space-2xl);
+  max-width: 60rem;
+}
+
+/* checklist */
+.p-checklist h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-md);
+}
+
+.p-checklist ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.p-checklist li {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: baseline;
+  background: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.p-checklist li.done {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.p-checklist li em {
+  color: var(--cream-dim);
+  font-style: normal;
+  font-size: var(--fs-small);
+}
+
+.p-check {
+  color: var(--flame-gold);
+  font-weight: 700;
+}
+
+.p-note {
+  margin-top: var(--space-md);
+  color: var(--cream-dim);
+  font-size: var(--fs-small);
+}
+
+/* editor */
+.p-savebar {
+  position: sticky;
+  top: 3.4rem;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xs) 0;
+  background: var(--bg);
+}
+
+.p-save {
+  background: var(--gradient-flame);
+  color: var(--bg);
+  font-weight: 700;
+  padding: 0.55rem 1.4rem;
+  border-radius: var(--radius-pill);
+}
+
+.p-save:disabled {
+  opacity: 0.6;
+}
+
+.p-dirty { color: var(--flame-gold); font-size: var(--fs-small); }
+.p-saved { color: var(--color-veg); font-size: var(--fs-small); }
+
+.p-error {
+  color: #fca5a5;
+  background: rgb(220 38 38 / 0.12);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs);
+  font-size: var(--fs-xs);
+  white-space: pre-wrap;
+  max-width: 40rem;
+}
+
+.p-status { color: var(--cream-dim); }
+
+/* fields */
+.p-fields {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.p-field {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--space-sm);
+  align-items: start;
+}
+
+.p-label {
+  font-size: var(--fs-small);
+  color: var(--cream-dim);
+  padding-top: 0.4rem;
+}
+
+.p-field input[type='text'],
+.p-field input[type='number'],
+.p-field textarea,
+.p-field select {
+  width: 100%;
+  max-width: 34rem;
+  background: var(--bg-raised);
+  border: 1px solid rgb(245 228 199 / 0.16);
+  border-radius: var(--radius-sm);
+  color: var(--cream);
+  padding: 0.45rem 0.6rem;
+  font-size: var(--fs-small);
+}
+
+.p-field input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--flame-orange);
+  margin-top: 0.5rem;
+}
+
+.p-inline {
+  display: flex;
+  gap: var(--space-2xs);
+  align-items: center;
+}
+
+.p-null em { color: var(--cream-faint); font-size: var(--fs-small); }
+
+.p-mini {
+  font-size: var(--fs-xs);
+  color: var(--cream-dim);
+  border: 1px solid rgb(245 228 199 / 0.2);
+  border-radius: var(--radius-pill);
+  padding: 0.15rem 0.6rem;
+  margin-left: var(--space-2xs);
+  white-space: nowrap;
+}
+
+.p-mini:hover { color: var(--cream); }
+.p-danger { border-color: rgb(220 38 38 / 0.5); color: #fca5a5; }
+.p-add { border-color: rgb(34 197 94 / 0.4); color: #86efac; margin-top: var(--space-2xs); }
+
+/* array cards */
+.p-array {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.p-card {
+  background: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  border: 1px solid rgb(245 228 199 / 0.08);
+}
+
+.p-cardbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.p-cardno {
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--flame-gold);
+}
+
+.p-flatrow { display: flex; align-items: center; }
+.p-array-flat { gap: var(--space-2xs); }

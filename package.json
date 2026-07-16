@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Premium brand/landing site for Shawarmania — Kalyani & Kanchrapara, West Bengal",
+  "description": "Premium brand/landing site for Shawarmania \u2014 Kalyani & Kanchrapara, West Bengal",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "content": "echo Content portal: http://localhost:5173/admin && vite"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
