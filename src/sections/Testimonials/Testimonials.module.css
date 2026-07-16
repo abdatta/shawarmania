@@ -1,0 +1,119 @@
+.testimonials {
+  padding: var(--space-section) 0;
+}
+
+.inner {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.kicker {
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--flame-gold);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-md);
+  align-items: start;
+}
+
+/* -- video cards -------------------------------------------- */
+
+.videoCard {
+  display: grid;
+  background: var(--bg-raised);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgb(245 228 199 / 0.08);
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.videoCard:hover {
+  transform: translateY(-5px) rotate(-0.4deg);
+}
+
+.videoCard img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.videoBody {
+  display: grid;
+  gap: var(--space-2xs);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+}
+
+.creator {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--flame-gold);
+}
+
+.videoTitle {
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.metric {
+  justify-self: start;
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  background: rgb(245 228 199 / 0.1);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.7rem;
+  color: var(--cream-dim);
+}
+
+/* -- quotes -------------------------------------------- */
+
+.quote {
+  margin: 0;
+  background: linear-gradient(160deg, rgb(127 29 29 / 0.5), rgb(30 23 16 / 0.9));
+  border: 1px solid rgb(220 38 38 / 0.25);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+}
+
+.quote p {
+  font-size: var(--fs-lead);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.quote p::before {
+  content: '“';
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  line-height: 0.6;
+  color: var(--flame-orange);
+  margin-bottom: 0.35rem;
+}
+
+.quote footer {
+  margin-top: var(--space-sm);
+  font-size: var(--fs-small);
+  color: var(--cream-dim);
+}
+
+.quote footer a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

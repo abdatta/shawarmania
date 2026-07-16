@@ -6,6 +6,9 @@ import { Hero } from './sections/Hero/Hero'
 import { Marquee } from './sections/Marquee/Marquee'
 import { Craving } from './sections/Craving/Craving'
 import { Menu } from './sections/Menu/Menu'
+import { Story } from './sections/Story/Story'
+import { Proof } from './sections/Proof/Proof'
+import { Testimonials } from './sections/Testimonials/Testimonials'
 
 export default function App() {
   return (
@@ -17,8 +20,11 @@ export default function App() {
         <Marquee />
         <Craving />
         <Menu />
-        {/* changes 6–8 append: Story, Proof, Testimonials, Outlets, Franchise, Footer */}
-        <div style={{ height: '60vh' }} aria-hidden="true" />
+        <Story />
+        <Proof />
+        <Testimonials />
+        {/* changes 7–8 append: Outlets, Franchise, Footer */}
+        <div style={{ height: '40vh' }} aria-hidden="true" />
       </main>
       <FloatingCtas />
     </SmoothScroll>

@@ -1,0 +1,134 @@
+.story {
+  position: relative;
+  overflow: clip;
+  padding: var(--space-section) 0;
+}
+
+.bgBengali {
+  position: absolute;
+  top: 0.05em;
+  right: -0.08em;
+  font-family: var(--font-bengali);
+  font-weight: 800;
+  font-size: clamp(7rem, 24vw, 20rem);
+  line-height: 1;
+  color: rgb(245 228 199 / 0.045);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inner {
+  position: relative;
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.kicker {
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--flame-gold);
+}
+
+.headline {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+  max-width: 18ch;
+  margin-top: var(--space-xs);
+}
+
+.narrative {
+  font-size: var(--fs-lead);
+  color: var(--cream-dim);
+  max-width: 56ch;
+  margin-top: var(--space-md);
+}
+
+/* -- timeline rail ------------------------------------------------ */
+
+.rail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+}
+
+.railLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-flame);
+  border-radius: var(--radius-pill);
+  transform-origin: left center;
+}
+
+.entry {
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+}
+
+.year {
+  justify-self: start;
+  font-weight: 900;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--flame-gold);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.75rem;
+}
+
+.entryTitle {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.entryDesc {
+  font-size: var(--fs-small);
+  color: var(--cream-dim);
+  line-height: 1.55;
+}
+
+.follow {
+  display: inline-block;
+  margin-top: var(--space-xl);
+  font-weight: 800;
+  color: var(--flame-gold);
+  text-decoration: underline 2px rgb(255 197 61 / 0.4);
+  text-underline-offset: 5px;
+}
+
+.follow:hover {
+  text-decoration-color: var(--flame-gold);
+}
+
+@media (max-width: 860px) {
+  .rail {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    padding-top: 0;
+    padding-left: var(--space-md);
+  }
+
+  .railLine {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 3px;
+    height: auto;
+    transform-origin: top center;
+  }
+}
