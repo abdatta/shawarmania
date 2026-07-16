@@ -6,7 +6,7 @@
   "description": "Premium brand/landing site for Shawarmania \u2014 Kalyani & Kanchrapara, West Bengal",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/check-weight.mjs",
     "preview": "vite preview",
     "content": "echo Content portal: http://localhost:5173/admin && vite"
   },

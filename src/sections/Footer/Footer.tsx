@@ -77,7 +77,7 @@ export function Footer() {
               .filter(Boolean)
               .join(' · ')}
           </p>
-          <p className={styles.legalRow}>
+          <div className={styles.legalRow}>
             <LegalModal label="Privacy" title="Privacy">
               <p>
                 This is a static informational website for Shawarmania. It sets no cookies, runs no
@@ -104,7 +104,7 @@ export function Footer() {
                 to their creators. <em>(Pending owner legal review.)</em>
               </p>
             </LegalModal>
-          </p>
+          </div>
         </div>
       </div>
 

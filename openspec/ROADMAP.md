@@ -4,6 +4,12 @@ Premium single-page brand site for Shawarmania (Kalyani + Kanchrapara), deployed
 Source of truth for scope/design: `research/build-brief.md`. Each change ends with a **manual QA
 gate** — the owner walks the checklist in the change's `proposal.md` before the next change begins.
 
+## Status: ✅ all nine changes implemented and archived (2026-07-16)
+
+Remaining before public launch (owner actions): fill portal to-do list (franchise economics,
+hours, WhatsApp number, Web3Forms key, founder note, email), confirm repo name/Pages URL for
+base path + canonical/sitemap, push to GitHub with Pages source = GitHub Actions.
+
 ## Sequence
 
 | # | Change | Delivers | Depends on |

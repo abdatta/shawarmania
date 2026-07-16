@@ -9,7 +9,7 @@ function Run() {
   return (
     <span className={styles.run} aria-hidden="true">
       {PHRASES.map((p, i) => (
-        <span key={i} className={styles.phrase}>
+        <span key={i} className={styles.phrase} lang={p === 'শাওয়ারমানী' ? 'bn' : undefined}>
           {p} <span className={styles.dot}>●</span>{' '}
         </span>
       ))}

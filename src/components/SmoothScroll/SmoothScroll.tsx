@@ -19,6 +19,13 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null)
 
   useEffect(() => {
+    // Late image layout shifts ScrollTrigger positions — refresh once everything loaded.
+    const refresh = () => ScrollTrigger.refresh()
+    window.addEventListener('load', refresh, { once: true })
+    return () => window.removeEventListener('load', refresh)
+  }, [])
+
+  useEffect(() => {
     if (prefersReducedMotion()) return
 
     const instance = new Lenis({ autoRaf: false, lerp: 0.11, anchors: false })

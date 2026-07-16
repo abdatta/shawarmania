@@ -1,49 +1,72 @@
 # Shawarmania — brand site
 
 Premium single-page landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) —
-for visitors, prospective franchisees, and investors. Static site on GitHub Pages.
+for customers, prospective franchisees, and investors. Fully static, hosted on GitHub Pages.
 
 ## Stack
 
 - **Vite + React 19 + TypeScript** — static bundle, no server.
-- **GSAP (ScrollTrigger, SplitText) + Lenis** — Apple-grade scroll choreography, single RAF loop.
-- **Vanilla CSS design tokens + CSS Modules** — bespoke brand system, no utility framework.
-- **zod-validated JSON content** in `src/data/` — edited via a local content portal (`/admin`, dev-only).
+- **GSAP (ScrollTrigger, SplitText) + Lenis** — scroll choreography, single RAF loop, full
+  `prefers-reduced-motion` support.
+- **Vanilla CSS design tokens + CSS Modules** — bespoke brand system (Lilita One / Nunito Sans /
+  Baloo Da 2; exact Instagram logo assets).
+- **zod-validated JSON content** in `src/data/` — every fact traceable to `src/data/SOURCES.md`;
+  unknowns stay `null` and the UI renders honest fallbacks.
+
+## For the owner: editing content
+
+```bash
+npm install        # once
+npm run content    # starts the site + portal
+```
+
+Open **http://localhost:5173/admin** — the *To-do* tab lists what's still missing (franchise
+economics, confirmed hours, WhatsApp number, Web3Forms key…). Edit → Save → the site tab
+refreshes live. Then publish:
+
+```bash
+git add src/data && git commit -m "content: update menu/outlets" && git push
+```
+
+Pushing to `main` redeploys the site automatically.
 
 ## Scripts
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Dev server (content portal at `/admin` once change 3 lands) |
-| `npm run build` | Type-check + production bundle to `dist/` |
-| `npm run preview` | Serve the production bundle locally (base-path faithful) |
+| `npm run dev` / `npm run content` | Dev server + content portal at `/admin` |
+| `npm run build` | Type-check, validate content, bundle, enforce page-weight budget |
+| `npm run preview` | Serve the production bundle (base-path faithful) |
+
+## Deploying
+
+One-time: repo **Settings → Pages → Source: GitHub Actions**. Every push to `main` then deploys
+via `.github/workflows/deploy.yml`.
+
+⚠️ Two URLs are currently placeholders and must match the real deployment:
+- `base` assumes the repo is named `shawarmania` (override `VITE_BASE` in the workflow otherwise);
+- the canonical/sitemap/robots URLs in `index.html` and `public/` assume
+  `https://iamrohitm.github.io/shawarmania/` — update to the real Pages URL (or custom domain).
 
 ## Project layout
 
 ```
-openspec/          # change proposals/specs/tasks — see openspec/ROADMAP.md
+openspec/          # spec-driven change history — see openspec/ROADMAP.md
 research/          # brand research: build brief, Instagram findings, deep-research reports
+scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate)
+plugins/           # dev-only Vite plugins: content validation, portal write API
 src/
-  sections/        # one folder per page section (co-located *.module.css)
-  components/      # shared UI (SmoothScroll, Header, …)
-  hooks/           # useReducedMotion, …
-  lib/             # gsap registration, assetUrl helper
-  data/            # JSON content + zod schemas (change 2)
-  styles/          # tokens.css, base.css, fonts.css
-plugins/           # dev-only Vite plugins (content portal API, change 3)
+  sections/        # Hero, Marquee, Craving, Menu, Story, Proof, Testimonials,
+                   # Outlets, Franchise, Footer (one folder each, co-located styles)
+  components/      # Header, SmoothScroll, Loader, FloatingCtas, Counter, VegMark, LegalModal…
+  data/            # content JSON + zod schemas + SOURCES.md provenance
+  portal/          # dev-only /admin editor
+  assets/          # brand logo + curated Instagram photography (WebP at build)
 ```
 
-## Deploying
+## Notes & known limitations
 
-Pushes to `main` deploy automatically via `.github/workflows/deploy.yml`.
-One-time setup: repo **Settings → Pages → Source: GitHub Actions**.
-
-The site is built for a *project page* under `/shawarmania/`. If the repo has a
-different name, set `VITE_BASE` in the workflow (and locally when previewing):
-`VITE_BASE=/my-repo/ npm run build`.
-
-## Working agreement
-
-Work proceeds as incremental OpenSpec changes (`openspec/ROADMAP.md`), each ending with a
-**manual QA checklist** in its `proposal.md`. Data files contain **verified facts only** —
-unknown business numbers stay `null` and the UI renders honest fallbacks.
+- JSON-LD ratings in `index.html` are a snapshot — refresh them when platform ratings move.
+- Legal modal texts are honest placeholders **pending owner legal review**.
+- The franchise enquiry form activates once the owner adds a Web3Forms endpoint + key via the
+  portal; until then it degrades to call/WhatsApp CTAs.

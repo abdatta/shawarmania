@@ -84,6 +84,23 @@ p {
   border-radius: var(--radius-sm);
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: calc(var(--z-loader) + 1);
+  background: var(--flame-gold);
+  color: var(--bg);
+  font-weight: 800;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  transform: translateY(-300%);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* Thin warm scrollbar on the dark canvas */
 @supports (scrollbar-width: thin) {
   html {

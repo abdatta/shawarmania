@@ -4,16 +4,16 @@
  * All photography is Shawarmania's own published Instagram material
  * (see research/instagram/findings.md for provenance).
  */
-import storefrontNeon from './storefront-neon.jpg'
-import storefrontNightFull from './storefront-night-full.jpg'
-import shawarmaPlate from './shawarma-plate.jpg'
-import shawarmaGlow from './shawarma-glow.jpg'
-import burgerLoaded from './burger-loaded.jpg'
-import burgerCheesePull from './burger-cheese-pull.jpg'
-import interiorCounter from './interior-counter.jpg'
-import labReport from './lab-report.jpg'
-import customerShawarma from './customer-shawarma.jpg'
-import customersNeon from './customers-neon.jpg'
+import storefrontNeon from './storefront-neon.jpg?format=webp&quality=82&imagetools'
+import storefrontNightFull from './storefront-night-full.jpg?format=webp&quality=82&imagetools'
+import shawarmaPlate from './shawarma-plate.jpg?format=webp&quality=82&imagetools'
+import shawarmaGlow from './shawarma-glow.jpg?format=webp&quality=82&imagetools'
+import burgerLoaded from './burger-loaded.jpg?format=webp&quality=82&imagetools'
+import burgerCheesePull from './burger-cheese-pull.jpg?format=webp&quality=82&imagetools'
+import interiorCounter from './interior-counter.jpg?format=webp&quality=82&imagetools'
+import labReport from './lab-report.jpg?format=webp&quality=82&imagetools'
+import customerShawarma from './customer-shawarma.jpg?format=webp&quality=82&imagetools'
+import customersNeon from './customers-neon.jpg?format=webp&quality=82&imagetools'
 
 export const imageCatalog = {
   'storefront-neon': storefrontNeon,

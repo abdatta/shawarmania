@@ -16,9 +16,12 @@ import { Footer } from './sections/Footer/Footer'
 export default function App() {
   return (
     <SmoothScroll>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
       <Loader />
       <Header />
-      <main>
+      <main id="main">
         <Hero />
         <Marquee />
         <Craving />
