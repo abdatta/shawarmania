@@ -1,0 +1,110 @@
+.footer {
+  border-top: 1px solid rgb(245 228 199 / 0.1);
+  background: linear-gradient(180deg, var(--bg), #0d0a07);
+  padding-top: var(--space-2xl);
+}
+
+.inner {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: var(--space-xl);
+}
+
+.brandCol {
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+  justify-items: start;
+}
+
+.logo {
+  width: clamp(7rem, 12vw, 10rem);
+  height: auto;
+}
+
+.tagline {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: var(--fs-h3);
+  background: var(--gradient-flame);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  max-width: 14ch;
+  line-height: 1.15;
+}
+
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.socials a {
+  color: var(--cream-dim);
+  text-decoration: underline 2px rgb(245 228 199 / 0.25);
+  text-underline-offset: 4px;
+}
+
+.socials a:hover {
+  color: var(--flame-gold);
+}
+
+.col {
+  display: grid;
+  gap: var(--space-sm);
+  align-content: start;
+  font-size: var(--fs-small);
+  color: var(--cream-dim);
+  line-height: 1.6;
+}
+
+.col h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.col a {
+  color: var(--cream);
+  font-weight: 700;
+  text-decoration: underline 2px rgb(245 228 199 / 0.25);
+  text-underline-offset: 3px;
+}
+
+.legalRow {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.bar {
+  margin-top: var(--space-xl);
+  border-top: 1px solid rgb(245 228 199 / 0.08);
+  /* extra right padding keeps the floating call/WhatsApp buttons clear */
+  padding: var(--space-md) calc(var(--gutter) + 4.5rem) var(--space-md) var(--gutter);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-lg);
+  font-size: var(--fs-xs);
+  color: var(--cream-faint);
+}
+
+.made span {
+  font-family: var(--font-bengali);
+  color: var(--cream-dim);
+}
+
+@media (max-width: 800px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}

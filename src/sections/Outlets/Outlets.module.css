@@ -1,0 +1,173 @@
+.outlets {
+  padding: var(--space-section) 0;
+  background:
+    radial-gradient(50rem 26rem at 85% 15%, rgb(249 115 22 / 0.09), transparent 70%),
+    var(--bg);
+}
+
+.inner {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.kicker {
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--flame-gold);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
+  gap: var(--space-lg);
+}
+
+/* ticket card */
+.card {
+  background: var(--paper-raised);
+  color: var(--ink-on-paper);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 22px 60px rgb(0 0 0 / 0.4);
+}
+
+.photo {
+  aspect-ratio: 5 / 2.2;
+  overflow: hidden;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.body {
+  padding: var(--space-md);
+  border-top: 3px dashed rgb(43 29 18 / 0.25);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+.landmark {
+  font-weight: 800;
+  font-size: var(--fs-small);
+  color: var(--flame-red);
+}
+
+.address {
+  font-size: var(--fs-small);
+  color: var(--ink-on-paper-dim);
+  max-width: 44ch;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xs);
+  margin-top: var(--space-2xs);
+}
+
+.chip {
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: rgb(43 29 18 / 0.08);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.75rem;
+}
+
+.hours {
+  font-size: var(--fs-small);
+  color: var(--ink-on-paper-dim);
+}
+
+.hoursCall {
+  font-weight: 800;
+  color: var(--ink-on-paper);
+  text-decoration: underline 2px var(--flame-orange);
+  text-underline-offset: 3px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+}
+
+.directions,
+.swiggy,
+.zomato {
+  font-weight: 800;
+  font-size: var(--fs-small);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-pill);
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.directions {
+  background: var(--ink-on-paper);
+  color: var(--paper);
+}
+
+.swiggy {
+  background: #fc8019;
+  color: #fff;
+}
+
+.zomato {
+  background: #e23744;
+  color: #fff;
+}
+
+.directions:hover,
+.swiggy:hover,
+.zomato:hover {
+  transform: translateY(-2px);
+}
+
+/* delivery strip */
+.deliveryStrip {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm) var(--space-lg);
+  background: linear-gradient(120deg, rgb(127 29 29 / 0.55), rgb(30 23 16 / 0.9));
+  border: 1px solid rgb(220 38 38 / 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.deliveryStrip p {
+  font-size: var(--fs-lead);
+}
+
+.deliveryPhone {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1.2rem + 2vw, 2.6rem);
+  background: var(--gradient-flame);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  white-space: nowrap;
+}

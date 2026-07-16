@@ -9,6 +9,8 @@ import { Menu } from './sections/Menu/Menu'
 import { Story } from './sections/Story/Story'
 import { Proof } from './sections/Proof/Proof'
 import { Testimonials } from './sections/Testimonials/Testimonials'
+import { Outlets } from './sections/Outlets/Outlets'
+import { Footer } from './sections/Footer/Footer'
 
 export default function App() {
   return (
@@ -23,9 +25,10 @@ export default function App() {
         <Story />
         <Proof />
         <Testimonials />
-        {/* changes 7–8 append: Outlets, Franchise, Footer */}
-        <div style={{ height: '40vh' }} aria-hidden="true" />
+        <Outlets />
+        {/* change 8 appends: Franchise (before Footer) */}
       </main>
+      <Footer />
       <FloatingCtas />
     </SmoothScroll>
   )
