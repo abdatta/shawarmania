@@ -10,6 +10,7 @@ import { Story } from './sections/Story/Story'
 import { Proof } from './sections/Proof/Proof'
 import { Testimonials } from './sections/Testimonials/Testimonials'
 import { Outlets } from './sections/Outlets/Outlets'
+import { Franchise } from './sections/Franchise/Franchise'
 import { Footer } from './sections/Footer/Footer'
 
 export default function App() {
@@ -26,7 +27,7 @@ export default function App() {
         <Proof />
         <Testimonials />
         <Outlets />
-        {/* change 8 appends: Franchise (before Footer) */}
+        <Franchise />
       </main>
       <Footer />
       <FloatingCtas />
