@@ -20,11 +20,15 @@ foundation plus a visible "token-proof" page so the QA gate has something to loo
 
 ## Decisions
 
-1. **Fonts.** Display: `Anton` (heavy condensed grotesque, free/OFL, the "huge uppercase fragments"
-   look). Text: `Inter` (variable). Bengali accent: `Noto Serif Bengali` (variable) for "শাওয়ারমানী".
-   All self-hosted woff2 via `@fontsource`, preloaded in `index.html` with `%BASE_URL%`-safe hrefs.
-   Alternatives considered: Archivo Black (wider, less condensed), Bebas Neue (thinner strokes,
-   weaker at massive sizes with photography behind).
+1. **Fonts.** *(Reworked after owner direction: fast-food outlet look, not tech/editorial.)*
+   Display: `Lilita One` — bold rounded display that harmonizes with the hand-lettered gradient
+   wordmark in the Instagram logo; reads "food joint", not "keynote". Text: `Nunito Sans`
+   (variable, rounded humanist). Bengali: `Baloo Da 2` (variable — rounded Bengali companion).
+   The logo itself is never re-typeset: the exact Instagram profile mark is used
+   (`src/assets/brand/logo.png`, black background lifted to alpha for dark canvases).
+   All self-hosted woff2 via `@fontsource`. Alternatives considered: Anton (initial pick —
+   rejected as too tech/editorial), Chewy/Titan One (too cartoonish), Poetsen One (close but
+   weaker at multi-size hierarchy).
 2. **Tokens as `@property`-registered custom properties** where animatable (accent gradient stops),
    plain custom properties elsewhere. Fluid type via `clamp()` scale (`--fs-hero` … `--fs-xs`).
 3. **Palette encoding:** `--bg #14100B`, `--bg-raised #1E1710`, `--cream #F5E4C7`, `--cream-dim`,

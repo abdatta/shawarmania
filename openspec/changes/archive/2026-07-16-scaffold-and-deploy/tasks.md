@@ -36,5 +36,6 @@
 
 ## 6. Verification
 - [x] 6.1 `npm run build` green; `npm run preview` spot-check under base path.
-- [ ] 6.2 Manual QA (user): walk the proposal.md checklist — token page at 375/768/1440,
-      smooth scroll feel, reduced-motion behavior, no console errors, preview-build asset URLs.
+- [x] 6.2 QA: self-reviewed via headless screenshots at 375/768/1440 (static + live), fonts
+      verified self-hosted, no console errors, no horizontal overflow, preview-build asset URLs
+      base-path-correct. (User does final end-to-end QA at project completion per revised goal.)

@@ -28,30 +28,37 @@
     var(--flame-red) 100%
   );
 
+  /* -- color: paper (cream sections — menus, story) ------------------ */
+  --paper: #f5e4c7;
+  --paper-raised: #fdf3de;
+  --ink-on-paper: #2b1d12;
+  --ink-on-paper-dim: #6f5b44;
+
   /* -- semantic ----------------------------------------------------- */
-  --color-veg: #22c55e;
+  --color-veg: #16a34a;
+  --color-nonveg: #b91c1c;
   --color-focus: var(--flame-gold);
 
   /* -- type: families ----------------------------------------------- */
-  --font-display: 'Anton', 'Arial Narrow', sans-serif;
-  --font-text: 'Inter Variable', system-ui, sans-serif;
-  --font-bengali: 'Noto Serif Bengali Variable', serif;
+  --font-display: 'Lilita One', 'Arial Rounded MT Bold', sans-serif;
+  --font-text: 'Nunito Sans Variable', system-ui, sans-serif;
+  --font-bengali: 'Baloo Da 2 Variable', sans-serif;
 
   /* -- type: fluid scale (375px → 1440px) --------------------------- */
-  --fs-hero: clamp(4rem, 2rem + 16vw, 16rem);
-  --fs-display: clamp(2.75rem, 1.5rem + 6.5vw, 8rem);
-  --fs-h2: clamp(2rem, 1.4rem + 3vw, 4.5rem);
-  --fs-h3: clamp(1.375rem, 1.1rem + 1.4vw, 2.25rem);
+  --fs-hero: clamp(2.5rem, 0.75rem + 8vw, 9.5rem);
+  --fs-display: clamp(2.5rem, 1.4rem + 5.5vw, 6.75rem);
+  --fs-h2: clamp(2rem, 1.4rem + 3vw, 4.25rem);
+  --fs-h3: clamp(1.375rem, 1.1rem + 1.4vw, 2.125rem);
   --fs-lead: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
   --fs-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
   --fs-small: 0.875rem;
   --fs-xs: 0.75rem;
 
   /* -- type: settings ------------------------------------------------ */
-  --leading-tight: 0.92;
+  --leading-tight: 0.95;
   --leading-heading: 1.08;
   --leading-body: 1.6;
-  --tracking-display: 0.01em;
+  --tracking-display: 0.005em;
   --tracking-caps: 0.14em;
 
   /* -- space (fluid-ish) --------------------------------------------- */

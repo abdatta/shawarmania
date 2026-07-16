@@ -1,7 +1,8 @@
-# project-foundation — delta spec
+# project-foundation Specification
 
-## ADDED Requirements
-
+## Purpose
+TBD - created by archiving change scaffold-and-deploy. Update Purpose after archive.
+## Requirements
 ### Requirement: Buildable Vite + React + TypeScript project
 The project SHALL build with `npm run build` (tsc + vite build) and serve locally with `npm run dev`,
 using React 19, TypeScript strict mode, and the folder architecture
@@ -30,8 +31,9 @@ consume tokens — no hard-coded colors in component CSS.
 - **THEN** display type scales continuously via clamp() with no horizontal overflow
 
 ### Requirement: Self-hosted typography
-The project SHALL self-host the display face (Anton), text face (Inter variable), and Bengali face
-(Noto Serif Bengali variable) as woff2 with `font-display: swap`, preloading critical faces via
+The project SHALL self-host the display face (Lilita One — rounded, food-brand energy matched to
+the hand-lettered Instagram logo), text face (Nunito Sans variable), and Bengali face
+(Baloo Da 2 variable) as woff2 with `font-display: swap`, preloading critical faces via
 base-path-safe links. No external font CDN requests SHALL occur.
 
 #### Scenario: No external font requests
@@ -40,7 +42,7 @@ base-path-safe links. No external font CDN requests SHALL occur.
 
 #### Scenario: Bengali glyphs render
 - **WHEN** the proof page shows "শাওয়ারমানী"
-- **THEN** glyphs render from Noto Serif Bengali (not a fallback tofu)
+- **THEN** glyphs render from Baloo Da 2 (not a fallback tofu)
 
 ### Requirement: Single-RAF motion runtime
 The project SHALL provide a motion runtime where GSAP plugins are registered exactly once
@@ -64,3 +66,4 @@ SHALL reference a root-absolute (`/...`) asset path.
 #### Scenario: Preview under project base
 - **WHEN** `npm run build && npm run preview` serves the bundle under the configured base path
 - **THEN** every asset (fonts, images, scripts, styles) loads without 404
+

@@ -5,13 +5,14 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import logo from '../../assets/brand/logo.png'
 import styles from './Foundation.module.css'
 
 const SWATCHES = [
   ['--bg', 'Canvas'],
   ['--bg-raised', 'Raised'],
   ['--cream', 'Cream'],
-  ['--cream-dim', 'Cream dim'],
+  ['--paper', 'Paper'],
   ['--flame-gold', 'Flame gold'],
   ['--flame-orange', 'Flame orange'],
   ['--flame-red', 'Flame red'],
@@ -59,6 +60,7 @@ export function Foundation() {
     <div ref={scope} className={styles.page}>
       <header className={styles.masthead}>
         <p className={styles.kicker}>Foundation check · change 1 of 9</p>
+        <img className={styles.logo} src={logo} alt="Shawarmania logo" width={226} height={162} />
         <h1 className={styles.wordmark}>Shawarmania</h1>
         <p className={styles.bengali}>শাওয়ারমানী</p>
         <p className={styles.lead}>
