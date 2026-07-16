@@ -1,0 +1,32 @@
+.wrap {
+  position: fixed;
+  right: max(var(--space-sm), env(safe-area-inset-right));
+  bottom: max(var(--space-sm), env(safe-area-inset-bottom));
+  z-index: var(--z-floating);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.fab {
+  display: grid;
+  place-items: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.45);
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.fab:hover {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.whatsapp {
+  background: #1faa53;
+}
+
+.call {
+  background: var(--gradient-flame);
+  color: var(--bg);
+}

@@ -1,0 +1,13 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+
+.loader img {
+  width: clamp(7rem, 20vw, 11rem);
+  height: auto;
+}
