@@ -1,0 +1,38 @@
+{
+  "counters": [
+    { "id": "google-rating", "label": "Google rating, Kalyani", "value": 4.4, "decimals": 1, "prefix": null, "suffix": "★", "source": "Google Maps knowledge panel, 362 reviews (Jul 2026)" },
+    { "id": "zomato-ratings", "label": "Zomato ratings", "value": 1300, "decimals": 0, "prefix": null, "suffix": "+", "source": "Zomato Central Park 1,206 + Kanchrapara 140 (Jul 2026)" },
+    { "id": "outlets", "label": "Outlets & growing", "value": 2, "decimals": 0, "prefix": null, "suffix": null, "source": "Kalyani Central Park + Kanchrapara" },
+    { "id": "starting-price", "label": "Shawarma starts at", "value": 100, "decimals": 0, "prefix": "₹", "suffix": null, "source": "In-store counter price on storefront signage (Swiggy from ₹139)" },
+    { "id": "viral-likes", "label": "Likes on one viral reel", "value": 15200, "decimals": 0, "prefix": null, "suffix": null, "source": "Instagram reel, Nov 27 2025" },
+    { "id": "protein", "label": "Protein per 100g, lab-tested", "value": 25.8, "decimals": 1, "prefix": null, "suffix": "g", "source": "Prodcontrol (India) lab report, Jun 2026" }
+  ],
+  "timeline": [
+    { "year": 2025, "month": null, "title": "The first spit starts turning", "description": "Shawarmania opens at Central Park, Kalyani — Lebanese-style shawarma with a desi twist, rolled fresh daily." },
+    { "year": 2025, "month": "November", "title": "Kalyani can't stop talking", "description": "A single reel pulls 15,200 likes. Food vloggers start queueing at the counter." },
+    { "year": 2026, "month": null, "title": "Kanchrapara joins the mania", "description": "Second outlet opens near Joramandir Bus Stand — same recipes, same fresh-every-day rule." },
+    { "year": 2026, "month": "June", "title": "Proof, not promises", "description": "Independent lab report: 25.8g protein per 100g, zero trans fat, no heavy metals. Eat Healthy, Stay Happy — certified." }
+  ],
+  "labReport": {
+    "lab": "Prodcontrol (India) Private Limited — NABL-accredited (ISO 17025)",
+    "sampleDescription": "Cooked food: Chicken Shawarma",
+    "sampledOn": "2026-06-17",
+    "reportNo": "PCL/NN/2026-27/K0683",
+    "fssaiOnCert": "22819040000482",
+    "per100g": {
+      "proteinG": 25.8,
+      "fatG": 10.0,
+      "sugarG": 0.1,
+      "carbsG": 1.6,
+      "energyKcal": 205,
+      "transFatG": 0.0
+    },
+    "safety": [
+      "Heavy metals (copper, tin, zinc, mercury): not detected",
+      "E. coli: absent",
+      "Staphylococcus aureus: absent",
+      "Yeast & mold: absent"
+    ],
+    "image": "lab-report"
+  }
+}

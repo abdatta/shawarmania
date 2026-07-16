@@ -208,6 +208,41 @@
   transform-origin: left center;
 }
 
+/* -- data proof (dev only) -------------------------------------------------- */
+
+.dataHeading {
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  font-weight: 700;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.dataTable th,
+.dataTable td {
+  text-align: left;
+  padding: var(--space-2xs) var(--space-xs);
+  border-bottom: 1px solid rgb(245 228 199 / 0.14);
+}
+
+.dataTable th {
+  color: var(--flame-gold);
+  font-weight: 700;
+}
+
+.dataList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--space-xs);
+  font-size: var(--fs-small);
+  color: var(--cream-dim);
+}
+
 /* -- footer -------------------------------------------------- */
 
 .footer {

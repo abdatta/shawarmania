@@ -2,11 +2,15 @@
  * Temporary token-proof page for the scaffold-and-deploy QA gate.
  * Retired in the hero-experience change once real sections exist.
  */
-import { useRef } from 'react'
+import { lazy, Suspense, useRef } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import logo from '../../assets/brand/logo.png'
 import styles from './Foundation.module.css'
+
+const DataProof = import.meta.env.DEV
+  ? lazy(() => import('./DataProof').then((m) => ({ default: m.DataProof })))
+  : null
 
 const SWATCHES = [
   ['--bg', 'Canvas'],
@@ -111,6 +115,12 @@ export function Foundation() {
           </a>
         </div>
       </section>
+
+      {DataProof && (
+        <Suspense fallback={null}>
+          <DataProof />
+        </Suspense>
+      )}
 
       <section id="scrub" className={`${styles.block} ${styles.scrubDemo}`}>
         <h2 className={styles.blockTitle}>Scroll sync check</h2>

@@ -1,0 +1,60 @@
+{
+  "intro": "Own the mania in your town. Shawarmania is opening its proven counter format to franchise partners across West Bengal — small footprint, fast service, a menu Kalyani already queues for.",
+  "momentumLine": "Two outlets in under a year. A 15K-like viral moment. Lab-certified quality. Now expanding.",
+  "models": [
+    {
+      "id": "kiosk",
+      "name": "Kiosk",
+      "areaSqft": null,
+      "franchiseFee": null,
+      "totalInvestment": null,
+      "menuScope": "Core shawarma + wings",
+      "notes": "Compact counter format — the original Shawarmania footprint."
+    },
+    {
+      "id": "cafe",
+      "name": "Café",
+      "areaSqft": null,
+      "franchiseFee": null,
+      "totalInvestment": null,
+      "menuScope": "Full menu: shawarma, burgers, waffles, crepes",
+      "notes": "Adds the dessert counter that powers the Kanchrapara outlet."
+    },
+    {
+      "id": "dine-in",
+      "name": "Dine-in",
+      "areaSqft": null,
+      "franchiseFee": null,
+      "totalInvestment": null,
+      "menuScope": "Full menu + seating",
+      "notes": "Flagship format for high-street locations."
+    }
+  ],
+  "support": [
+    { "icon": "training", "title": "Recipe & training", "description": "Full kitchen training on the exact spice rubs, sauces and spit technique — same taste, every outlet." },
+    { "icon": "supply", "title": "Supply chain", "description": "Centralised sourcing of marinades and key ingredients so quality never drifts." },
+    { "icon": "site", "title": "Site selection", "description": "We help you pick the corner where the evening crowd already walks." },
+    { "icon": "marketing", "title": "Launch marketing", "description": "The playbook that took one reel to 15,200 likes — vloggers, offers, opening-week buzz." },
+    { "icon": "quality", "title": "Quality & compliance", "description": "FSSAI setup guidance and periodic lab testing, like our published Prodcontrol report." }
+  ],
+  "process": [
+    { "step": 1, "title": "Enquire", "description": "Message us on WhatsApp or send the form — tell us your city and budget." },
+    { "step": 2, "title": "Meet & taste", "description": "Visit the Kalyani flagship, taste the menu, meet the team behind the counter." },
+    { "step": 3, "title": "Sign & fit-out", "description": "Agreement, site fit-out and kitchen setup with our checklist." },
+    { "step": 4, "title": "Launch", "description": "Staff trained, spit turning, launch-week marketing live. You're open." }
+  ],
+  "faqs": [
+    { "q": "How much does a Shawarmania franchise cost?", "a": "We're finalising partner terms — enquire on WhatsApp and we'll share the current investment sheet for kiosk, café and dine-in formats." },
+    { "q": "Do I need restaurant experience?", "a": "No. The counter format is deliberately simple, and full training is part of the package." },
+    { "q": "Which territories are open?", "a": "West Bengal first — Nadia and North 24 Parganas towns are priority. Tell us your location and we'll check availability." },
+    { "q": "How is food quality kept consistent?", "a": "Central recipes, supplied marinades, training, and periodic independent lab tests — see our published Prodcontrol report." },
+    { "q": "How fast can I open?", "a": "A kiosk fit-out is measured in weeks, not months. Timeline depends on your site's condition." }
+  ],
+  "enquiry": {
+    "whatsappNumber": null,
+    "whatsappPrefill": "Hi Shawarmania! I'm interested in a franchise. My city: ___. My budget: ___.",
+    "formEndpoint": null,
+    "formAccessKey": null
+  },
+  "roiNote": null
+}

@@ -63,3 +63,20 @@ Vloggers 🔥 · Dishes 😋 · Menu · NomadMania 2025 · Now in Zomato
 - Zomato/Swiggy ordering links.
 - Franchise plans/terms, expansion targets.
 - High-res logo files (current best: 320px profile pic).
+
+## Late additions (reel-cover review, 2026-07-16)
+
+- **DZztFZVs9oY.jpg** — the Kalyani storefront NEON SIGN at night: exact logo as glowing signage;
+  counter menu badges visible: "Chicken Shawarma Rs.100", "Classic Waffle Rs.100", "Classic Burger".
+  In-store prices are lower than Swiggy (platform markup). Prime hero-background material.
+- **Dau6eFOshbX.jpg** — real LAB TEST CERTIFICATE (Prodcontrol India Pvt Ltd, sampled 17/06/2026,
+  report PCL/NN/2026-27/K0683): "Cooked food: Chicken Shawarma" for M/s SHAWARMANIA,
+  281, K G Path (N), PO: Kancharapara, North 24 Parganas 743145. Per 100g: protein 25.8g,
+  fat 10g, sugar 0.1g, carbs 1.6g, energy 205 kcal, trans fat 0.0g; heavy metals not detected;
+  E. coli/S. aureus absent. Cert header shows "fssai Regd. No.: 22819040000482" (third FSSAI
+  number in the wild - reconcile with owner). Massive trust asset for the healthy positioning.
+- **Da0EOamz_QQ.jpg** — interior: yellow fascia signage, teal walls, vertical rotisserie spit,
+  self-service counter.
+- **DaAkpvhzH2h.jpg** — clean loaded smashed-burger close-up (small watermark).
+- **DZpZ9B5zeCP.jpg / DZZ8lFwMj28.jpg** — customers holding shawarma under the neon sign
+  (brand-published) - testimonial-wall material.

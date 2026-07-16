@@ -1,0 +1,54 @@
+{
+  "vloggerVideos": [
+    {
+      "id": "khana-pina",
+      "creator": "Khana Pina",
+      "platform": "facebook",
+      "title": "Non-veg shawarma combo ₹170, pan-fried wings ₹120 — taste 9/10",
+      "url": "https://www.facebook.com/khanaPina04/videos/1200819404663046/",
+      "image": "customer-shawarma",
+      "metric": "840+ reactions"
+    },
+    {
+      "id": "sonali-majumder",
+      "creator": "Sonali Majumder",
+      "platform": "youtube",
+      "title": "Trying Shawarmania in Kalyani for the first time",
+      "url": "https://www.youtube.com/results?search_query=shawarmania+kalyani+sonali+majumder",
+      "image": "customers-neon",
+      "metric": "5.3K views"
+    },
+    {
+      "id": "viral-reel",
+      "creator": "@shawarmania.kalyani",
+      "platform": "instagram",
+      "title": "The reel that made Kalyani hungry",
+      "url": "https://www.instagram.com/shawarmania.kalyani/",
+      "image": "storefront-night-full",
+      "metric": "15.2K likes"
+    }
+  ],
+  "quotes": [
+    {
+      "id": "value",
+      "text": "You can easily get a satisfying meal without burning a hole in your pocket.",
+      "author": null,
+      "source": "Google review, Kalyani",
+      "url": null
+    },
+    {
+      "id": "taste",
+      "text": "Spicy, cheesy & Lebanese shawarma with a desi twist — best in Kalyani & Kanchrapara.",
+      "author": null,
+      "source": "Recurring customer-review reels",
+      "url": "https://www.instagram.com/shawarmania.kalyani/"
+    },
+    {
+      "id": "vlogger",
+      "text": "We tried the non-veg shawarma combo and pan-fried chicken wings. Taste: 09/10.",
+      "author": "Khana Pina",
+      "source": "Facebook food vlog",
+      "url": "https://www.facebook.com/khanaPina04/videos/1200819404663046/"
+    }
+  ]
+}

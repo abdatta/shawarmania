@@ -1,0 +1,42 @@
+{
+  "outlets": [
+    {
+      "id": "kalyani",
+      "name": "Kalyani — Central Park",
+      "landmark": "Near Central Park Ground & SBI Bank",
+      "addressLines": ["Ward 10, B-9 Diagonal Road", "Near Central Park Ground", "Kalyani, Nadia"],
+      "city": "Kalyani",
+      "pincode": "741235",
+      "plusCode": "XCGP+36",
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Shawarmania+Central+Park+Kalyani",
+      "phone": "+91 89815 24778",
+      "hours": null,
+      "hoursNote": "Open from around midday to late evening — call to confirm today's hours.",
+      "deliveryOnly": false,
+      "seating": false,
+      "fssai": "22825123001193",
+      "swiggyUrl": "https://www.swiggy.com/city/kolkata/shawarmania-kalyani-kalyani-2-rest1096540",
+      "zomatoUrl": "https://www.zomato.com/kolkata/shawarmania-1-kalyani/order",
+      "image": "storefront-neon"
+    },
+    {
+      "id": "kanchrapara",
+      "name": "Kanchrapara",
+      "landmark": "Near Joramandir Bus Stand",
+      "addressLines": ["281, K G Path (N)", "Near Joramandir Bus Stand", "Kanchrapara, North 24 Parganas"],
+      "city": "Kanchrapara",
+      "pincode": "743145",
+      "plusCode": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Shawarmania+Kanchrapara+KG+Path",
+      "phone": "+91 89815 24778",
+      "hours": null,
+      "hoursNote": "Opens around 4 pm — call to confirm today's hours.",
+      "deliveryOnly": true,
+      "seating": false,
+      "fssai": "12826013000341",
+      "swiggyUrl": null,
+      "zomatoUrl": "https://www.zomato.com/kolkata/shawarmania-2-kalyani/order",
+      "image": "interior-counter"
+    }
+  ]
+}

@@ -1,0 +1,338 @@
+{
+  "categories": [
+    {
+      "id": "shawarma",
+      "name": "Shawarma",
+      "blurb": "Lebanese-style, rolled fresh off the spit",
+      "order": 1
+    },
+    {
+      "id": "burgers",
+      "name": "Smashed Burgers",
+      "blurb": "Double-smashed patties, melted cheese",
+      "order": 2
+    },
+    {
+      "id": "sides",
+      "name": "Wings & Sides",
+      "blurb": "Pan-fried, spiced, shareable",
+      "order": 3
+    },
+    {
+      "id": "desserts",
+      "name": "Waffles, Crepes & Pancakes",
+      "blurb": "The sweet ending",
+      "order": 4
+    }
+  ],
+  "items": [
+    {
+      "id": "classic-chicken-shawarma",
+      "name": "Classic Chicken Shawarma",
+      "category": "shawarma",
+      "description": "The one that started the mania — juicy spit-roasted chicken, house garlic sauce, fresh veg in a soft roll.",
+      "price": 139,
+      "counterPrice": 100,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 1,
+      "rating": 4.3,
+      "ratingCount": 85,
+      "badge": "Bestseller",
+      "image": "shawarma-plate",
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "mayonnaise-chicken-shawarma",
+      "name": "Mayonnaise Chicken Shawarma",
+      "category": "shawarma",
+      "description": "Extra-creamy, extra-comforting — loaded with silky mayo and that signature spice rub.",
+      "price": 159,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 1,
+      "rating": 4.6,
+      "ratingCount": 15,
+      "badge": "Top rated",
+      "image": "shawarma-glow",
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "double-chicken-shawarma",
+      "name": "Double Chicken Shawarma",
+      "category": "shawarma",
+      "description": "Twice the chicken, zero restraint. For the properly hungry.",
+      "price": 179,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 2,
+      "rating": 4.1,
+      "ratingCount": 30,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "mozzarella-cheese-chicken-shawarma",
+      "name": "Mozzarella Cheese Chicken Shawarma",
+      "category": "shawarma",
+      "description": "Real mozzarella melted through spit-roasted chicken. The cheese pull is mandatory.",
+      "price": 199,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 1,
+      "rating": 4.1,
+      "ratingCount": 12,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "healthy-chicken-shawarma-salad",
+      "name": "Healthy Chicken Shawarma Salad",
+      "category": "shawarma",
+      "description": "All the shawarma, none of the wrap — grilled chicken over crisp salad. Lab-tested 25.8g protein per 100g.",
+      "price": 219,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 0,
+      "rating": 4.5,
+      "ratingCount": 30,
+      "badge": "Viral",
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "stuffed-lebanese-chicken-shawarma",
+      "name": "Stuffed Lebanese Chicken Shawarma",
+      "category": "shawarma",
+      "description": "Pita-style saaj bread stuffed the Beirut way — the closest thing to Lebanon in Nadia district.",
+      "price": 238,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 2,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "pan-fried-paneer-shawarma",
+      "name": "Pan Fried Paneer Shawarma",
+      "category": "shawarma",
+      "description": "The vegetarian headliner — griddled paneer, charred edges, full shawarma treatment.",
+      "price": null,
+      "counterPrice": null,
+      "priceAsOf": null,
+      "isVeg": true,
+      "spiceLevel": 1,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "pan-fried-paneer-mushroom-shawarma",
+      "name": "Pan Fried Paneer & Mushroom Shawarma",
+      "category": "shawarma",
+      "description": "Paneer meets mushroom on the griddle — deeper, earthier, still all veg.",
+      "price": null,
+      "counterPrice": null,
+      "priceAsOf": null,
+      "isVeg": true,
+      "spiceLevel": 1,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "fully-loaded-smashed-burger",
+      "name": "Fully Loaded Smashed Burger",
+      "category": "burgers",
+      "description": "Double smashed patties, melted cheese, fresh veggies and signature sauces in one irresistible burger.",
+      "price": 250,
+      "counterPrice": null,
+      "priceAsOf": "2026-07",
+      "isVeg": false,
+      "spiceLevel": 1,
+      "rating": null,
+      "ratingCount": null,
+      "badge": "New",
+      "image": "burger-loaded",
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": true
+    },
+    {
+      "id": "pan-fried-chicken-wings",
+      "name": "Pan Fried Chicken Wings",
+      "category": "sides",
+      "description": "Blistered on the pan, tossed in house spice. Vlogger-rated 9/10.",
+      "price": 120,
+      "counterPrice": null,
+      "priceAsOf": "2025-07",
+      "isVeg": false,
+      "spiceLevel": 2,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "chicken-shawarma-combo",
+      "name": "Non-veg Shawarma Combo",
+      "category": "shawarma",
+      "description": "Shawarma plus sides in one plate — the vlogger favourite.",
+      "price": 170,
+      "counterPrice": null,
+      "priceAsOf": "2025-07",
+      "isVeg": false,
+      "spiceLevel": 1,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kalyani",
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "honey-butter-waffle",
+      "name": "Honey Butter Waffle",
+      "category": "desserts",
+      "description": "Golden waffle, warm honey, melted butter.",
+      "price": null,
+      "counterPrice": 100,
+      "priceAsOf": "2026-07",
+      "isVeg": true,
+      "spiceLevel": 0,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "nutella-waffle",
+      "name": "Naked Nutella Waffle",
+      "category": "desserts",
+      "description": "Nutella, no apologies.",
+      "price": null,
+      "counterPrice": null,
+      "priceAsOf": null,
+      "isVeg": true,
+      "spiceLevel": 0,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "nutella-crepe",
+      "name": "Nutella Crepe",
+      "category": "desserts",
+      "description": "Thin, warm, rolled around Nutella.",
+      "price": null,
+      "counterPrice": null,
+      "priceAsOf": null,
+      "isVeg": true,
+      "spiceLevel": 0,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    },
+    {
+      "id": "classic-pancakes",
+      "name": "Classic Pancakes (4 pc)",
+      "category": "desserts",
+      "description": "A proper short stack.",
+      "price": null,
+      "counterPrice": null,
+      "priceAsOf": null,
+      "isVeg": true,
+      "spiceLevel": 0,
+      "rating": null,
+      "ratingCount": null,
+      "badge": null,
+      "image": null,
+      "orderUrl": null,
+      "availableAt": [
+        "kanchrapara"
+      ],
+      "featured": false
+    }
+  ]
+}
