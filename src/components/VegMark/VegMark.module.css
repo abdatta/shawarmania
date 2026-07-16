@@ -1,0 +1,31 @@
+.mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.mark span {
+  width: 0.44rem;
+  height: 0.44rem;
+  border-radius: 50%;
+}
+
+.veg {
+  border-color: var(--color-veg);
+}
+
+.veg span {
+  background: var(--color-veg);
+}
+
+.nonveg {
+  border-color: var(--color-nonveg);
+}
+
+.nonveg span {
+  background: var(--color-nonveg);
+}

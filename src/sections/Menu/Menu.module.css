@@ -1,0 +1,315 @@
+/* Paper "menu board" section — the palette flip is the identity. */
+
+.menu {
+  background: var(--paper);
+  color: var(--ink-on-paper);
+  padding: var(--space-section) 0;
+  /* torn-ticket top edge */
+  border-top: 6px solid var(--flame-orange);
+}
+
+.heading {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  margin-bottom: var(--space-lg);
+}
+
+.kicker {
+  font-size: var(--fs-small);
+  font-weight: 800;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--flame-red);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  text-transform: uppercase;
+  margin-top: var(--space-2xs);
+}
+
+.sub {
+  color: var(--ink-on-paper-dim);
+  margin-top: var(--space-xs);
+  max-width: 52ch;
+}
+
+/* -- gallery ------------------------------------------------------- */
+
+.gallery {
+  overflow: clip;
+  padding-block: var(--space-md);
+}
+
+.track {
+  display: flex;
+  gap: var(--space-md);
+  padding-inline: var(--gutter);
+  width: max-content;
+}
+
+.card {
+  position: relative;
+  width: clamp(17rem, 22vw + 9rem, 24rem);
+  background: var(--paper-raised);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 2px 0 rgb(43 29 18 / 0.06),
+    0 18px 44px rgb(43 29 18 / 0.16);
+  flex-shrink: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.card:hover {
+  transform: translateY(-6px) rotate(-0.5deg);
+}
+
+.typeCard {
+  background: linear-gradient(160deg, var(--maroon), #4c1010 70%);
+  color: var(--cream);
+  grid-template-rows: 1fr;
+}
+
+.typeCard .cardBody {
+  align-content: center;
+  gap: var(--space-sm);
+  padding-block: 3rem;
+  background:
+    radial-gradient(18rem 12rem at 85% 110%, rgb(249 115 22 / 0.22), transparent 70%),
+    radial-gradient(14rem 10rem at 10% -10%, rgb(255 197 61 / 0.12), transparent 70%);
+}
+
+.typeCard .cardName {
+  font-size: var(--fs-h3);
+}
+
+.typeCard .cardDesc {
+  color: rgb(245 228 199 / 0.75);
+}
+
+.typeCard .price {
+  color: var(--flame-gold);
+}
+
+.cardImgWrap {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.cardImgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBody {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  display: grid;
+  gap: var(--space-xs);
+  align-content: start;
+}
+
+.cardName {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.cardDesc {
+  font-size: var(--fs-small);
+  color: var(--ink-on-paper-dim);
+  line-height: 1.45;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  margin-top: auto;
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--flame-red);
+}
+
+.rating {
+  font-size: var(--fs-small);
+  font-weight: 800;
+  background: rgb(43 29 18 / 0.08);
+  border-radius: var(--radius-pill);
+  padding: 0.25rem 0.7rem;
+}
+
+.typeCard .rating {
+  background: rgb(245 228 199 / 0.12);
+}
+
+.rating small {
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.badge {
+  position: absolute;
+  top: 0.9rem;
+  left: -0.4rem;
+  z-index: 1;
+  background: var(--gradient-flame);
+  color: var(--bg);
+  font-weight: 900;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+  box-shadow: 0 6px 16px rgb(220 38 38 / 0.35);
+  transform: rotate(-3deg);
+}
+
+/* -- mobile: native snap ------------------------------------------- */
+
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .gallery {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--flame-orange) transparent;
+  }
+
+  .card {
+    scroll-snap-align: center;
+  }
+}
+
+/* -- category board ------------------------------------------------- */
+
+.categories {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  margin-top: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: var(--space-md);
+}
+
+.catTile {
+  background: var(--paper-raised);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  border: 1px dashed rgb(43 29 18 / 0.22);
+}
+
+.catName {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+  color: var(--maroon);
+}
+
+.catBlurb {
+  font-size: var(--fs-small);
+  color: var(--ink-on-paper-dim);
+  margin-top: 0.15rem;
+}
+
+.catList {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--space-sm);
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.catList li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: var(--fs-small);
+}
+
+.rowName {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: baseline;
+}
+
+.leader {
+  flex: 1;
+  border-bottom: 2px dotted rgb(43 29 18 / 0.3);
+  transform: translateY(-0.3em);
+}
+
+.rowPrice {
+  font-family: var(--font-display);
+  color: var(--flame-red);
+  white-space: nowrap;
+}
+
+/* -- order strip ------------------------------------------------------ */
+
+.orderStrip {
+  width: min(var(--container), 100%);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.orderLine {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  text-transform: uppercase;
+}
+
+.orderCtas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.swiggy,
+.zomato {
+  font-weight: 800;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-pill);
+  color: #fff;
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.swiggy {
+  background: #fc8019;
+}
+
+.zomato {
+  background: #e23744;
+}
+
+.swiggy:hover,
+.zomato:hover {
+  transform: translateY(-3px);
+}
+
+.phone {
+  font-weight: 800;
+  color: var(--ink-on-paper);
+  text-decoration: underline 2px var(--flame-orange);
+  text-underline-offset: 4px;
+}
