@@ -1,20 +1,47 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: Premium landing/brand page for "Shawarmania" — a shawarma QSR brand in
+  Kalyani + Kanchrapara, West Bengal, India. Audiences: visitors/customers,
+  prospective franchisees, investors. No existing website.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Key documents (read before proposing/designing):
+  - research/build-brief.md — synthesized build brief: site structure, motion
+    design spec, stack decision, verified business facts, data schemas, open questions.
+  - research/instagram/findings.md — brand identity from Instagram (logo, palette,
+    taglines, menu mentions, outlets).
+  - research/reports/*.md — deep research: absoluteshawarma.com structure teardown,
+    Apple scroll animation techniques, restaurant landing inspiration,
+    Shawarmania web presence (Zomato/Swiggy/Google), stack + content portal.
+
+  Tech stack (fixed): Vite + React 19 + TypeScript, GSAP (ScrollTrigger/SplitText,
+  free incl. all plugins) + Lenis smooth scroll, vanilla CSS with design tokens +
+  CSS Modules (no Tailwind, no router, no Framer Motion). Static single-page site
+  deployed to GitHub Pages via Actions (base path aware). Content lives in
+  src/data/*.json validated by zod schemas; a dev-only content portal at /admin
+  (Vite middleware, apply:'serve') lets the owner edit those JSON files locally.
+
+  Design direction (fixed): warm near-black base (#14100B family) + warm cream
+  (#F5E4C7 family) + flame/ember accent gradient drawn from the logo
+  (gold #FFC53D → orange #F97316 → red #DC2626). Dark "nighttime craving" look,
+  huge condensed display type, Bengali script "শাওয়ারমানী" as graphic accent.
+  Apple-grade scroll choreography: pinned hero type scene, canvas/image scrub,
+  horizontal menu gallery, SplitText reveals, counters — always honoring
+  prefers-reduced-motion and mobile gating via gsap.matchMedia().
+
+  Conventions:
+  - One folder per section in src/sections/, co-located *.module.css.
+  - Animate only transform/opacity; useGSAP({scope}) for cleanup; single RAF loop
+    (Lenis driven by gsap.ticker).
+  - Never hardcode leading-/ asset URLs — use import.meta.env.BASE_URL helper.
+  - Real, verified data only in src/data/*.json; unknown facts stay null and render
+    graceful fallbacks ("Contact for details") — never invent business numbers.
+  - Manual QA gate after every change: dev-server walkthrough + npm run build.
+
+rules:
+  proposal:
+    - Always include a "Manual QA checklist" section — the user manually verifies
+      each change in the browser before the next change starts.
+  tasks:
+    - End every change's task list with a "Manual QA" task listing concrete
+      browser checks (viewport sizes, reduced-motion, build passing).

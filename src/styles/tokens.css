@@ -1,0 +1,90 @@
+/* ============================================================
+   Shawarmania design tokens
+   Palette derived from the brand's Instagram identity:
+   near-black canvas, warm cream, flame gradient (logo), maroon
+   (festive lockup). See research/instagram/findings.md.
+   ============================================================ */
+
+:root {
+  /* -- color: canvas ------------------------------------------------ */
+  --bg: #14100b;
+  --bg-raised: #1e1710;
+  --bg-overlay: rgb(20 16 11 / 0.82);
+
+  /* -- color: ink --------------------------------------------------- */
+  --cream: #f5e4c7;
+  --cream-dim: #c9b795;
+  --cream-faint: rgb(245 228 199 / 0.38);
+
+  /* -- color: flame accent (logo gradient) -------------------------- */
+  --flame-gold: #ffc53d;
+  --flame-orange: #f97316;
+  --flame-red: #dc2626;
+  --maroon: #7f1d1d;
+  --gradient-flame: linear-gradient(
+    100deg,
+    var(--flame-gold) 0%,
+    var(--flame-orange) 52%,
+    var(--flame-red) 100%
+  );
+
+  /* -- semantic ----------------------------------------------------- */
+  --color-veg: #22c55e;
+  --color-focus: var(--flame-gold);
+
+  /* -- type: families ----------------------------------------------- */
+  --font-display: 'Anton', 'Arial Narrow', sans-serif;
+  --font-text: 'Inter Variable', system-ui, sans-serif;
+  --font-bengali: 'Noto Serif Bengali Variable', serif;
+
+  /* -- type: fluid scale (375px → 1440px) --------------------------- */
+  --fs-hero: clamp(4rem, 2rem + 16vw, 16rem);
+  --fs-display: clamp(2.75rem, 1.5rem + 6.5vw, 8rem);
+  --fs-h2: clamp(2rem, 1.4rem + 3vw, 4.5rem);
+  --fs-h3: clamp(1.375rem, 1.1rem + 1.4vw, 2.25rem);
+  --fs-lead: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+  --fs-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --fs-small: 0.875rem;
+  --fs-xs: 0.75rem;
+
+  /* -- type: settings ------------------------------------------------ */
+  --leading-tight: 0.92;
+  --leading-heading: 1.08;
+  --leading-body: 1.6;
+  --tracking-display: 0.01em;
+  --tracking-caps: 0.14em;
+
+  /* -- space (fluid-ish) --------------------------------------------- */
+  --space-2xs: 0.375rem;
+  --space-xs: 0.625rem;
+  --space-sm: 1rem;
+  --space-md: 1.625rem;
+  --space-lg: 2.625rem;
+  --space-xl: 4.25rem;
+  --space-2xl: clamp(4.5rem, 3rem + 6vw, 8.5rem);
+  --space-section: clamp(5.5rem, 4rem + 9vw, 12rem);
+
+  /* -- shape ---------------------------------------------------------- */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+
+  /* -- motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-snap: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --dur-fast: 180ms;
+  --dur-med: 420ms;
+  --dur-slow: 800ms;
+
+  /* -- layout ----------------------------------------------------------- */
+  --container: 78rem;
+  --gutter: clamp(1.25rem, 0.75rem + 3vw, 3.5rem);
+
+  /* -- z-layers ----------------------------------------------------------- */
+  --z-header: 100;
+  --z-floating: 200;
+  --z-modal: 300;
+  --z-loader: 400;
+}
