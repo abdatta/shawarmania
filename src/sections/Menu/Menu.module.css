@@ -259,6 +259,17 @@
   white-space: nowrap;
 }
 
+/* unknown price → WhatsApp ask link */
+a.askable {
+  text-decoration: underline dotted 2px;
+  text-underline-offset: 4px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+a.askable:hover {
+  color: var(--flame-orange);
+}
+
 /* -- order strip ------------------------------------------------------ */
 
 .orderStrip {

@@ -3,6 +3,7 @@ import { gsap, useGSAP } from '../../lib/gsap'
 import { menu, outlets } from '../../data'
 import { imageFor } from '../../assets/img'
 import { VegMark } from '../../components/VegMark/VegMark'
+import { whatsappHref } from '../../lib/whatsapp'
 import type { MenuItem } from '../../data'
 import styles from './Menu.module.css'
 
@@ -10,6 +11,28 @@ function priceLabel(item: MenuItem): string {
   if (item.price != null) return `₹${item.price}`
   if (item.counterPrice != null) return `₹${item.counterPrice} in-store`
   return 'ask in-store'
+}
+
+/** Price text; unknown prices become a WhatsApp "ask us" link. */
+function PriceTag({ item, className }: { item: MenuItem; className: string }) {
+  const unknown = item.price == null && item.counterPrice == null
+  const ask = unknown
+    ? whatsappHref(`Hi Shawarmania! What's the price of ${item.name} right now?`)
+    : null
+  if (ask) {
+    return (
+      <a
+        className={`${className} ${styles.askable}`}
+        href={ask}
+        target="_blank"
+        rel="noreferrer"
+        title="Ask us on WhatsApp"
+      >
+        {priceLabel(item)}
+      </a>
+    )
+  }
+  return <span className={className}>{priceLabel(item)}</span>
 }
 
 function FeaturedCard({ item }: { item: MenuItem }) {
@@ -28,7 +51,7 @@ function FeaturedCard({ item }: { item: MenuItem }) {
         </h3>
         {item.description && <p className={styles.cardDesc}>{item.description}</p>}
         <p className={styles.cardMeta}>
-          <span className={styles.price}>{priceLabel(item)}</span>
+          <PriceTag item={item} className={styles.price} />
           {item.rating != null && (
             <span className={styles.rating}>
               ★ {item.rating.toFixed(1)}
@@ -127,7 +150,7 @@ export function Menu() {
                     <VegMark isVeg={item.isVeg} /> {item.name}
                   </span>
                   <span className={styles.leader} aria-hidden="true" />
-                  <span className={styles.rowPrice}>{priceLabel(item)}</span>
+                  <PriceTag item={item} className={styles.rowPrice} />
                 </li>
               ))}
             </ul>

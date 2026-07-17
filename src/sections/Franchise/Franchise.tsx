@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { brand, franchise } from '../../data'
+import { whatsappHref } from '../../lib/whatsapp'
+import { WhatsappIcon } from '../../components/icons/WhatsappIcon'
 import styles from './Franchise.module.css'
 
 const SUPPORT_ICONS: Record<string, string> = {
@@ -12,10 +14,26 @@ const SUPPORT_ICONS: Record<string, string> = {
 }
 
 function Detail({ label, value }: { label: string; value: string | null }) {
+  const ask = whatsappHref(franchise.enquiry.whatsappPrefill)
   return (
     <div className={styles.detailRow}>
       <dt>{label}</dt>
-      <dd>{value ?? <span className={styles.askChip}>Contact for details</span>}</dd>
+      <dd>
+        {value ??
+          (ask ? (
+            <a
+              className={styles.askChip}
+              href={ask}
+              target="_blank"
+              rel="noreferrer"
+              title="Ask us on WhatsApp"
+            >
+              Contact for details
+            </a>
+          ) : (
+            <span className={styles.askChip}>Contact for details</span>
+          ))}
+      </dd>
     </div>
   )
 }
@@ -26,9 +44,7 @@ export function Franchise() {
 
   const { enquiry } = franchise
   const formActive = enquiry.formEndpoint != null && enquiry.formAccessKey != null
-  const whatsappHref = enquiry.whatsappNumber
-    ? `https://wa.me/${enquiry.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(enquiry.whatsappPrefill)}`
-    : null
+  const whatsapp = whatsappHref(enquiry.whatsappPrefill)
   const telPrimary = `tel:${brand.phonePrimary.replace(/\s/g, '')}`
 
   useGSAP(
@@ -144,15 +160,16 @@ export function Franchise() {
           <div className={styles.enquiryCopy}>
             <h3>Ready to bring the mania home?</h3>
             <p>Tell us your city and budget — we&rsquo;ll take it from there.</p>
-            {whatsappHref ? (
-              <a className={styles.ctaPrimary} href={whatsappHref} target="_blank" rel="noreferrer">
-                WhatsApp us about franchising
-              </a>
-            ) : (
+            <div className={styles.enquiryCtas}>
               <a className={styles.ctaPrimary} href={telPrimary}>
                 Call about franchising · {brand.phonePrimary}
               </a>
-            )}
+              {whatsapp && (
+                <a className={styles.ctaWhatsapp} href={whatsapp} target="_blank" rel="noreferrer">
+                  <WhatsappIcon /> Message us on WhatsApp
+                </a>
+              )}
+            </div>
           </div>
 
           <form className={styles.form} onSubmit={(e) => void submit(e)}>

@@ -103,13 +103,23 @@
 }
 
 .askChip {
+  display: inline-block;
   font-size: var(--fs-xs);
   font-weight: 800;
   background: rgb(249 115 22 / 0.15);
   color: #b45309;
   border-radius: var(--radius-pill);
-  padding: 0.2rem 0.65rem;
+  padding: 0.35rem 0.75rem;
+  margin-block: -0.15rem;
   white-space: nowrap;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-snap);
+}
+
+a.askChip:hover {
+  background: rgb(249 115 22 / 0.3);
+  transform: translateY(-1px);
 }
 
 /* -- support ------------------------------------------------------ */
@@ -276,9 +286,15 @@
   margin-top: var(--space-xs);
 }
 
+.enquiryCtas {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
 .ctaPrimary {
   display: inline-block;
-  margin-top: var(--space-md);
   background: var(--gradient-flame);
   color: var(--bg);
   font-weight: 800;
@@ -287,7 +303,20 @@
   transition: transform var(--dur-fast) var(--ease-snap);
 }
 
-.ctaPrimary:hover {
+.ctaWhatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: #1faa53;
+  color: #fff;
+  font-weight: 800;
+  padding: 0.9rem 1.8rem;
+  border-radius: var(--radius-pill);
+  transition: transform var(--dur-fast) var(--ease-snap);
+}
+
+.ctaPrimary:hover,
+.ctaWhatsapp:hover {
   transform: translateY(-3px);
 }
 
