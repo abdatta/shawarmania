@@ -169,25 +169,46 @@
 
 @media (max-width: 900px) {
   .hero {
-    padding-top: calc(var(--space-2xl) + 2rem);
+    padding-top: calc(var(--space-2xl) + 0.25rem);
+    padding-bottom: var(--space-lg);
   }
 
   .inner {
     grid-template-columns: 1fr;
-    gap: var(--space-xl);
+    gap: var(--space-md);
+  }
+
+  .kicker {
+    margin-bottom: var(--space-xs);
+  }
+
+  .sub {
+    font-size: var(--fs-body);
+  }
+
+  .ctas {
+    margin-top: var(--space-md);
   }
 
   .photoWrap {
     justify-items: start;
+    gap: var(--space-sm);
+    /* keep the overhanging badge inside the layout flow */
+    padding-bottom: 2.4rem;
+  }
+
+  .heroLogo {
+    width: clamp(6.5rem, 24vw, 8.5rem);
   }
 
   .photoCard {
-    max-width: 26rem;
+    max-width: 24rem;
     transform: rotate(2deg);
   }
 
   .badge {
-    bottom: -2.1rem;
-    right: 0.5rem;
+    bottom: 0;
+    /* stay clear of the floating call/WhatsApp buttons */
+    right: 4.5rem;
   }
 }
