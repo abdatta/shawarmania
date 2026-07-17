@@ -58,7 +58,7 @@
   "timeline": [
     {
       "year": 2025,
-      "month": null,
+      "month": "May",
       "title": "The first grill fires up",
       "description": "Shawarmania opens at Central Park, Kalyani — Lebanese-style shawarma with a desi twist, rolled fresh daily."
     },
@@ -70,7 +70,7 @@
     },
     {
       "year": 2026,
-      "month": null,
+      "month": "April",
       "title": "Kanchrapara joins the mania",
       "description": "Second outlet opens near Joramandir Bus Stand — same recipes, same fresh-every-day rule."
     },

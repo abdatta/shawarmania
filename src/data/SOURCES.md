@@ -9,7 +9,8 @@ confirm via the content portal". Full research: `research/build-brief.md`,
 | brand | bio/taglines/positioning | Instagram bio + recurring captions; festive-post lockup ("Eat Healthy, Stay Happy") |
 | brand | phones | +91 89815 24778 (all Zomato listings + IG); 033 2582 3100 (Google Maps + brand "Home Delivery" posts) |
 | brand | WhatsApp channel | Instagram bio link |
-| brand | foundedYear 2025 | timeline evidence (JustDial listing created Jul 2025; first vlogs ~Jul 2025) |
+| brand | foundedYear 2025 | owner-confirmed: Kalyani opened May 2025 (was inferred from JustDial/vlog timeline) |
+| stats | timeline months (May 2025 / April 2026) | owner-confirmed during QA, Jul 2026 |
 | menu | 6 shawarma prices ₹139–238 + ratings | Swiggy menu API, Central Park outlet, Jul 2026 |
 | menu | counter price ₹100 (classic), waffle ₹100 | storefront neon-sign badges (DZztFZVs9oY.jpg) |
 | menu | combo ₹170, wings ₹120 | Khana Pina FB vlog (840+ reactions) |
