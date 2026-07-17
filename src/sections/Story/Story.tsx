@@ -86,7 +86,7 @@ export function Story() {
           ))}
         </div>
 
-        <a className={styles.follow} href={brand.social.instagram} target="_blank" rel="noreferrer">
+        <a className={`${styles.follow} tap-target`} href={brand.social.instagram} target="_blank" rel="noreferrer">
           Follow the story on Instagram ↗
         </a>
       </div>

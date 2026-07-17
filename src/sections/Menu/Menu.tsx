@@ -153,7 +153,7 @@ export function Menu() {
               Order on Zomato
             </a>
           )}
-          <a href="tel:03325823100" className={styles.phone}>
+          <a href="tel:03325823100" className={`${styles.phone} tap-target`}>
             Home delivery: 033 2582 3100
           </a>
         </div>

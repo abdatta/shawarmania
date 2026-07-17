@@ -13,7 +13,7 @@ export function LegalModal({ label, title, children }: Props) {
 
   return (
     <>
-      <button type="button" className={styles.trigger} onClick={() => ref.current?.showModal()}>
+      <button type="button" className={`${styles.trigger} tap-target`} onClick={() => ref.current?.showModal()}>
         {label}
       </button>
       <dialog

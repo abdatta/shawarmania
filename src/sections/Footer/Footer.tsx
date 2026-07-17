@@ -33,16 +33,16 @@ export function Footer() {
           <img className={styles.logo} src={logo} alt="Shawarmania" width={226} height={162} />
           <p className={styles.tagline}>{brand.tagline}</p>
           <div className={styles.socials}>
-            <a href={brand.social.instagram} target="_blank" rel="noreferrer">
+            <a className="tap-target" href={brand.social.instagram} target="_blank" rel="noreferrer">
               Instagram
             </a>
             {brand.social.facebook && (
-              <a href={brand.social.facebook} target="_blank" rel="noreferrer">
+              <a className="tap-target" href={brand.social.facebook} target="_blank" rel="noreferrer">
                 Facebook
               </a>
             )}
             {brand.whatsappChannelUrl && (
-              <a href={brand.whatsappChannelUrl} target="_blank" rel="noreferrer">
+              <a className="tap-target" href={brand.whatsappChannelUrl} target="_blank" rel="noreferrer">
                 WhatsApp channel
               </a>
             )}
@@ -58,13 +58,13 @@ export function Footer() {
               {o.addressLines.join(', ')}
               {o.pincode ? ` — ${o.pincode}` : ''}
               <br />
-              <a href={`tel:${o.phone.replace(/\s/g, '')}`}>{o.phone}</a>
+              <a className="tap-target" href={`tel:${o.phone.replace(/\s/g, '')}`}>{o.phone}</a>
             </p>
           ))}
           <p>
             <strong>Home delivery</strong>
             <br />
-            <a href={`tel:${brand.phoneDelivery.replace(/\s/g, '')}`}>{brand.phoneDelivery}</a>
+            <a className="tap-target" href={`tel:${brand.phoneDelivery.replace(/\s/g, '')}`}>{brand.phoneDelivery}</a>
           </p>
         </div>
 

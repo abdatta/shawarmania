@@ -63,7 +63,7 @@ export function Outlets() {
                   {o.hoursNote && (
                     <p className={styles.hours}>
                       🕐 {o.hoursNote}{' '}
-                      <a href={`tel:${tel}`} className={styles.hoursCall}>
+                      <a href={`tel:${tel}`} className={`${styles.hoursCall} tap-target`}>
                         {o.phone}
                       </a>
                     </p>

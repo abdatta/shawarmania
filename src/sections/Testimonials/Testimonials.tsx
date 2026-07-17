@@ -62,7 +62,7 @@ export function Testimonials() {
               <footer>
                 {q.author ? `${q.author} · ` : ''}
                 {q.url ? (
-                  <a href={q.url} target="_blank" rel="noreferrer">
+                  <a className="tap-target" href={q.url} target="_blank" rel="noreferrer">
                     {q.source}
                   </a>
                 ) : (

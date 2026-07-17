@@ -9,6 +9,8 @@
 
 html {
   scrollbar-gutter: stable;
+  /* hard guarantee: no horizontal panning, even during entrance animations */
+  overflow-x: clip;
 }
 
 /* Lenis owns scrolling when active (it sets .lenis on <html>); give native
@@ -82,6 +84,14 @@ p {
   outline: 2px solid var(--color-focus);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
+}
+
+/* Inline text links that double as tap targets: expand the hit area to ~44px
+   without changing visual layout. Applied via composes/class where needed. */
+.tap-target {
+  display: inline-block;
+  padding-block: 0.55rem;
+  margin-block: -0.55rem;
 }
 
 .skip-link {

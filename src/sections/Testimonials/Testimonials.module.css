@@ -56,7 +56,8 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  object-position: center 25%;
+  /* sources are 9:16 portraits — keep faces in the window */
+  object-position: center 38%;
 }
 
 .videoBody {

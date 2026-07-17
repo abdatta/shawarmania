@@ -20,6 +20,14 @@
   gap: var(--space-lg) var(--space-sm);
 }
 
+/* phones: two tidy columns instead of one sparse stack */
+@media (max-width: 700px) {
+  .statGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md) var(--space-xs);
+  }
+}
+
 .stat {
   display: grid;
   gap: var(--space-2xs);
