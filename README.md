@@ -40,13 +40,11 @@ Pushing to `main` redeploys the site automatically.
 
 ## Deploying
 
-One-time: repo **Settings → Pages → Source: GitHub Actions**. Every push to `main` then deploys
-via `.github/workflows/deploy.yml`.
+Live at **https://abdatta.github.io/shawarmania/** — every push to `main` deploys via
+`.github/workflows/deploy.yml` (repo Settings → Pages → Source: GitHub Actions).
 
-⚠️ Two URLs are currently placeholders and must match the real deployment:
-- `base` assumes the repo is named `shawarmania` (override `VITE_BASE` in the workflow otherwise);
-- the canonical/sitemap/robots URLs in `index.html` and `public/` assume
-  `https://iamrohitm.github.io/shawarmania/` — update to the real Pages URL (or custom domain).
+If the repo is ever renamed or moved to a custom domain, update `VITE_BASE` in the workflow and
+the canonical/sitemap/robots URLs in `index.html` and `public/`.
 
 ## Project layout
 
