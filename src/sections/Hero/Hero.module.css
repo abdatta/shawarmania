@@ -40,6 +40,15 @@
   margin-bottom: var(--space-sm);
 }
 
+.titleRow {
+  display: block;
+}
+
+/* logo beside the headline — mobile only */
+.titleLogo {
+  display: none;
+}
+
 .title {
   font-family: var(--font-display);
   font-size: var(--fs-display);
@@ -182,6 +191,30 @@
     margin-bottom: var(--space-xs);
   }
 
+  .titleRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .title {
+    font-size: clamp(2.15rem, 0.9rem + 6vw, 4.2rem);
+  }
+
+  .titleLogo {
+    display: block;
+    width: clamp(4.5rem, 26vw, 9rem);
+    height: auto;
+    flex-shrink: 0;
+    margin-top: 0.35rem;
+    filter: drop-shadow(0 8px 26px rgb(249 115 22 / 0.35));
+  }
+
+  .heroLogo {
+    display: none;
+  }
+
   .sub {
     font-size: var(--fs-body);
   }
@@ -193,6 +226,8 @@
   .photoWrap {
     justify-items: start;
     gap: var(--space-sm);
+    /* clear air below the CTAs (the rotated card corner rises above its box) */
+    margin-top: var(--space-sm);
     /* keep the overhanging badge inside the layout flow */
     padding-bottom: 2.4rem;
   }

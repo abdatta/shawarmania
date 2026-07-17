@@ -32,7 +32,7 @@ export function Hero() {
           )
           .from(`.${styles.ctas} > *`, { y: 24, autoAlpha: 0, stagger: 0.08, duration: 0.45 }, '<0.1')
           .from(
-            `.${styles.heroLogo}`,
+            [`.${styles.heroLogo}`, `.${styles.titleLogo}`],
             { scale: 0.5, y: -30, autoAlpha: 0, duration: 0.7, ease: 'back.out(2)' },
             0.25,
           )
@@ -74,11 +74,21 @@ export function Hero() {
           <p className={styles.kicker}>
             {brand.city}, {brand.region} · since {brand.foundedYear ?? '—'}
           </p>
-          <h1 className={styles.title}>
-            <span className={styles.lineA}>Kalyani&rsquo;s</span>
-            <span className={styles.lineB}>Premium</span>
-            <span className={styles.lineC}>Shawarma</span>
-          </h1>
+          <div className={styles.titleRow}>
+            <h1 className={styles.title}>
+              <span className={styles.lineA}>Kalyani&rsquo;s</span>
+              <span className={styles.lineB}>Premium</span>
+              <span className={styles.lineC}>Shawarma</span>
+            </h1>
+            <img
+              className={styles.titleLogo}
+              src={logo}
+              alt=""
+              width={226}
+              height={162}
+              aria-hidden="true"
+            />
+          </div>
           <p className={styles.sub}>{brand.heroSub}</p>
 
           <div className={styles.ctas}>
