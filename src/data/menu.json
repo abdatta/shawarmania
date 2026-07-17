@@ -3,7 +3,7 @@
     {
       "id": "shawarma",
       "name": "Shawarma",
-      "blurb": "Lebanese-style, rolled fresh off the spit",
+      "blurb": "Lebanese-style, hot off the grill",
       "order": 1
     },
     {
@@ -30,7 +30,7 @@
       "id": "classic-chicken-shawarma",
       "name": "Classic Chicken Shawarma",
       "category": "shawarma",
-      "description": "The one that started the mania — juicy spit-roasted chicken, house garlic sauce, fresh veg in a soft roll.",
+      "description": "The one that started the mania — juicy slow-roasted chicken, house garlic sauce, fresh veg in a soft roll.",
       "price": 139,
       "counterPrice": 100,
       "priceAsOf": "2026-07",
@@ -60,7 +60,7 @@
       "rating": 4.6,
       "ratingCount": 15,
       "badge": "Top rated",
-      "image": "shawarma-glow",
+      "image": null,
       "orderUrl": null,
       "availableAt": [
         "kalyani",
@@ -81,7 +81,7 @@
       "rating": 4.1,
       "ratingCount": 30,
       "badge": null,
-      "image": null,
+      "image": "dish-shawarma-wraps",
       "orderUrl": null,
       "availableAt": [
         "kalyani",
@@ -93,7 +93,7 @@
       "id": "mozzarella-cheese-chicken-shawarma",
       "name": "Mozzarella Cheese Chicken Shawarma",
       "category": "shawarma",
-      "description": "Real mozzarella melted through spit-roasted chicken. The cheese pull is mandatory.",
+      "description": "Real mozzarella melted through slow-roasted chicken. The cheese pull is mandatory.",
       "price": 199,
       "counterPrice": null,
       "priceAsOf": "2026-07",
@@ -102,7 +102,7 @@
       "rating": 4.1,
       "ratingCount": 12,
       "badge": null,
-      "image": null,
+      "image": "shawarma-glow",
       "orderUrl": null,
       "availableAt": [
         "kalyani",
@@ -123,7 +123,7 @@
       "rating": 4.5,
       "ratingCount": 30,
       "badge": "Viral",
-      "image": null,
+      "image": "dish-salad-bowl",
       "orderUrl": null,
       "availableAt": [
         "kalyani",

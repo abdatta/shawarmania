@@ -24,3 +24,4 @@ confirm via the content portal". Full research: `research/build-brief.md`,
 | testimonials | vlogger videos/quotes | Khana Pina FB video; Google review snippet; brand review-reels |
 | franchise | models/fees = null | nothing public — owner fills; copy references only verified facts |
 | franchise | expansion intent | "Bindas Food" YouTube snippet ("For Franchise…") + owner's stated goal |
+| menu | dish images (wraps duo, salad bowl) | crops from the brand's own festive-post food collage (Da120ZhsuCC) |

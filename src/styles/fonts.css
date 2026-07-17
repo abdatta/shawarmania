@@ -1,7 +1,6 @@
 /* Self-hosted fonts via @fontsource (woff2, font-display: swap baked in).
    Display: Lilita One — bold rounded QSR energy, harmonizes with the hand-lettered
    Shawarmania logo (the logo itself is always the exact Instagram asset).
-   Text: Nunito Sans variable. Bengali: Baloo Da 2 variable (rounded companion). */
+   Text: Nunito Sans variable. */
 @import '@fontsource/lilita-one/400.css';
 @import '@fontsource-variable/nunito-sans/index.css';
-@import '@fontsource-variable/baloo-da-2/index.css';

@@ -46,7 +46,7 @@ export function Craving() {
   return (
     <section ref={scope} className={styles.craving} aria-label="What we make">
       <p className={styles.lead}>
-        Rolled fresh off the spit, <em>every single day</em> — no shortcuts, no yesterday&rsquo;s
+        Rolled fresh off the grill, <em>every single day</em> — no shortcuts, no yesterday&rsquo;s
         chicken.
       </p>
       <div className={styles.cards}>

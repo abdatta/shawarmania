@@ -3,13 +3,13 @@ import { gsap, useGSAP } from '../../lib/gsap'
 import { useLenis } from '../../components/SmoothScroll/SmoothScroll'
 import styles from './Marquee.module.css'
 
-const PHRASES = ['Spicy', 'Cheesy', 'Lebanese', 'Desi Twist', 'শাওয়ারমানী', 'Eat Healthy, Stay Happy']
+const PHRASES = ['Spicy', 'Cheesy', 'Lebanese', 'Desi Twist', 'Rolled Fresh Daily', 'Eat Healthy, Stay Happy']
 
 function Run() {
   return (
     <span className={styles.run} aria-hidden="true">
       {PHRASES.map((p, i) => (
-        <span key={i} className={styles.phrase} lang={p === 'শাওয়ারমানী' ? 'bn' : undefined}>
+        <span key={i} className={styles.phrase}>
           {p} <span className={styles.dot}>●</span>{' '}
         </span>
       ))}

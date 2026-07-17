@@ -14,6 +14,8 @@ import interiorCounter from './interior-counter.jpg?format=webp&quality=82&image
 import labReport from './lab-report.jpg?format=webp&quality=82&imagetools'
 import customerShawarma from './customer-shawarma.jpg?format=webp&quality=82&imagetools'
 import customersNeon from './customers-neon.jpg?format=webp&quality=82&imagetools'
+import dishShawarmaWraps from './dish-shawarma-wraps.jpg?format=webp&quality=82&imagetools'
+import dishSaladBowl from './dish-salad-bowl.jpg?format=webp&quality=82&imagetools'
 
 export const imageCatalog = {
   'storefront-neon': storefrontNeon,
@@ -26,6 +28,8 @@ export const imageCatalog = {
   'lab-report': labReport,
   'customer-shawarma': customerShawarma,
   'customers-neon': customersNeon,
+  'dish-shawarma-wraps': dishShawarmaWraps,
+  'dish-salad-bowl': dishSaladBowl,
 } as const
 
 export type ImageKey = keyof typeof imageCatalog

@@ -13,14 +13,16 @@ export function Testimonials() {
     () => {
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.from(`.${styles.grid} > *`, {
-          y: 56,
-          autoAlpha: 0,
-          stagger: 0.09,
-          duration: 0.65,
-          ease: 'back.out(1.3)',
-          scrollTrigger: { trigger: `.${styles.grid}`, start: 'top 85%', once: true },
-        })
+        for (const row of [styles.videoRow, styles.quoteRow]) {
+          gsap.from(`.${row} > *`, {
+            y: 56,
+            autoAlpha: 0,
+            stagger: 0.09,
+            duration: 0.65,
+            ease: 'back.out(1.3)',
+            scrollTrigger: { trigger: `.${row}`, start: 'top 85%', once: true },
+          })
+        }
       })
       return () => mm.revert()
     },
@@ -33,7 +35,7 @@ export function Testimonials() {
         <p className={styles.kicker}>The word on the street</p>
         <h2 className={styles.title}>Kalyani can&rsquo;t stop talking.</h2>
 
-        <div className={styles.grid}>
+        <div className={styles.videoRow}>
           {testimonials.vloggerVideos.map((v) => {
             const img = imageFor(v.image)
             return (
@@ -51,7 +53,9 @@ export function Testimonials() {
               </a>
             )
           })}
+        </div>
 
+        <div className={styles.quoteRow}>
           {testimonials.quotes.map((q) => (
             <blockquote key={q.id} className={styles.quote}>
               <p>&ldquo;{q.text}&rdquo;</p>

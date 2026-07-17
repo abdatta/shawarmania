@@ -97,11 +97,6 @@
   color: var(--cream-faint);
 }
 
-.made span {
-  font-family: var(--font-bengali);
-  color: var(--cream-dim);
-}
-
 @media (max-width: 800px) {
   .inner {
     grid-template-columns: 1fr;

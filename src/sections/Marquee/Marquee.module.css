@@ -32,12 +32,6 @@
   padding-right: 0.6em;
 }
 
-.phrase:lang(bn),
-.phrase:nth-child(5) {
-  font-family: var(--font-bengali);
-  font-weight: 700;
-}
-
 .dot {
   font-size: 0.45em;
   vertical-align: 0.45em;

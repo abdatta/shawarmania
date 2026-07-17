@@ -4,14 +4,14 @@
   padding: var(--space-section) 0;
 }
 
-.bgBengali {
+.bgWordmark {
   position: absolute;
-  top: 0.05em;
-  right: -0.08em;
-  font-family: var(--font-bengali);
-  font-weight: 800;
-  font-size: clamp(7rem, 24vw, 20rem);
+  top: 0.02em;
+  right: -0.06em;
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 19vw, 16rem);
   line-height: 1;
+  text-transform: uppercase;
   color: rgb(245 228 199 / 0.045);
   white-space: nowrap;
   pointer-events: none;

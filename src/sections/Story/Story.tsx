@@ -59,14 +59,14 @@ export function Story() {
 
   return (
     <section id="story" ref={scope} className={styles.story}>
-      <span className={styles.bgBengali} aria-hidden="true">
-        {brand.nameBengali}
+      <span className={styles.bgWordmark} aria-hidden="true">
+        {brand.name}
       </span>
 
       <div className={styles.inner}>
         <p className={styles.kicker}>Our story</p>
         <h2 className={styles.headline}>
-          From one spit in Kalyani to a full-blown mania.
+          From one grill in Kalyani to a full-blown mania.
         </h2>
         <p className={styles.narrative}>
           {brand.positioning} Same recipes, same fresh-every-day rule — at every counter we open.

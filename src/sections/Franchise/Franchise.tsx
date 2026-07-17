@@ -140,16 +140,6 @@ export function Franchise() {
           </div>
         </div>
 
-        <div className={styles.faqs}>
-          <h3 className={styles.subheading}>Questions, answered</h3>
-          {franchise.faqs.map((f) => (
-            <details key={f.q} className={styles.faq}>
-              <summary>{f.q}</summary>
-              <p>{f.a}</p>
-            </details>
-          ))}
-        </div>
-
         <div className={styles.enquiry}>
           <div className={styles.enquiryCopy}>
             <h3>Ready to bring the mania home?</h3>
@@ -200,6 +190,16 @@ export function Franchise() {
               <p className={styles.sentErr}>Something went wrong — please call {brand.phonePrimary}.</p>
             )}
           </form>
+        </div>
+
+        <div className={styles.faqs}>
+          <h3 className={styles.subheading}>Questions, answered</h3>
+          {franchise.faqs.map((f) => (
+            <details key={f.q} className={styles.faq}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
         </div>
       </div>
     </section>

@@ -42,7 +42,6 @@
   /* -- type: families ----------------------------------------------- */
   --font-display: 'Lilita One', 'Arial Rounded MT Bold', sans-serif;
   --font-text: 'Nunito Sans Variable', system-ui, sans-serif;
-  --font-bengali: 'Baloo Da 2 Variable', sans-serif;
 
   /* -- type: fluid scale (375px → 1440px) --------------------------- */
   --fs-hero: clamp(2.5rem, 0.75rem + 8vw, 9.5rem);

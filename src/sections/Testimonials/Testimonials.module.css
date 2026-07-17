@@ -24,17 +24,23 @@
   margin-bottom: var(--space-xl);
 }
 
-.grid {
+.videoRow,
+.quoteRow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
   gap: var(--space-md);
-  align-items: start;
+  align-items: stretch;
+}
+
+.quoteRow {
+  margin-top: var(--space-md);
 }
 
 /* -- video cards -------------------------------------------- */
 
 .videoCard {
   display: grid;
+  grid-template-rows: auto 1fr;
   background: var(--bg-raised);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -50,6 +56,7 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  object-position: center 25%;
 }
 
 .videoBody {

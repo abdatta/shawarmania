@@ -60,14 +60,6 @@
   width: fit-content;
 }
 
-.bengali {
-  font-family: var(--font-bengali);
-  font-weight: 600;
-  font-size: var(--fs-h3);
-  color: var(--cream-faint);
-  margin-top: var(--space-xs);
-}
-
 .sub {
   font-size: var(--fs-lead);
   max-width: 44ch;
@@ -113,6 +105,13 @@
   position: relative;
   display: grid;
   justify-items: center;
+  gap: var(--space-lg);
+}
+
+.heroLogo {
+  width: clamp(9rem, 7rem + 8vw, 13rem);
+  height: auto;
+  filter: drop-shadow(0 10px 34px rgb(249 115 22 / 0.35));
 }
 
 .photoCard {
@@ -149,7 +148,7 @@
 
 .badge {
   position: absolute;
-  top: -1.4rem;
+  bottom: -2.1rem;
   right: clamp(0rem, 4vw, 2.5rem);
   transform: rotate(-5deg);
   background: var(--paper);

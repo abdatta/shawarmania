@@ -18,7 +18,6 @@ const nonEmpty = z.string().min(1)
 
 export const brandSchema = z.object({
   name: nonEmpty,
-  nameBengali: nonEmpty,
   tagline: nonEmpty,
   heroClaim: nonEmpty,
   heroSub: nonEmpty,

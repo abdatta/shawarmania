@@ -16,14 +16,15 @@
 
 .statGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-  gap: var(--space-lg) var(--space-md);
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: var(--space-lg) var(--space-sm);
 }
 
 .stat {
   display: grid;
   gap: var(--space-2xs);
-  justify-items: start;
+  justify-items: center;
+  text-align: center;
 }
 
 .statValue {
@@ -40,7 +41,8 @@
   font-size: var(--fs-small);
   font-weight: 700;
   color: var(--cream-dim);
-  max-width: 14ch;
+  max-width: 16ch;
+  text-wrap: balance;
 }
 
 /* -- lab module ------------------------------------------------ */

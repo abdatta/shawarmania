@@ -3,6 +3,7 @@ import { gsap, useGSAP } from '../../lib/gsap'
 import { useLenis, scrollToAnchor } from '../../components/SmoothScroll/SmoothScroll'
 import { brand, stats } from '../../data'
 import { imageCatalog } from '../../assets/img'
+import logo from '../../assets/brand/logo.png'
 import styles from './Hero.module.css'
 
 export function Hero() {
@@ -31,9 +32,14 @@ export function Hero() {
           )
           .from(`.${styles.ctas} > *`, { y: 24, autoAlpha: 0, stagger: 0.08, duration: 0.45 }, '<0.1')
           .from(
+            `.${styles.heroLogo}`,
+            { scale: 0.5, y: -30, autoAlpha: 0, duration: 0.7, ease: 'back.out(2)' },
+            0.25,
+          )
+          .from(
             `.${styles.photoCard}`,
             { x: 70, rotation: 8, autoAlpha: 0, duration: 0.9, ease: 'power3.out' },
-            0.35,
+            0.4,
           )
 
         // Light parallax as the hero scrolls away — punchy, no pinning.
@@ -73,9 +79,6 @@ export function Hero() {
             <span className={styles.lineB}>Premium</span>
             <span className={styles.lineC}>Shawarma</span>
           </h1>
-          <p className={styles.bengali} lang="bn">
-            {brand.nameBengali}
-          </p>
           <p className={styles.sub}>{brand.heroSub}</p>
 
           <div className={styles.ctas}>
@@ -89,6 +92,14 @@ export function Hero() {
         </div>
 
         <div className={styles.photoWrap}>
+          <img
+            className={styles.heroLogo}
+            src={logo}
+            alt=""
+            width={226}
+            height={162}
+            aria-hidden="true"
+          />
           <figure className={styles.photoCard}>
             <img
               src={imageCatalog['storefront-neon']}

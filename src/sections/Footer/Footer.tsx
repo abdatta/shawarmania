@@ -112,9 +112,7 @@ export function Footer() {
         <p>
           © {year} {brand.name} · {brand.city}, {brand.region}
         </p>
-        <p className={styles.made}>
-          Made in {brand.city} with 🔥 · <span lang="bn">{brand.nameBengali}</span>
-        </p>
+        <p className={styles.made}>Made in {brand.city} with 🔥</p>
       </div>
     </footer>
   )
