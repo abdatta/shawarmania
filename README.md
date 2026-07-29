@@ -57,7 +57,8 @@ If the domain is ever dropped, set `VITE_BASE: /shawarmania/` in the workflow, d
 ```
 openspec/          # spec-driven change history — see openspec/ROADMAP.md
 research/          # brand research: build brief, Instagram findings, deep-research reports
-scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate)
+scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate),
+                   # geometry-sweep.mjs + hero-scroll-check.mjs (layout gates)
 plugins/           # dev-only Vite plugins: content validation, portal write API
 src/
   sections/        # Hero, Marquee, Craving, Menu, Story, Proof, Testimonials,

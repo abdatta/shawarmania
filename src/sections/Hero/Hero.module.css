@@ -31,6 +31,12 @@
 
 /* -- copy column -------------------------------------------- */
 
+/* the grouping column — also the parallax target, so it needs a real class */
+.copy {
+  position: relative;
+  min-width: 0;
+}
+
 .kicker {
   font-size: var(--fs-small);
   font-weight: 800;
@@ -225,11 +231,9 @@
 
   .photoWrap {
     justify-items: start;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
     /* clear air below the CTAs (the rotated card corner rises above its box) */
     margin-top: var(--space-sm);
-    /* keep the overhanging badge inside the layout flow */
-    padding-bottom: 2.4rem;
   }
 
   .heroLogo {
@@ -241,9 +245,16 @@
     transform: rotate(2deg);
   }
 
+  /* In flow under the card, so it reserves its own height and can never ride up
+     over the photo when the text wraps. Sized to match the photo caption, which
+     keeps it on one line down to ~360px; the max-width keeps its right edge
+     clear of the floating call/WhatsApp buttons on the narrowest phones. */
   .badge {
-    bottom: 0;
-    /* stay clear of the floating call/WhatsApp buttons */
-    right: 4.5rem;
+    position: static;
+    max-width: calc(100% - 4.25rem);
+    margin-left: 0.6rem;
+    font-size: var(--fs-xs);
+    padding: 0.5rem 0.95rem;
+    transform: rotate(-3deg);
   }
 }

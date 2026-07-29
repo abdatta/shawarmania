@@ -38,23 +38,48 @@ export function Hero() {
           )
           .from(
             `.${styles.photoCard}`,
-            { x: 70, rotation: 8, autoAlpha: 0, duration: 0.9, ease: 'power3.out' },
+            {
+              x: 70,
+              rotation: 8,
+              autoAlpha: 0,
+              duration: 0.9,
+              ease: 'power3.out',
+              // hand the card's tilt back to CSS so it re-tilts correctly across breakpoints
+              clearProps: 'transform,opacity,visibility',
+            },
             0.4,
           )
-
-        // Light parallax as the hero scrolls away — punchy, no pinning.
-        gsap.to(`.${styles.photoCard}`, {
-          y: -60,
-          rotation: -1,
-          ease: 'none',
-          scrollTrigger: { trigger: scope.current, start: 'top top', end: 'bottom top', scrub: 0.6 },
-        })
-        gsap.to(`.${styles.copy}`, {
-          y: 50,
-          ease: 'none',
-          scrollTrigger: { trigger: scope.current, start: 'top top', end: 'bottom top', scrub: 0.6 },
-        })
       })
+
+      // Light parallax as the hero scrolls away — punchy, no pinning.
+      // Never touches the card's own transform: the badge is positioned against
+      // .photoWrap, so the whole column has to move as one piece, and the card's
+      // CSS tilt has to survive untouched.
+      mm.add(
+        {
+          sideBySide: '(min-width: 901px) and (prefers-reduced-motion: no-preference)',
+          stacked: '(max-width: 900px) and (prefers-reduced-motion: no-preference)',
+        },
+        (ctx) => {
+          const { sideBySide } = ctx.conditions as { sideBySide: boolean }
+          const scrollTrigger = {
+            trigger: scope.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 0.6,
+          }
+
+          if (sideBySide) {
+            // Two columns: they can drift against each other without ever meeting.
+            gsap.to(`.${styles.photoWrap}`, { y: -70, ease: 'none', scrollTrigger })
+            gsap.to(`.${styles.copy}`, { y: 45, ease: 'none', scrollTrigger })
+          } else {
+            // Stacked: counter-drift would close the gaps, so the block leaves together.
+            gsap.to(`.${styles.inner}`, { y: -36, ease: 'none', scrollTrigger })
+          }
+        },
+      )
+
       return () => mm.revert()
     },
     { scope },
