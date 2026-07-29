@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from '../../lib/gsap'
 import { useLenis, scrollToAnchor } from '../SmoothScroll/SmoothScroll'
-import { brand } from '../../data'
+import { brand, outlets } from '../../data'
 import logo from '../../assets/brand/logo.png'
 import styles from './Header.module.css'
 
@@ -18,6 +18,7 @@ export function Header() {
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
+  const reviewUrl = outlets.outlets.find((outlet) => outlet.id === 'kalyani')?.mapsUrl
 
   useEffect(() => {
     const st = ScrollTrigger.create({
@@ -57,6 +58,17 @@ export function Header() {
       </nav>
 
       <div className={styles.actions}>
+        {reviewUrl && (
+          <a
+            className={styles.review}
+            href={reviewUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Rate Shawarmania on Google Maps"
+          >
+            <span aria-hidden="true">★</span> Rate Us
+          </a>
+        )}
         <a className={styles.order} href="#outlets" onClick={go('#outlets')}>
           Order Now
         </a>

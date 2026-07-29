@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { useLenis, scrollToAnchor } from '../../components/SmoothScroll/SmoothScroll'
-import { brand, stats } from '../../data'
+import { brand, outlets, stats } from '../../data'
 import { imageCatalog } from '../../assets/img'
 import logo from '../../assets/brand/logo.png'
 import styles from './Hero.module.css'
@@ -12,6 +12,7 @@ export function Hero() {
 
   const googleRating = stats.counters.find((c) => c.id === 'google-rating')
   const zomatoRatings = stats.counters.find((c) => c.id === 'zomato-ratings')
+  const reviewUrl = outlets.outlets.find((outlet) => outlet.id === 'kalyani')?.mapsUrl
 
   useGSAP(
     () => {
@@ -25,11 +26,6 @@ export function Hero() {
             '<0.05',
           )
           .from(`.${styles.sub}`, { y: 30, autoAlpha: 0, duration: 0.55, ease: 'power3.out' }, '<0.25')
-          .from(
-            `.${styles.badge}`,
-            { scale: 0, rotation: 14, autoAlpha: 0, duration: 0.55, ease: 'back.out(2.4)' },
-            '<0.1',
-          )
           .from(`.${styles.ctas} > *`, { y: 24, autoAlpha: 0, stagger: 0.08, duration: 0.45 }, '<0.1')
           .from(
             [`.${styles.heroLogo}`, `.${styles.titleLogo}`],
@@ -50,6 +46,53 @@ export function Hero() {
             0.4,
           )
       })
+
+      // The mobile review sticker is display:none on desktop. Keeping this
+      // animation breakpoint-aware prevents GSAP from leaving it at scale(0)
+      // when the viewport changes from desktop to mobile width.
+      mm.add(
+        {
+          ratingDesktop: '(min-width: 901px) and (prefers-reduced-motion: no-preference)',
+          ratingMobile: '(max-width: 900px) and (prefers-reduced-motion: no-preference)',
+        },
+        (ctx) => {
+          const { ratingMobile } = ctx.conditions as { ratingMobile: boolean }
+          const ratingTl = gsap.timeline({ delay: 0.7 })
+
+          ratingTl.from(`.${styles.badge}`, {
+            scale: 0,
+            rotation: 14,
+            autoAlpha: 0,
+            duration: 0.55,
+            ease: 'back.out(2.4)',
+            clearProps: 'transform,opacity,visibility',
+          })
+
+          if (ratingMobile) {
+            const reviewTarget = `.${styles.photoReview}`
+
+            gsap.set(reviewTarget, {
+              scale: 0,
+              rotation: 14,
+              autoAlpha: 0,
+              transformOrigin: '50% 50%',
+            })
+
+            ratingTl.to(
+              reviewTarget,
+              {
+                scale: 1,
+                rotation: -3,
+                autoAlpha: 1,
+                duration: 0.55,
+                ease: 'back.out(2.4)',
+                clearProps: 'transform,transformOrigin,opacity,visibility',
+              },
+              '<0.14',
+            )
+          }
+        },
+      )
 
       // Light parallax as the hero scrolls away — punchy, no pinning.
       // Never touches the card's own transform: the badge is positioned against
@@ -120,6 +163,17 @@ export function Hero() {
             <a className={styles.ctaPrimary} href="#outlets" onClick={go('#outlets')}>
               Order Now
             </a>
+            {reviewUrl && (
+              <a
+                className={styles.ctaReview}
+                href={reviewUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Rate Shawarmania on Google Maps"
+              >
+                <span aria-hidden="true">★</span> Rate Us
+              </a>
+            )}
             <a className={styles.ctaGhost} href="#franchise" onClick={go('#franchise')}>
               Own a Franchise
             </a>
@@ -158,6 +212,18 @@ export function Hero() {
               </strong>{' '}
               Zomato ratings
             </p>
+          )}
+
+          {reviewUrl && (
+            <a
+              className={styles.photoReview}
+              href={reviewUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Rate Shawarmania on Google Maps"
+            >
+              <span aria-hidden="true">★</span> Rate us on Google
+            </a>
           )}
         </div>
       </div>

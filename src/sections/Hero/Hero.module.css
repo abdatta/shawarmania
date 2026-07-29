@@ -90,7 +90,9 @@
 }
 
 .ctaPrimary,
-.ctaGhost {
+.ctaGhost,
+.ctaReview,
+.photoReview {
   font-weight: 800;
   font-size: var(--fs-body);
   padding: 0.95rem 2.1rem;
@@ -109,9 +111,27 @@
   color: var(--cream);
 }
 
+.ctaReview,
+.photoReview {
+  color: var(--flame-gold);
+  background: rgb(255 197 61 / 0.08);
+  border: 2px solid rgb(255 197 61 / 0.55);
+}
+
+.ctaReview span,
+.photoReview span {
+  margin-right: 0.2rem;
+}
+
 .ctaPrimary:hover,
-.ctaGhost:hover {
+.ctaGhost:hover,
+.ctaReview:hover,
+.photoReview:hover {
   transform: translateY(-3px) scale(1.02);
+}
+
+.photoReview {
+  display: none;
 }
 
 /* -- photo column -------------------------------------------- */
@@ -227,6 +247,17 @@
 
   .ctas {
     margin-top: var(--space-md);
+    gap: var(--space-xs);
+  }
+
+  .ctaPrimary,
+  .ctaGhost {
+    padding: 0.8rem 0.9rem;
+    text-align: center;
+  }
+
+  .ctaReview {
+    display: none;
   }
 
   .photoWrap {
@@ -255,6 +286,32 @@
     margin-top: calc(-1 * var(--space-xs));
     padding: 0.35rem 0.75rem;
     transform: rotate(-3deg);
+  }
+
+  .photoReview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.05rem;
+    padding: 0.5rem 0.95rem;
+    color: var(--ink-on-paper);
+    background: var(--paper);
+    border: 0;
+    box-shadow:
+      0 0 0 1px rgb(255 197 61 / 0.2),
+      0 0 18px rgb(255 197 61 / 0.18),
+      0 8px 24px rgb(0 0 0 / 0.35);
+    font-size: var(--fs-small);
+    line-height: 1.2;
+    transform: rotate(-3deg);
+  }
+
+  .photoReview span {
+    color: var(--flame-orange);
+  }
+
+  .photoReview:hover {
+    transform: rotate(-3deg) translateY(-2px) scale(1.02);
   }
 
   .photoCard figcaption {

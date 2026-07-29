@@ -71,9 +71,8 @@
   gap: var(--space-xs);
 }
 
+.review,
 .order {
-  background: var(--gradient-flame);
-  color: var(--bg);
   font-weight: 800;
   font-size: var(--fs-small);
   padding: 0.55rem 1.3rem;
@@ -82,6 +81,22 @@
   transition: transform var(--dur-fast) var(--ease-snap);
 }
 
+.review {
+  color: var(--flame-gold);
+  background: rgb(255 197 61 / 0.08);
+  border: 1px solid rgb(255 197 61 / 0.55);
+}
+
+.review span {
+  margin-right: 0.2rem;
+}
+
+.order {
+  background: var(--gradient-flame);
+  color: var(--bg);
+}
+
+.review:hover,
 .order:hover {
   transform: translateY(-2px) scale(1.03);
 }
@@ -146,6 +161,20 @@
   }
 
   .brandName {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .review,
+  .order {
+    padding-inline: 0.75rem;
+    font-size: var(--fs-xs);
+  }
+}
+
+@media (max-width: 340px) {
+  .order {
     display: none;
   }
 }
