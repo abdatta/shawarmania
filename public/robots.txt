@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://abdatta.github.io/shawarmania/sitemap.xml
+Sitemap: https://shawarmania.in/sitemap.xml

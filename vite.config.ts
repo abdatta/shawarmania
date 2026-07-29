@@ -6,9 +6,9 @@ import { contentPortal } from './plugins/content-portal'
 
 validateContent()
 
-// Project-page deploys serve from /<repo-name>/ — override with VITE_BASE if the
-// repo is renamed (see README). Dev always serves from /.
+// Served from the apex custom domain shawarmania.in, so the base is /.
+// Override with VITE_BASE to build for a project page (https://<user>.github.io/<repo>/).
 export default defineConfig(({ command }) => ({
-  base: command === 'build' ? (process.env.VITE_BASE ?? '/shawarmania/') : '/',
+  base: command === 'build' ? (process.env.VITE_BASE ?? '/') : '/',
   plugins: [react(), imagetools(), contentPortal()],
 }))

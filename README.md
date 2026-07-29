@@ -40,11 +40,17 @@ Pushing to `main` redeploys the site automatically.
 
 ## Deploying
 
-Live at **https://abdatta.github.io/shawarmania/** — every push to `main` deploys via
+Live at **https://shawarmania.in/** — every push to `main` deploys via
 `.github/workflows/deploy.yml` (repo Settings → Pages → Source: GitHub Actions).
 
-If the repo is ever renamed or moved to a custom domain, update `VITE_BASE` in the workflow and
-the canonical/sitemap/robots URLs in `index.html` and `public/`.
+The apex domain serves from the root, so the build uses `VITE_BASE: /` and `public/CNAME` carries
+the domain into the deployed artifact. DNS lives at Hostinger: apex `A` records to the four
+GitHub Pages IPs (185.199.108–111.153), matching `AAAA` records, and `www` as a `CNAME` to
+`abdatta.github.io`. The old `abdatta.github.io/shawarmania/` URL redirects here.
+
+If the domain is ever dropped, set `VITE_BASE: /shawarmania/` in the workflow, delete
+`public/CNAME`, and revert the absolute URLs in `index.html`, `public/sitemap.xml` and
+`public/robots.txt`.
 
 ## Project layout
 
