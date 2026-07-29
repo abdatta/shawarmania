@@ -170,7 +170,7 @@
   color: var(--ink-on-paper);
   font-size: var(--fs-small);
   font-weight: 700;
-  padding: 0.6rem 1.1rem;
+  padding: 0.4rem 1rem;
   border-radius: var(--radius-pill);
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
   z-index: 1;
@@ -230,10 +230,9 @@
   }
 
   .photoWrap {
-    justify-items: start;
-    gap: var(--space-xs);
+    gap: var(--space-2xs);
     /* clear air below the CTAs (the rotated card corner rises above its box) */
-    margin-top: var(--space-sm);
+    margin-top: var(--space-lg);
   }
 
   .heroLogo {
@@ -251,10 +250,14 @@
      clear of the floating call/WhatsApp buttons on the narrowest phones. */
   .badge {
     position: static;
-    max-width: calc(100% - 4.25rem);
-    margin-left: 0.6rem;
+    max-width: calc(100% - .25rem);
     font-size: var(--fs-xs);
-    padding: 0.5rem 0.95rem;
+    margin-top: calc(-1 * var(--space-xs));
+    padding: 0.35rem 0.75rem;
     transform: rotate(-3deg);
+  }
+
+  .photoCard figcaption {
+    text-align: center;
   }
 }
