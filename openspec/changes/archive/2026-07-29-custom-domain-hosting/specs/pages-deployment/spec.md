@@ -16,7 +16,7 @@ dropped.
 - **WHEN** `npm run build` runs without overrides
 - **THEN** emitted HTML references assets under `/`
 
-#### Scenario: Base override for a project page
+#### Scenario: Base override
 - **WHEN** `VITE_BASE=/shawarmania/ npm run build` runs
 - **THEN** emitted HTML references assets under `/shawarmania/`
 
