@@ -62,6 +62,17 @@ a {
   text-decoration: none;
 }
 
+/* Use the site's own pressed/hover treatments instead of the browser's blue
+   touch overlay. Keyboard focus remains visible through :focus-visible. */
+@media (hover: none) and (pointer: coarse) {
+  a,
+  button,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
 h1,
 h2,
 h3,
