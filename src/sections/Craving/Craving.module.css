@@ -30,24 +30,31 @@
 
 .card {
   position: relative;
+}
+
+.cardSurface {
+  position: relative;
   transform: rotate(var(--tilt));
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow:
     0 0 0 5px rgb(245 228 199 / 0.05),
     0 20px 50px rgb(0 0 0 / 0.55);
+  transform-origin: 50% 58%;
+  will-change: transform;
 }
 
 .card:nth-child(2) {
   margin-top: var(--space-xl);
 }
 
-.card img {
+.cardSurface img {
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 3.4;
   object-fit: cover;
   display: block;
+  transition: scale var(--dur-med) var(--ease-out), filter var(--dur-med) var(--ease-out);
 }
 
 .word {
@@ -59,6 +66,51 @@
   text-transform: uppercase;
   color: var(--cream);
   text-shadow: 0 4px 24px rgb(0 0 0 / 0.75);
+  transition: transform var(--dur-med) var(--ease-snap);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    z-index: 1;
+  }
+
+  .card:hover .cardSurface {
+    animation: craving-wobble 540ms var(--ease-snap) both;
+    box-shadow:
+      0 0 0 5px rgb(255 197 61 / 0.12),
+      0 28px 64px rgb(0 0 0 / 0.65);
+  }
+
+  .card:hover img {
+    scale: 1.035;
+    filter: saturate(1.06) contrast(1.02);
+  }
+
+  .card:hover .word {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes craving-wobble {
+  0% {
+    transform: translateY(0) rotate(var(--tilt)) scale(1);
+  }
+
+  24% {
+    transform: translateY(-5px) rotate(calc(var(--tilt) + var(--wobble-a))) scale(1.018);
+  }
+
+  48% {
+    transform: translateY(-10px) rotate(calc(var(--tilt) + var(--wobble-b))) scale(1.028);
+  }
+
+  72% {
+    transform: translateY(-7px) rotate(calc(var(--tilt) + var(--wobble-c))) scale(1.024);
+  }
+
+  100% {
+    transform: translateY(-8px) rotate(calc(var(--tilt) + var(--settle))) scale(1.025);
+  }
 }
 
 @media (max-width: 760px) {

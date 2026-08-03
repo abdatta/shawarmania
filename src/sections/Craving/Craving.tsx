@@ -4,9 +4,9 @@ import { imageCatalog } from '../../assets/img'
 import styles from './Craving.module.css'
 
 const CARDS = [
-  { word: 'Pan-fried.', img: 'shawarma-plate', alt: 'Grilled shawarma plate with salad and dips', tilt: -4, pos: 'center 72%' },
-  { word: 'Stuffed.', img: 'burger-cheese-pull', alt: 'Cheese-loaded smashed burger in foil', tilt: 3, pos: 'center 30%' },
-  { word: 'Loaded.', img: 'burger-loaded', alt: 'Fully loaded double smashed burger held up', tilt: -2, pos: 'center 45%' },
+  { word: 'Pan-fried.', img: 'shawarma-plate', alt: 'Grilled shawarma plate with salad and dips', tilt: -4, wobbleA: 3, wobbleB: -2, wobbleC: 0.65, settle: -0.25, pos: 'center 72%' },
+  { word: 'Stuffed.', img: 'burger-cheese-pull', alt: 'Cheese-loaded smashed burger in foil', tilt: 3, wobbleA: -3, wobbleB: 2, wobbleC: -0.65, settle: 0.25, pos: 'center 30%' },
+  { word: 'Loaded.', img: 'burger-loaded', alt: 'Fully loaded double smashed burger held up', tilt: -2, wobbleA: 3, wobbleB: -2, wobbleC: 0.65, settle: -0.25, pos: 'center 45%' },
 ] as const
 
 export function Craving() {
@@ -51,16 +51,29 @@ export function Craving() {
       </p>
       <div className={styles.cards}>
         {CARDS.map((c) => (
-          <figure key={c.word} className={styles.card} style={{ '--tilt': `${c.tilt}deg` } as React.CSSProperties}>
-            <img
-              src={imageCatalog[c.img]}
-              alt={c.alt}
-              loading="lazy"
-              width={720}
-              height={845}
-              style={{ objectPosition: c.pos }}
-            />
-            <figcaption className={styles.word}>{c.word}</figcaption>
+          <figure key={c.word} className={styles.card}>
+            <div
+              className={styles.cardSurface}
+              style={
+                {
+                  '--tilt': `${c.tilt}deg`,
+                  '--wobble-a': `${c.wobbleA}deg`,
+                  '--wobble-b': `${c.wobbleB}deg`,
+                  '--wobble-c': `${c.wobbleC}deg`,
+                  '--settle': `${c.settle}deg`,
+                } as React.CSSProperties
+              }
+            >
+              <img
+                src={imageCatalog[c.img]}
+                alt={c.alt}
+                loading="lazy"
+                width={720}
+                height={845}
+                style={{ objectPosition: c.pos }}
+              />
+              <figcaption className={styles.word}>{c.word}</figcaption>
+            </div>
           </figure>
         ))}
       </div>
