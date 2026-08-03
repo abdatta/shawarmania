@@ -19,15 +19,6 @@
       "totalInvestment": null,
       "menuScope": "Full menu: shawarma, burgers, waffles, crepes",
       "notes": "Adds the dessert counter that powers the Kanchrapara outlet."
-    },
-    {
-      "id": "dine-in",
-      "name": "Dine-in",
-      "areaSqft": null,
-      "franchiseFee": null,
-      "totalInvestment": null,
-      "menuScope": "Full menu + seating",
-      "notes": "Flagship format for high-street locations."
     }
   ],
   "support": [
@@ -82,7 +73,7 @@
   "faqs": [
     {
       "q": "How much does a Shawarmania franchise cost?",
-      "a": "We're finalising partner terms — enquire on WhatsApp and we'll share the current investment sheet for kiosk, café and dine-in formats."
+      "a": "We're finalising partner terms — enquire on WhatsApp and we'll share the current investment sheet for kiosk and café formats."
     },
     {
       "q": "Do I need restaurant experience?",
