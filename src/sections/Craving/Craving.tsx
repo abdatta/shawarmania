@@ -11,6 +11,32 @@ const CARDS = [
 
 export function Craving() {
   const scope = useRef<HTMLElement>(null)
+  const touchStarts = useRef(new Map<number, { x: number; y: number; at: number }>())
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== 'touch' || !event.isPrimary) return
+    touchStarts.current.set(event.pointerId, { x: event.clientX, y: event.clientY, at: performance.now() })
+  }
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLElement>) => {
+    const start = touchStarts.current.get(event.pointerId)
+    touchStarts.current.delete(event.pointerId)
+    if (!start || event.pointerType !== 'touch') return
+
+    const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y)
+    if (distance > 12 || performance.now() - start.at > 450) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const surface = event.currentTarget.firstElementChild as HTMLElement | null
+    if (!surface) return
+    surface.classList.remove(styles.tapped)
+    void surface.offsetWidth
+    surface.classList.add(styles.tapped)
+  }
+
+  const handlePointerCancel = (event: React.PointerEvent<HTMLElement>) => {
+    touchStarts.current.delete(event.pointerId)
+  }
 
   useGSAP(
     () => {
@@ -25,17 +51,30 @@ export function Craving() {
             ease: 'back.out(1.4)',
             scrollTrigger: { trigger: card, start: 'top 88%' },
           })
-          gsap.to(card, {
-            y: i % 2 ? -34 : -14,
-            ease: 'none',
-            scrollTrigger: { trigger: scope.current, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
-          })
         })
         gsap.from(`.${styles.lead}`, {
           y: 40,
           autoAlpha: 0,
           duration: 0.7,
           scrollTrigger: { trigger: `.${styles.lead}`, start: 'top 90%' },
+        })
+      })
+
+      mm.add('(min-width: 761px) and (prefers-reduced-motion: no-preference)', () => {
+        gsap.utils.toArray<HTMLElement>(`.${styles.card}`).forEach((card, i) => {
+          gsap.to(card, {
+            y: i % 2 ? -34 : -14,
+            ease: 'none',
+            scrollTrigger: { trigger: scope.current, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
+          })
+        })
+      })
+
+      mm.add('(max-width: 760px) and (prefers-reduced-motion: no-preference)', () => {
+        gsap.to(`.${styles.card}`, {
+          y: -14,
+          ease: 'none',
+          scrollTrigger: { trigger: scope.current, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
         })
       })
       return () => mm.revert()
@@ -51,9 +90,20 @@ export function Craving() {
       </p>
       <div className={styles.cards}>
         {CARDS.map((c) => (
-          <figure key={c.word} className={styles.card}>
+          <figure
+            key={c.word}
+            className={styles.card}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+          >
             <div
               className={styles.cardSurface}
+              onAnimationEnd={(event) => {
+                if (event.currentTarget.classList.contains(styles.tapped)) {
+                  event.currentTarget.classList.remove(styles.tapped)
+                }
+              }}
               style={
                 {
                   '--tilt': `${c.tilt}deg`,

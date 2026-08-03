@@ -113,10 +113,45 @@
   }
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .card {
+    touch-action: pan-y;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cardSurface.tapped {
+    animation: craving-tap 520ms var(--ease-snap);
+  }
+}
+
+@keyframes craving-tap {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt)) scale(1);
+  }
+
+  16% {
+    transform: translateY(2px) rotate(var(--tilt)) scale(0.985);
+  }
+
+  42% {
+    transform: translateY(-5px) rotate(calc(var(--tilt) + var(--wobble-a))) scale(1.018);
+  }
+
+  64% {
+    transform: translateY(-3px) rotate(calc(var(--tilt) + var(--wobble-b))) scale(1.012);
+  }
+
+  82% {
+    transform: translateY(-1px) rotate(calc(var(--tilt) + var(--wobble-c))) scale(1.004);
+  }
+}
+
 @media (max-width: 760px) {
   .cards {
     grid-template-columns: 1fr;
-    gap: var(--space-md);
+    gap: 2rem;
   }
 
   .card:nth-child(2) {
