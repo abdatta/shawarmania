@@ -26,11 +26,18 @@ export function Hero() {
             '<0.05',
           )
           .from(`.${styles.sub}`, { y: 30, autoAlpha: 0, duration: 0.55, ease: 'power3.out' }, '<0.25')
-          .from(`.${styles.ctas} > *`, { y: 24, autoAlpha: 0, stagger: 0.08, duration: 0.45 }, '<0.1')
+          // Animate the row, not its children. .ctaReview is hidden on mobile;
+          // giving that hidden child its own transform lets it appear at a
+          // different animation position when the viewport becomes desktop.
           .from(
-            [`.${styles.heroLogo}`, `.${styles.titleLogo}`],
-            { scale: 0.5, y: -30, autoAlpha: 0, duration: 0.7, ease: 'back.out(2)' },
-            0.25,
+            `.${styles.ctas}`,
+            {
+              y: 24,
+              autoAlpha: 0,
+              duration: 0.45,
+              clearProps: 'transform,opacity,visibility',
+            },
+            '<0.1',
           )
           .from(
             `.${styles.photoCard}`,
@@ -46,6 +53,30 @@ export function Hero() {
             0.4,
           )
       })
+
+      // Only animate the logo that is visible at the current breakpoint. This
+      // keeps a display:none logo from retaining inline state that can surface
+      // after a resize.
+      mm.add(
+        {
+          logoDesktop: '(min-width: 901px) and (prefers-reduced-motion: no-preference)',
+          logoMobile: '(max-width: 900px) and (prefers-reduced-motion: no-preference)',
+        },
+        (ctx) => {
+          const { logoDesktop } = ctx.conditions as { logoDesktop: boolean }
+          const logoTarget = logoDesktop ? `.${styles.heroLogo}` : `.${styles.titleLogo}`
+
+          gsap.from(logoTarget, {
+            scale: 0.5,
+            y: -30,
+            autoAlpha: 0,
+            duration: 0.7,
+            delay: 0.25,
+            ease: 'back.out(2)',
+            clearProps: 'transform,opacity,visibility',
+          })
+        },
+      )
 
       // The mobile review sticker is display:none on desktop. Keeping this
       // animation breakpoint-aware prevents GSAP from leaving it at scale(0)
