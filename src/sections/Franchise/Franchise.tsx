@@ -107,7 +107,7 @@ export function Franchise() {
 
   return (
     <section id="franchise" ref={scope} className={styles.franchise}>
-      <div className={styles.inner}>
+      <div className={styles.inner} data-scroll-anchor>
         <p className={styles.kicker}>Franchise</p>
         <h2 className={styles.title}>{franchise.momentumLine}</h2>
         <p className={styles.intro}>{franchise.intro}</p>

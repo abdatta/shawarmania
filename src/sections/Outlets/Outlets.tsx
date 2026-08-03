@@ -29,7 +29,7 @@ export function Outlets() {
 
   return (
     <section id="outlets" ref={scope} className={styles.outlets}>
-      <div className={styles.inner}>
+      <div className={styles.inner} data-scroll-anchor>
         <p className={styles.kicker}>Find us</p>
         <h2 className={styles.title}>Two counters. One obsession.</h2>
 

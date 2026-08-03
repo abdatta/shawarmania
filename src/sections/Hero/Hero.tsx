@@ -161,7 +161,7 @@ export function Hero() {
 
   const go = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
-    scrollToAnchor(lenis, href, -72)
+    scrollToAnchor(lenis, href)
   }
 
   return (

@@ -50,13 +50,67 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   return <LenisContext value={lenis}>{children}</LenisContext>
 }
 
-/** Scroll to an in-page anchor, Lenis-smoothed when active, with header offset. */
-export function scrollToAnchor(lenis: Lenis | null, target: string, offset = 0) {
+const SCROLL_GAP = 24
+
+/**
+ * Scroll to the visible start of a section, leaving room for the fixed header.
+ * Sections with large decorative padding can mark their intro with
+ * `data-scroll-anchor` so the first meaningful content, rather than the empty
+ * section edge, is aligned in the viewport.
+ */
+export function scrollToAnchor(
+  lenis: Lenis | null,
+  target: string,
+  onComplete?: () => void,
+) {
+  const section = document.querySelector<HTMLElement>(target)
+  if (!section) return
+
+  const destination = section.querySelector<HTMLElement>('[data-scroll-anchor]') ?? section
+  const headerHeight = document.querySelector<HTMLElement>('header')?.offsetHeight ?? 0
+  const offset = -(headerHeight + SCROLL_GAP)
+  const pinSpacer = section.parentElement?.classList.contains('pin-spacer')
+    ? section.parentElement
+    : null
+
+  // ScrollTrigger temporarily fixes and translates pinned sections. When
+  // navigating back to one from below, its live bounding box no longer
+  // represents its natural page position. The spacer remains stable, so use
+  // it plus the intro's layout offset for a direction-independent target.
+  const pinnedTarget = pinSpacer
+    ? pinSpacer.getBoundingClientRect().top +
+      window.scrollY +
+      section.clientTop +
+      destination.offsetTop +
+      offset
+    : null
+
   if (lenis) {
-    lenis.scrollTo(target, { offset })
+    lenis.scrollTo(pinnedTarget ?? destination, {
+      offset: pinnedTarget == null ? offset : 0,
+      onComplete,
+    })
     return
   }
-  document.querySelector(target)?.scrollIntoView({
-    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+
+  const behavior = prefersReducedMotion() ? 'auto' : 'smooth'
+  window.scrollTo({
+    top: pinnedTarget ?? destination.getBoundingClientRect().top + window.scrollY + offset,
+    behavior,
   })
+
+  if (!onComplete) return
+  if (behavior === 'auto') {
+    onComplete()
+    return
+  }
+
+  let fallback: number | undefined
+  const finish = () => {
+    window.removeEventListener('scrollend', finish)
+    window.clearTimeout(fallback)
+    onComplete()
+  }
+  window.addEventListener('scrollend', finish, { once: true })
+  fallback = window.setTimeout(finish, 2500)
 }

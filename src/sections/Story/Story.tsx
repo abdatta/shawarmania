@@ -63,7 +63,7 @@ export function Story() {
         {brand.name}
       </span>
 
-      <div className={styles.inner}>
+      <div className={styles.inner} data-scroll-anchor>
         <p className={styles.kicker}>Our story</p>
         <h2 className={styles.headline}>
           From one grill in Kalyani to a full-blown mania.

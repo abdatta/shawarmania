@@ -122,7 +122,7 @@ export function Menu() {
 
   return (
     <section id="menu" ref={scope} className={styles.menu}>
-      <header className={styles.heading}>
+      <header className={styles.heading} data-scroll-anchor>
         <p className={styles.kicker}>The menu</p>
         <h2 className={styles.title}>Big flavor. Small prices.</h2>
         <p className={styles.sub}>

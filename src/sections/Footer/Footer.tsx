@@ -28,7 +28,7 @@ export function Footer() {
 
   return (
     <footer id="contact" ref={scope} className={styles.footer}>
-      <div className={styles.inner}>
+      <div className={styles.inner} data-scroll-anchor>
         <div className={styles.brandCol}>
           <img className={styles.logo} src={logo} alt="Shawarmania" width={226} height={162} />
           <p className={styles.tagline}>{brand.tagline}</p>

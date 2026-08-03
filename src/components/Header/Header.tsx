@@ -18,22 +18,41 @@ export function Header() {
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
+  const anchorNavigation = useRef(false)
+  const releaseTimer = useRef<number | undefined>(undefined)
   const reviewUrl = outlets.outlets.find((outlet) => outlet.id === 'kalyani')?.mapsUrl
 
   useEffect(() => {
     const st = ScrollTrigger.create({
       start: 'top top',
       onUpdate: (self) => {
+        if (anchorNavigation.current) {
+          setHidden(false)
+          return
+        }
         setHidden(self.direction === 1 && self.scroll() > window.innerHeight * 0.8)
       },
     })
-    return () => st.kill()
+    return () => {
+      st.kill()
+      window.clearTimeout(releaseTimer.current)
+    }
   }, [])
 
   const go = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
+    anchorNavigation.current = true
+    window.clearTimeout(releaseTimer.current)
+    setHidden(false)
     setOpen(false)
-    scrollToAnchor(lenis, href, -72)
+    scrollToAnchor(lenis, href, () => {
+      setHidden(false)
+      // Let the final programmatic scroll update settle before restoring the
+      // normal hide-on-down / show-on-up behavior.
+      releaseTimer.current = window.setTimeout(() => {
+        anchorNavigation.current = false
+      }, 150)
+    })
   }
 
   return (
