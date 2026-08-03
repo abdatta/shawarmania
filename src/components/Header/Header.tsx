@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from '../../lib/gsap'
-import { useLenis, scrollToAnchor } from '../SmoothScroll/SmoothScroll'
+import {
+  observeAnchorNavigation,
+  scrollToAnchor,
+  useLenis,
+} from '../SmoothScroll/SmoothScroll'
 import { brand, outlets } from '../../data'
 import logo from '../../assets/brand/logo.png'
 import styles from './Header.module.css'
@@ -19,7 +23,6 @@ export function Header() {
   const [open, setOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
   const anchorNavigation = useRef(false)
-  const releaseTimer = useRef<number | undefined>(undefined)
   const reviewUrl = outlets.outlets.find((outlet) => outlet.id === 'kalyani')?.mapsUrl
 
   useEffect(() => {
@@ -33,26 +36,26 @@ export function Header() {
         setHidden(self.direction === 1 && self.scroll() > window.innerHeight * 0.8)
       },
     })
+    const stopObserving = observeAnchorNavigation(
+      () => {
+        anchorNavigation.current = true
+        setHidden(false)
+      },
+      () => {
+        anchorNavigation.current = false
+        setHidden(false)
+      },
+    )
     return () => {
       st.kill()
-      window.clearTimeout(releaseTimer.current)
+      stopObserving()
     }
   }, [])
 
   const go = (href: string) => (e: React.MouseEvent) => {
     e.preventDefault()
-    anchorNavigation.current = true
-    window.clearTimeout(releaseTimer.current)
-    setHidden(false)
     setOpen(false)
-    scrollToAnchor(lenis, href, () => {
-      setHidden(false)
-      // Let the final programmatic scroll update settle before restoring the
-      // normal hide-on-down / show-on-up behavior.
-      releaseTimer.current = window.setTimeout(() => {
-        anchorNavigation.current = false
-      }, 150)
-    })
+    scrollToAnchor(lenis, href)
   }
 
   return (

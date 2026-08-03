@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { brand, franchise } from '../../data'
 import { whatsappHref } from '../../lib/whatsapp'
-import { WhatsappIcon } from '../../components/icons/WhatsappIcon'
+import { ContactAction } from '../../components/ContactAction/ContactAction'
 import styles from './Franchise.module.css'
 
 const SUPPORT_ICONS: Record<string, string> = {
@@ -161,13 +161,18 @@ export function Franchise() {
             <h3>Ready to bring the mania home?</h3>
             <p>Tell us your city and budget — we&rsquo;ll take it from there.</p>
             <div className={styles.enquiryCtas}>
-              <a className={styles.ctaPrimary} href={telPrimary}>
-                Call about franchising · {brand.phonePrimary}
-              </a>
+              <ContactAction kind="call" className={styles.ctaPrimary} href={telPrimary}>
+                Call us · {brand.phonePrimary}
+              </ContactAction>
               {whatsapp && (
-                <a className={styles.ctaWhatsapp} href={whatsapp} target="_blank" rel="noreferrer">
-                  <WhatsappIcon /> Message us on WhatsApp
-                </a>
+                <ContactAction
+                  kind="whatsapp"
+                  className={styles.ctaWhatsapp}
+                  href={whatsapp}
+                  newTab
+                >
+                  Message us on WhatsApp
+                </ContactAction>
               )}
             </div>
           </div>

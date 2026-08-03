@@ -4,10 +4,23 @@ import { gsap, ScrollTrigger } from '../../lib/gsap'
 import { prefersReducedMotion } from '../../hooks/useReducedMotion'
 
 const LenisContext = createContext<Lenis | null>(null)
+const ANCHOR_NAVIGATION_START = 'shawarmania:anchor-navigation-start'
+const ANCHOR_NAVIGATION_END = 'shawarmania:anchor-navigation-end'
+let anchorNavigationId = 0
 
 /** The active Lenis instance, or null (reduced motion / not mounted yet). */
 export function useLenis(): Lenis | null {
   return use(LenisContext)
+}
+
+/** Subscribe to programmatic in-page navigation without coupling callers to the Header. */
+export function observeAnchorNavigation(onStart: () => void, onEnd: () => void) {
+  window.addEventListener(ANCHOR_NAVIGATION_START, onStart)
+  window.addEventListener(ANCHOR_NAVIGATION_END, onEnd)
+  return () => {
+    window.removeEventListener(ANCHOR_NAVIGATION_START, onStart)
+    window.removeEventListener(ANCHOR_NAVIGATION_END, onEnd)
+  }
 }
 
 /**
@@ -58,13 +71,12 @@ const SCROLL_GAP = 24
  * `data-scroll-anchor` so the first meaningful content, rather than the empty
  * section edge, is aligned in the viewport.
  */
-export function scrollToAnchor(
-  lenis: Lenis | null,
-  target: string,
-  onComplete?: () => void,
-) {
+export function scrollToAnchor(lenis: Lenis | null, target: string) {
   const section = document.querySelector<HTMLElement>(target)
   if (!section) return
+
+  const navigationId = ++anchorNavigationId
+  window.dispatchEvent(new Event(ANCHOR_NAVIGATION_START))
 
   const destination = section.querySelector<HTMLElement>('[data-scroll-anchor]') ?? section
   const headerHeight = document.querySelector<HTMLElement>('header')?.offsetHeight ?? 0
@@ -85,10 +97,26 @@ export function scrollToAnchor(
       offset
     : null
 
+  let fallback: number | undefined
+  let listeningForScrollEnd = false
+  const finish = () => {
+    window.clearTimeout(fallback)
+    if (listeningForScrollEnd) window.removeEventListener('scrollend', finish)
+    window.setTimeout(() => {
+      if (navigationId === anchorNavigationId) {
+        window.dispatchEvent(new Event(ANCHOR_NAVIGATION_END))
+      }
+    }, 150)
+  }
+
+  // Lenis normally reports completion itself; this prevents an interrupted
+  // programmatic scroll from leaving navigation UI locked indefinitely.
+  fallback = window.setTimeout(finish, 4000)
+
   if (lenis) {
     lenis.scrollTo(pinnedTarget ?? destination, {
       offset: pinnedTarget == null ? offset : 0,
-      onComplete,
+      onComplete: finish,
     })
     return
   }
@@ -99,18 +127,11 @@ export function scrollToAnchor(
     behavior,
   })
 
-  if (!onComplete) return
   if (behavior === 'auto') {
-    onComplete()
+    finish()
     return
   }
 
-  let fallback: number | undefined
-  const finish = () => {
-    window.removeEventListener('scrollend', finish)
-    window.clearTimeout(fallback)
-    onComplete()
-  }
+  listeningForScrollEnd = true
   window.addEventListener('scrollend', finish, { once: true })
-  fallback = window.setTimeout(finish, 2500)
 }

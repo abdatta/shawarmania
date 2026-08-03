@@ -30,3 +30,37 @@
   background: var(--gradient-flame);
   color: var(--bg);
 }
+
+.toTop {
+  color: var(--flame-gold);
+  background: var(--bg-raised);
+  border: 1px solid rgb(255 197 61 / 0.45);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(0.5rem) scale(0.9);
+  transition:
+    opacity var(--dur-med) var(--ease-out),
+    visibility 0s linear var(--dur-med),
+    transform var(--dur-med) var(--ease-snap),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.toTopVisible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.toTopVisible:hover {
+  border-color: var(--flame-gold);
+  transform: translateY(-3px) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toTop {
+    transition: none;
+  }
+}

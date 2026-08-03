@@ -1,31 +1,60 @@
+import { useEffect, useState } from 'react'
 import { brand } from '../../data'
-import { WhatsappIcon } from '../icons/WhatsappIcon'
+import { ScrollTrigger } from '../../lib/gsap'
+import { ContactAction } from '../ContactAction/ContactAction'
+import { scrollToAnchor, useLenis } from '../SmoothScroll/SmoothScroll'
 import styles from './FloatingCtas.module.css'
 
 export function FloatingCtas() {
+  const lenis = useLenis()
+  const [showScrollTop, setShowScrollTop] = useState(false)
   const tel = brand.phoneDelivery.replace(/\s/g, '')
+
+  useEffect(() => {
+    const st = ScrollTrigger.create({
+      start: 'top top',
+      onUpdate: (self) => {
+        setShowScrollTop(self.scroll() > Math.max(window.innerHeight * 1.25, 900))
+      },
+    })
+    return () => st.kill()
+  }, [])
+
   return (
     <div className={styles.wrap}>
+      <button
+        type="button"
+        className={`${styles.fab} ${styles.toTop} ${showScrollTop ? styles.toTopVisible : ''}`}
+        aria-label="Scroll to top"
+        aria-hidden={!showScrollTop}
+        tabIndex={showScrollTop ? 0 : -1}
+        onClick={() => scrollToAnchor(lenis, '#top')}
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+          <path
+            d="m6 14 6-6 6 6"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
       {brand.whatsappChannelUrl && (
-        <a
+        <ContactAction
+          kind="whatsapp"
           className={`${styles.fab} ${styles.whatsapp}`}
           href={brand.whatsappChannelUrl}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Join the Shawarmania WhatsApp channel"
-        >
-          <WhatsappIcon size={22} />
-        </a>
+          newTab
+          ariaLabel="Join the Shawarmania WhatsApp channel"
+        />
       )}
-      <a
+      <ContactAction
+        kind="call"
         className={`${styles.fab} ${styles.call}`}
         href={`tel:${tel}`}
-        aria-label={`Call for home delivery: ${brand.phoneDelivery}`}
-      >
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-          <path d="M6.6 10.8a15.6 15.6 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z" />
-        </svg>
-      </a>
+        ariaLabel={`Call for home delivery: ${brand.phoneDelivery}`}
+      />
     </div>
   )
 }
