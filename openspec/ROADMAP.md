@@ -4,7 +4,9 @@ Premium single-page brand site for Shawarmania (Kalyani + Kanchrapara), deployed
 Source of truth for scope/design: `research/build-brief.md`. Each change ends with a **manual QA
 gate** — the owner walks the checklist in the change's `proposal.md` before the next change begins.
 
-## Status: ✅ all nine changes implemented and archived (2026-07-16)
+## Status: ✅ changes 1–9 implemented and archived (2026-07-16); site live at shawarmania.in
+
+📝 **Change 10 `public-bill-receipt-page` is proposed (2026-09-03)** and is the child half of a pair — its parent is `public-bill-receipt` in the `shawarmania-ops` repo, which owns the receipt link and the data. It adds the first server-side code this repo has ever held, so the "fully static, no server" description above and in `README.md` stops being true when it lands.
 
 Remaining before public launch (owner actions): fill portal to-do list (franchise economics,
 hours, WhatsApp number, Web3Forms key, founder note, email), confirm repo name/Pages URL for
@@ -23,6 +25,7 @@ base path + canonical/sitemap, push to GitHub with Pages source = GitHub Actions
 | 7 | `outlets-and-contact` | outlet cards (order/directions/FSSAI), footer, legal modals | 2 (UI after 4) |
 | 8 | `franchise-funnel` | tier cards, support row, process rail, FAQ, WhatsApp + enquiry form | 3, 7 |
 | 9 | `polish-seo-launch` | SEO/JSON-LD, perf budget, a11y + motion audit, launch gate | all |
+| 10 | `public-bill-receipt-page` | Cloudflare Worker on `/bill/*`: themed customer receipt page + on-demand A4 PDF, noindex headers, generic preview card, rate limits. **Parent: `public-bill-receipt` in shawarmania-ops** | 1, 9 |
 
 Changes 5–7 are parallelizable after 4; the listed order is the recommended review order
 (consumer path first, investor funnel once real content exists, polish last).
