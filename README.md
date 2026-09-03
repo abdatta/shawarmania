@@ -1,11 +1,14 @@
 # Shawarmania — brand site
 
 Premium single-page landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) —
-for customers, prospective franchisees, and investors. Fully static, hosted on GitHub Pages.
+for customers, prospective franchisees, and investors. A static bundle on GitHub Pages, plus **one
+Cloudflare Worker on `/bill/*`** that serves a customer their own receipt — see
+[`worker/README.md`](worker/README.md).
 
 ## Stack
 
-- **Vite + React 19 + TypeScript** — static bundle, no server.
+- **Vite + React 19 + TypeScript** — static bundle. The site itself has no server; the receipt
+  page does, and it is deliberately separate (see below).
 - **GSAP (ScrollTrigger, SplitText) + Lenis** — scroll choreography, single RAF loop, full
   `prefers-reduced-motion` support.
 - **Vanilla CSS design tokens + CSS Modules** — bespoke brand system (Lilita One / Nunito Sans /
@@ -38,15 +41,36 @@ Pushing to `main` redeploys the site automatically.
 | `npm run build` | Type-check, validate content, bundle, enforce page-weight budget |
 | `npm run preview` | Serve the production bundle (base-path faithful) |
 
-## Deploying
+## Two deployables, one domain
+
+Since the receipt page landed there are two independent things behind
+`shawarmania.in`, and they share nothing but the domain:
+
+| | Deploys by | Serves |
+|---|---|---|
+| **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill/*` |
+| **The receipt Worker** | `npm run worker:deploy` | `/bill/*` only |
+
+The Worker is not part of the Vite build, does not enter the Pages artifact, and does not count
+against the page-weight budget — `npm run build` asserts the second and third. It exists because the
+ops database grants the anonymous role nothing, so **something server-side has to hold a credential
+to read a bill at all**; a static page cannot. Its own README carries the rest, including the secret
+and how to rotate it.
+
+## Deploying the site
 
 Live at **https://shawarmania.in/** — every push to `main` deploys via
 `.github/workflows/deploy.yml` (repo Settings → Pages → Source: GitHub Actions).
 
 The apex domain serves from the root, so the build uses `VITE_BASE: /` and `public/CNAME` carries
-the domain into the deployed artifact. DNS lives at Hostinger: apex `A` records to the four
-GitHub Pages IPs (185.199.108–111.153), matching `AAAA` records, and `www` as a `CNAME` to
-`abdatta.github.io`. The old `abdatta.github.io/shawarmania/` URL redirects here.
+the domain into the deployed artifact. The old `abdatta.github.io/shawarmania/` URL redirects here.
+
+**DNS moves to Cloudflare so the Worker can be routed on the apex path**, keeping the same records:
+apex `A` to the four GitHub Pages IPs (185.199.108–111.153), matching `AAAA`, and `www` as a `CNAME`
+to `abdatta.github.io`. GitHub Pages keeps serving the site throughout; Cloudflare only adds the one
+route. **That move is the owner's step** — the runbook and the rollback (switch the nameservers back
+to Hostinger, whose records are unchanged) are in the ops repo's `docs/OPERATIONS.md`. Nothing here
+is blocked on it: the Worker builds and runs against `wrangler dev` and a `workers.dev` URL first.
 
 If the domain is ever dropped, set `VITE_BASE: /shawarmania/` in the workflow, delete
 `public/CNAME`, and revert the absolute URLs in `index.html`, `public/sitemap.xml` and
@@ -56,6 +80,7 @@ If the domain is ever dropped, set `VITE_BASE: /shawarmania/` in the workflow, d
 
 ```
 openspec/          # spec-driven change history — see openspec/ROADMAP.md
+worker/            # the receipt Worker: /bill/* only, outside the Vite build — worker/README.md
 research/          # brand research: build brief, Instagram findings, deep-research reports
 scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate),
                    # geometry-sweep.mjs + hero-scroll-check.mjs (layout gates)

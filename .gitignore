@@ -6,3 +6,7 @@ Thumbs.db
 *.log
 .vite/
 .shots/
+
+# Worker
+.dev.vars
+.wrangler/

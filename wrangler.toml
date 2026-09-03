@@ -1,0 +1,38 @@
+# The receipt Worker, beside the site and outside its build.
+#
+# It intercepts `/bill/*` and nothing else; every other path falls through to
+# GitHub Pages exactly as before. The Vite build does not see this directory,
+# nothing here enters the Pages artifact, and `scripts/check-weight.mjs` does not
+# measure it.
+#
+# **The service-role key is not here and must never be.** It is a Worker secret:
+#
+#   npx wrangler secret put OPS_SERVICE_ROLE_KEY
+#
+# Locally it comes from `.dev.vars`, which is gitignored. See `worker/README.md`.
+
+name = "shawarmania-receipt"
+main = "worker/src/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Publishes to `<name>.<subdomain>.workers.dev` so the Worker can be deployed and
+# tested for real *before* the zone moves to Cloudflare. That is the whole point
+# of the ordering in docs/OPERATIONS.md: the apex route is the last step, not the
+# first, so a mistake there is never the thing standing between you and a working
+# receipt.
+workers_dev = true
+
+[observability]
+enabled = true
+
+# Public, so it lives in the config rather than in a secret.
+[vars]
+OPS_SUPABASE_URL = "https://iefcidjbfnmsiqithqbj.supabase.co"
+
+# The apex route. Added only after the zone moves to Cloudflare, which is the
+# owner's step — see the ops repo's docs/OPERATIONS.md. Until then `wrangler dev`
+# and `workers.dev` are how this is exercised, and neither needs it.
+# [[routes]]
+# pattern = "shawarmania.in/bill/*"
+# zone_name = "shawarmania.in"

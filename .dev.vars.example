@@ -1,0 +1,12 @@
+# Local-only Worker variables for `npm run worker:dev`. Copy to `.dev.vars`,
+# which is gitignored and must stay that way.
+#
+# Point these at the **local** Supabase stack from the ops repo, never at
+# production: `npm run db:start && npm run db:reset` there, then
+# `npx supabase status` prints the service-role key below.
+#
+# The production service-role key belongs in a Worker secret
+# (`npx wrangler secret put OPS_SERVICE_ROLE_KEY`) and nowhere else.
+
+OPS_SUPABASE_URL=http://127.0.0.1:54321
+OPS_SERVICE_ROLE_KEY=
