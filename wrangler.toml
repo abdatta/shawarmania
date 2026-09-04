@@ -33,6 +33,6 @@ OPS_SUPABASE_URL = "https://iefcidjbfnmsiqithqbj.supabase.co"
 # The apex route. Added only after the zone moves to Cloudflare, which is the
 # owner's step — see the ops repo's docs/OPERATIONS.md. Until then `wrangler dev`
 # and `workers.dev` are how this is exercised, and neither needs it.
-# [[routes]]
-# pattern = "shawarmania.in/bill/*"
-# zone_name = "shawarmania.in"
+[[routes]]
+pattern = "shawarmania.in/bill/*"
+zone_name = "shawarmania.in"
