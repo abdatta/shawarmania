@@ -110,18 +110,22 @@ link does not disclose its contents to a group before anybody opens it.
 
 **The page is what people look at, so it stays light.** Themed with the brand
 logo, colours and faces, but fonts load with `font-display: swap` so text paints
-immediately on a slow connection instead of holding a blank screen. It respects
-light and dark. It is a plain server-rendered document: no GSAP, no Lenis, no
-router, none of the site's motion runtime. Those exist for the marketing page and
-have no business on a receipt.
+immediately on a slow connection instead of holding a blank screen. It uses the
+brand's near-black receipt canvas in both system colour schemes and declares that
+scheme to the browser chrome. It is a plain server-rendered document: no GSAP, no
+Lenis, no router, none of the site's motion runtime. Those exist for the marketing
+page and have no business on a receipt.
 
-**The PDF may be heavier**, which the owner agreed to, so it carries the logo and
-the brand faces. But **subset the fonts** to the glyphs actually used: visually
-identical, typically an order of magnitude smaller, and free.
+**The PDF carries the logo and brand faces, embedded whole.** Subsetting the
+variable font through `pdf-lib` produced missing-glyph boxes for every Latin
+letter, while the rupee sign and digits live in different `@fontsource` unicode
+ranges. The working PDF therefore embeds both required faces and routes each
+character to a font that can draw it. The roughly 130 KB cost is accepted in
+exchange for a readable receipt.
 
-A4 rather than a thermal strip, because it is a document somebody may file or
-forward to an accountant. Filename `Shawarmania-<Outlet>-Bill-<number>.pdf`, never
-`download.pdf`.
+The PDF is an **80 mm receipt roll whose height follows its content**, chosen by
+the owner after opening the earlier A4 output. Filename
+`Shawarmania-<Outlet>-Bill-<number>.pdf`, never `download.pdf`.
 
 ## 8. Rejected alternatives specific to this repo
 

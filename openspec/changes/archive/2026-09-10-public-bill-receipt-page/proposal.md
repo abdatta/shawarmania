@@ -41,7 +41,8 @@ says the opposite today.
 - **The page names no customer.** No name, no phone number, no masked digits. This
   is a hard requirement from the parent change, not a styling choice, and the data
   the Worker receives does not contain them.
-- **A PDF at `/bill/<token>.pdf`**, A4, themed, built on demand with `pdf-lib`,
+- **A PDF at `/bill/<token>.pdf`**, 80 mm wide with height fitted to its content,
+  themed, built on demand with `pdf-lib`,
   served as an ordinary navigation with a recognisable filename. **Never stored,
   and never assembled in the reader's browser** — a script-generated `blob:`
   download is unreliable inside WhatsApp's in-app browser, which is where these
@@ -104,26 +105,27 @@ says the opposite today.
 
 ## Manual QA checklist
 
-The owner walks this in a browser before the change is archived.
+The owner walked this in production on 2026-09-10 after the Cloudflare cutover,
+including a real Android phone and WhatsApp's in-app browser.
 
-- [ ] A real receipt link from the ops app opens on `shawarmania.in/bill/<token>`
+- [x] A real receipt link from the ops app opens on `shawarmania.in/bill/<token>`
       and shows the correct outlet, bill number, date, items, discounts, round-up,
       total and payment split.
-- [ ] **No customer name and no phone number appear anywhere** on the page or in
+- [x] **No customer name and no phone number appear anywhere** on the page or in
       the PDF.
-- [ ] The page is readable on a phone without pinching, at 375px wide, and again at
+- [x] The page is readable on a phone without pinching, at 375px wide, and again at
       a tablet width. Check both light and dark.
-- [ ] The Download control produces a PDF that opens, is themed, and is named
+- [x] The Download control produces a PDF that opens, is themed, and is named
       recognisably. Nothing downloads on its own when the page is opened.
-- [ ] **Open the link inside WhatsApp's in-app browser on an Android phone**, and
+- [x] **Open the link inside WhatsApp's in-app browser on an Android phone**, and
       download from there. This is the real delivery path and the one most likely
       to break.
-- [ ] A discounted bill shows each discount as its own line naming what it was, and
+- [x] A discounted bill shows each discount as its own line naming what it was, and
       a fully discounted bill shows a ₹1 total that reads as deliberate.
-- [ ] A voided bill reads `Cancelled` and cannot be mistaken for a valid receipt.
-- [ ] A revoked link, a link with one character changed, and an invented link all
+- [x] A voided bill reads `Cancelled` and cannot be mistaken for a valid receipt.
+- [x] A revoked link, a link with one character changed, and an invented link all
       produce the same refusal page.
-- [ ] Pasting a link into a WhatsApp chat produces a preview with no amount, no
+- [x] Pasting a link into a WhatsApp chat produces a preview with no amount, no
       item and no bill number.
-- [ ] The landing site itself is unchanged: it loads, scrolls, animates and builds
+- [x] The landing site itself is unchanged: it loads, scrolls, animates and builds
       exactly as before, and `npm run build` is green.

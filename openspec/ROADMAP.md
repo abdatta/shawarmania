@@ -4,12 +4,12 @@ Premium single-page brand site for Shawarmania (Kalyani + Kanchrapara), deployed
 Source of truth for scope/design: `research/build-brief.md`. Each change ends with a **manual QA
 gate** — the owner walks the checklist in the change's `proposal.md` before the next change begins.
 
-## Status: ✅ changes 1–9 implemented and archived (2026-07-16); 🔄 change 10 active; site live at shawarmania.in
+## Status: ✅ changes 1–10 implemented and archived; site and receipt Worker live at shawarmania.in
 
-🔄 **Change 10 `public-bill-receipt-page` is active (2026-09-03)** — the child half of a pair, its
+✅ **Change 10 `public-bill-receipt-page` archived 2026-09-10** — the child half of a pair, its
 parent being `public-bill-receipt` in the `shawarmania-ops` repo, which owns the receipt link and the
-data. Neither half is useful alone: that one produces a link with nothing to open, this one a page
-with no link to serve.
+data. Together they now serve the production receipt from the bill the owner or franchise admin
+already sees.
 
 It adds the first server-side code this repo has ever held, so the "fully static, no server"
 description has been corrected in both places above and in `README.md` rather than left to rot.
@@ -18,7 +18,7 @@ description has been corrected in both places above and in `README.md` rather th
 |---|---|
 | **Built** | `worker/` — the Worker, the themed page, the 80 mm PDF, the headers, the cache and the abuse limits. `worker/README.md` carries the reasoning. |
 | **Verified** | against `wrangler dev` and the ops repo's local Supabase: real bills render, the PDF downloads from its own URL, a cancelled bill reads cancelled, revoked and invented links refuse identically, and the site's build and page-weight budget are unchanged. |
-| **Not done** | the apex route, which needs the zone on Cloudflare — **the owner's step**. And the owner's own browser walkthrough, including opening a link inside WhatsApp on a real Android phone, which is the actual delivery path and the one most likely to fail. |
+| **Production gate** | Passed 2026-09-10 after the Cloudflare cutover: the owner walked every manual check, including a real Android phone, WhatsApp's in-app browser, PDF download, special bill states, generic preview and the unchanged marketing site. |
 
 Two decisions here departed from the proposal, both deliberately and both recorded in
 `worker/README.md`: the PDF is an **80 mm receipt roll rather than A4** [owner, 2026-09-03], and the
@@ -42,7 +42,7 @@ base path + canonical/sitemap, push to GitHub with Pages source = GitHub Actions
 | 7 | `outlets-and-contact` | outlet cards (order/directions/FSSAI), footer, legal modals | 2 (UI after 4) |
 | 8 | `franchise-funnel` | tier cards, support row, process rail, FAQ, WhatsApp + enquiry form | 3, 7 |
 | 9 | `polish-seo-launch` | SEO/JSON-LD, perf budget, a11y + motion audit, launch gate | all |
-| 10 | `public-bill-receipt-page` | Cloudflare Worker on `/bill/*`: themed customer receipt page + on-demand A4 PDF, noindex headers, generic preview card, rate limits. **Parent: `public-bill-receipt` in shawarmania-ops** | 1, 9 |
+| 10 | `public-bill-receipt-page` | Cloudflare Worker on `/bill/*`: themed customer receipt page + on-demand 80 mm PDF, noindex headers, generic preview card, rate limits. **Parent: `public-bill-receipt` in shawarmania-ops** | 1, 9 |
 
 Changes 5–7 are parallelizable after 4; the listed order is the recommended review order
 (consumer path first, investor funnel once real content exists, polish last).

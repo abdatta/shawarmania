@@ -21,7 +21,7 @@ import { readReceipt, type Receipt } from './receipt'
  * Routes:
  *
  *   GET /bill/<token>       the themed page
- *   GET /bill/<token>.pdf   the same receipt, A4, on demand, never stored
+ *   GET /bill/<token>.pdf   the same receipt, 80 mm, on demand, never stored
  *   GET /bill/logo.png      the brand mark, from the Worker's own bundle
  *   GET /bill/fonts/*.woff2 the brand faces, same
  *

@@ -59,3 +59,22 @@ reverted.
 - **WHEN** the nameservers are returned to the previous provider
 - **THEN** the marketing site continues to serve, unchanged, from records that were
   never modified
+
+## MODIFIED Requirements
+
+### Requirement: DNS configuration of record
+
+The `shawarmania.in` zone SHALL use Cloudflare as its authoritative DNS provider,
+while the apex `A` records remain
+`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, and
+`185.199.111.153`, with the matching GitHub Pages `AAAA` records and `www` as a
+`CNAME` to `abdatta.github.io`.
+
+Cloudflare SHALL route only `shawarmania.in/bill/*` to the receipt Worker. Every
+other path SHALL continue to reach the existing GitHub Pages deployment.
+
+#### Scenario: DNS remains on the existing site
+
+- **WHEN** the Cloudflare nameservers and receipt route are active
+- **THEN** the marketing site continues to resolve from GitHub Pages and only
+  `/bill/*` reaches the Worker

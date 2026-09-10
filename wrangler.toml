@@ -30,9 +30,9 @@ enabled = true
 [vars]
 OPS_SUPABASE_URL = "https://iefcidjbfnmsiqithqbj.supabase.co"
 
-# The apex route. Added only after the zone moves to Cloudflare, which is the
-# owner's step — see the ops repo's docs/OPERATIONS.md. Until then `wrangler dev`
-# and `workers.dev` are how this is exercised, and neither needs it.
+# The apex route, enabled after the owner moved the zone to Cloudflare on
+# 2026-09-10. See the ops repo's docs/OPERATIONS.md for the runbook and rollback.
+# `wrangler dev` and `workers.dev` remain available independently.
 [[routes]]
 pattern = "shawarmania.in/bill/*"
 zone_name = "shawarmania.in"

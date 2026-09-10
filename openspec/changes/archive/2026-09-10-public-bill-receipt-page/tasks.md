@@ -20,7 +20,7 @@
 
 ## 1. The Worker, Beside The Site And Outside Its Build
 
-- [x] 1.1 Add a `worker/` source tree with its own deploy configuration, routed on `/bill/*`. **Do not touch `.github/workflows/deploy.yml`, `VITE_BASE` or `public/CNAME`.** `worker/` plus `wrangler.toml` at the root. The apex route is present but commented out until the zone moves; `wrangler dev` and `workers.dev` need neither.
+- [x] 1.1 Add a `worker/` source tree with its own deploy configuration, routed on `/bill/*`. **Do not touch `.github/workflows/deploy.yml`, `VITE_BASE` or `public/CNAME`.** `worker/` plus `wrangler.toml` at the root. The route was enabled after the owner moved the zone to Cloudflare on 2026-09-10; `wrangler dev` and `workers.dev` remain available independently.
 - [x] 1.2 Confirm the Worker is excluded from the Vite build, from the Pages artifact and from `scripts/check-weight.mjs`. Prove it: run the build and check the artifact contents and the reported weight are unchanged. Proved: `npm run build` reports the same `initial-load` and `total dist` figures, and `find dist` turns up no worker source, font or logo.
 - [x] 1.3 Add `pdf-lib` as a dependency used only by the Worker.
 - [x] 1.4 Hold the ops service-role credential as a Worker secret. **Never in the repo, never in a committed config file, never in the bundle.** Add a check that the built site bundle does not contain it. **A standing check rather than a one-time look.** `worker/scripts/check-no-secret.mjs` runs inside `npm run build` and fails on the variable name, the literal `service_role`, or any JWT in the bundle whose payload decodes to that role.
@@ -50,8 +50,8 @@
 
 ## 4. The PDF
 
-- [x] 4.1 Build the PDF with `pdf-lib` on demand, A4, themed with the logo and brand faces. Never stored.
-- [~] 4.2 **NOT DONE, and deliberately: the fonts are embedded whole.** Subsetting a *variable* font through `pdf-lib` produced a structurally valid PDF in which **every Latin letter was a missing-glyph box** — found by looking at the output, which no test would have caught. Whole faces cost about 130 KB, which is the right trade against a receipt nobody can read. **A second font problem sits beside it:** `@fontsource` splits by unicode range and no single Nunito Sans file has both the digits and `₹` — `latin` has the digits, `latin-ext` has the rupee sign. A browser stitches the ranges with two `@font-face` rules; a PDF must embed real fonts and pick one per glyph, so both are embedded and each character is routed to a face that can draw it. Marked `[~]` rather than `[x]` because the task as written was not done.
+- [x] 4.1 Build the PDF with `pdf-lib` on demand as an 80 mm receipt roll whose height follows its content, themed with the logo and brand faces. Never stored. The owner chose the roll after opening the earlier A4 output.
+- [x] 4.2 **Resolved by an accepted design correction:** the fonts are embedded whole. Subsetting a *variable* font through `pdf-lib` produced a structurally valid PDF in which **every Latin letter was a missing-glyph box** — found by looking at the output, which no test would have caught. Whole faces cost about 130 KB, which is the right trade against a receipt nobody can read. `@fontsource` also splits the digits and `₹` across different unicode-range files, so both required faces are embedded and each character is routed to a face that can draw it. The owner verified the resulting production PDF on 2026-09-10.
 - [x] 4.3 Serve it with a PDF content type, an attachment disposition and a filename of the form `Shawarmania-<Outlet>-Bill-<number>.pdf`.
 - [x] 4.4 Both, in `worker/test/receipt.test.ts`. The figures come from one payload through one `money.ts`, so there is no second source to disagree; the metadata dictionary is set explicitly rather than left to defaults, because a PDF that says nothing on the page and names somebody in its `Author` field has leaked all the same.
 - [x] 4.5 SECTION GATE — downloads with `application/pdf` and an attachment disposition, opens, is themed, is `Shawarmania-Kalyani-Bill-10.pdf` (the brand name is stripped from the outlet's own name first, or every file would read `Shawarmania-Shawarmania-Kalyani-…`), and carries the page's figures. **The owner opened one and confirmed the format**, which is what turned A4 into a receipt roll.
@@ -64,15 +64,16 @@
 
 ## 6. Manual QA
 
-The owner walks this in a browser. It is the change's gate.
+The owner completed this production walkthrough on 2026-09-10 after the
+Cloudflare cutover, including a real Android phone and WhatsApp's in-app browser.
 
-- [ ] 6.1 A real receipt link copied from the ops app's Share button opens and shows the correct outlet, bill number, date, items, discounts, round-up, total and payment split.
-- [ ] 6.2 **No customer name and no phone number anywhere** — page, PDF, or PDF metadata.
-- [ ] 6.3 375px wide and a tablet width, both light and dark, no horizontal scrolling and no pinching to read.
-- [ ] 6.4 **Open the link inside WhatsApp's in-app browser on a real Android phone and download from there.** This is the actual delivery path and the one most likely to fail.
-- [ ] 6.5 The download produces a themed, recognisably named PDF; nothing downloads on its own when the page opens.
-- [ ] 6.6 A discounted bill shows each discount as its own named line; a fully discounted bill shows ₹1 and reads as deliberate.
-- [ ] 6.7 A voided bill reads `Cancelled` and cannot be mistaken for a valid receipt.
-- [ ] 6.8 A revoked link, a link with one character changed, and an invented link all produce the same refusal.
-- [ ] 6.9 Pasting a link into a WhatsApp chat shows a preview with no amount, item or bill number.
-- [ ] 6.10 The marketing site loads, scrolls, animates and builds exactly as before; `npm run build` is green and the page-weight budget is unchanged.
+- [x] 6.1 A real receipt link copied from the ops app's Share button opens and shows the correct outlet, bill number, date, items, discounts, round-up, total and payment split.
+- [x] 6.2 **No customer name and no phone number anywhere** — page, PDF, or PDF metadata.
+- [x] 6.3 375px wide and a tablet width, both light and dark, no horizontal scrolling and no pinching to read.
+- [x] 6.4 **Open the link inside WhatsApp's in-app browser on a real Android phone and download from there.** This is the actual delivery path and the one most likely to fail.
+- [x] 6.5 The download produces a themed, recognisably named PDF; nothing downloads on its own when the page opens.
+- [x] 6.6 A discounted bill shows each discount as its own named line; a fully discounted bill shows ₹1 and reads as deliberate.
+- [x] 6.7 A voided bill reads `Cancelled` and cannot be mistaken for a valid receipt.
+- [x] 6.8 A revoked link, a link with one character changed, and an invented link all produce the same refusal.
+- [x] 6.9 Pasting a link into a WhatsApp chat shows a preview with no amount, item or bill number.
+- [x] 6.10 The marketing site loads, scrolls, animates and builds exactly as before; `npm run build` is green and the page-weight budget is unchanged.

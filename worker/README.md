@@ -78,10 +78,9 @@ npm run worker:deploy
 ```
 
 `wrangler.toml` carries the public Supabase URL and nothing secret. The apex route
-is commented out there until the zone moves to Cloudflare, which is **the owner's
-step** — the runbook and the rollback are in the ops repo's `docs/OPERATIONS.md`.
-Until then `wrangler dev` and the `workers.dev` URL are how this is exercised, and
-neither needs the DNS move.
+was enabled after the owner moved the zone to Cloudflare on 2026-09-10; the
+runbook and rollback remain in the ops repo's `docs/OPERATIONS.md`. `wrangler dev`
+and the `workers.dev` URL remain available independently of the apex route.
 
 ### The secret
 
