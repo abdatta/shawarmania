@@ -1,0 +1,374 @@
+/* ============================================================
+   The legal documents — /privacy/, /terms/, /messages/
+
+   One stylesheet for three hand-written HTML documents that carry
+   **no script of any kind**. Somebody opening /privacy/ to find out
+   what happened to their phone number, or /messages/ to make the
+   messages stop, gets a document: no motion runtime, no smooth
+   scroll, nothing to wait for. `worker/src/page.ts` argues the same
+   thing about the receipt and the argument is the same here.
+
+   It is still unmistakably this brand, because a customer who taps
+   "how we message you" in a receipt's small print should land
+   somewhere that is obviously the same business.
+
+   Layout only. Nothing in here animates, so there is no
+   prefers-reduced-motion branch to get wrong.
+   ============================================================ */
+@import './fonts.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* No smooth-scroll: these pages are read top to bottom, and an
+     in-page link should land, not glide. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: var(--leading-body);
+  /* The gutter lives on the body so the 16px phone margin holds even
+     where a child escapes the measure. */
+  padding: 0 var(--gutter);
+}
+
+/* -- the measure ---------------------------------------------------
+   ~68ch, not --container. Prose at 78rem is unreadable on a desktop
+   monitor; this is the one place on the site where the limit is the
+   eye rather than the layout. */
+.doc {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding-bottom: var(--space-2xl);
+}
+
+/* -- masthead ------------------------------------------------------ */
+.masthead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) 0;
+  border-bottom: 1px solid rgb(245 228 199 / 0.12);
+}
+
+.masthead img {
+  display: block;
+  width: auto;
+  height: 3.25rem;
+}
+
+.masthead a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  color: var(--cream);
+  text-decoration: none;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  font-size: var(--fs-h3);
+}
+
+.masthead a:hover {
+  color: var(--flame-gold);
+}
+
+/* -- headings ------------------------------------------------------ */
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  /* The masthead rule already separates it; --space-xl here spent a third of a
+     phone's first screen on whitespace, and the way out has to be on it. */
+  margin: var(--space-lg) 0 var(--space-xs);
+}
+
+/* The flame gradient, once per document, under the title — enough to
+   say whose document this is without decorating a privacy notice. */
+h1::after {
+  content: '';
+  display: block;
+  width: 5.5rem;
+  height: 4px;
+  margin-top: var(--space-sm);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-flame);
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  margin: var(--space-lg) 0 var(--space-xs);
+}
+
+h3 {
+  font-size: var(--fs-lead);
+  font-weight: 800;
+  margin: var(--space-md) 0 var(--space-2xs);
+}
+
+/* The dateline under the title. */
+.updated {
+  color: var(--cream-faint);
+  font-size: var(--fs-small);
+  margin: 0;
+}
+
+/* The one-paragraph summary a reader gets before the detail. On the
+   messaging document it is the answer to the question they arrived
+   with, so it is not allowed to look like body copy. */
+.lead {
+  font-size: var(--fs-lead);
+  color: var(--cream-dim);
+  margin: var(--space-md) 0 var(--space-lg);
+}
+
+p,
+li {
+  margin: 0 0 var(--space-sm);
+}
+
+ul,
+ol {
+  padding-left: 1.25rem;
+}
+
+li::marker {
+  color: var(--flame-orange);
+}
+
+strong {
+  color: var(--cream);
+  font-weight: 800;
+}
+
+/* -- links ---------------------------------------------------------
+   Underlined. On a page whose job is partly to be a way out, a link
+   that only differs by colour is a link somebody misses. */
+a {
+  color: var(--flame-gold);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--flame-orange);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* -- the two links review looks for, and the ways out --------------
+   A row of real tap targets rather than inline links: 44px tall,
+   because these get tapped on a phone by somebody who is annoyed. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin: 0 0 var(--space-lg);
+  padding: 0;
+  list-style: none;
+}
+
+.actions li {
+  margin: 0;
+}
+
+.actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-md);
+  border: 1px solid rgb(245 228 199 / 0.22);
+  border-radius: var(--radius-pill);
+  background: var(--bg-raised);
+  color: var(--cream);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-decoration: none;
+}
+
+.actions a:hover {
+  border-color: var(--flame-gold);
+  color: var(--flame-gold);
+}
+
+/* The primary way out, on /messages/. */
+.actions a.primary {
+  border-color: transparent;
+  background: var(--gradient-flame);
+  color: #201404;
+}
+
+.actions a.primary:hover {
+  color: #201404;
+  filter: brightness(1.08);
+}
+
+/* -- callout -------------------------------------------------------
+   For the sentence that matters most on the page: the consent
+   wording the counter uses, and the promise about not selling a
+   number. */
+.callout {
+  margin: var(--space-md) 0;
+  padding: var(--space-md);
+  border-left: 3px solid var(--flame-orange);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--bg-raised);
+}
+
+.callout > :last-child {
+  margin-bottom: 0;
+}
+
+/* -- fact table ----------------------------------------------------
+   Who we are, in the form a reviewer reads it in. */
+.facts {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-md) 0;
+  font-size: var(--fs-small);
+}
+
+.facts th,
+.facts td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid rgb(245 228 199 / 0.1);
+}
+
+.facts th {
+  width: 11rem;
+  padding-right: var(--space-sm);
+  color: var(--cream-dim);
+  font-weight: 700;
+}
+
+@media (max-width: 30rem) {
+  /* Two columns of 11rem do not fit a 375px phone; stack them. */
+  .facts th,
+  .facts td {
+    display: block;
+    width: auto;
+    border-bottom: 0;
+  }
+
+  .facts td {
+    padding-top: 0;
+    border-bottom: 1px solid rgb(245 228 199 / 0.1);
+  }
+}
+
+/* -- document footer ----------------------------------------------- */
+.docfoot {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid rgb(245 228 199 / 0.12);
+  color: var(--cream-faint);
+  font-size: var(--fs-xs);
+}
+
+.docfoot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  margin: 0 0 var(--space-sm);
+  padding: 0;
+  list-style: none;
+}
+
+.docfoot li {
+  margin: 0;
+}
+
+.docfoot a {
+  color: var(--cream-dim);
+}
+
+/* -- print ---------------------------------------------------------
+   A customer is entitled to keep a copy of what they agreed to, and
+   a near-black page is not printable. Ink on paper, no decoration,
+   and every link's address printed after it — a printed page whose
+   links are invisible is a page that lost half its content. */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    padding: 0;
+    font-size: 11pt;
+  }
+
+  .doc {
+    max-width: none;
+  }
+
+  .masthead {
+    border-color: #999;
+  }
+
+  .masthead a,
+  h1,
+  h2,
+  h3,
+  strong {
+    color: #000;
+  }
+
+  h1::after {
+    background: #000;
+  }
+
+  .lead,
+  .updated,
+  .facts th,
+  .docfoot {
+    color: #333;
+  }
+
+  .callout {
+    border-left-color: #000;
+    background: #f2f2f2;
+  }
+
+  .actions a,
+  a {
+    color: #000;
+    background: none;
+    border-color: #999;
+    filter: none;
+  }
+
+  a[href^='http']::after,
+  a[href^='mailto']::after,
+  a[href^='tel']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    word-break: break-all;
+  }
+
+  /* The masthead logo's own address is noise on paper. */
+  .masthead a::after {
+    content: none;
+  }
+
+  .docfoot {
+    border-color: #999;
+  }
+}

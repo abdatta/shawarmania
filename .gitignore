@@ -10,3 +10,7 @@ Thumbs.db
 # Worker
 .dev.vars
 .wrangler/
+
+# Python bytecode from brand/rcs/make-assets.py
+__pycache__/
+*.pyc

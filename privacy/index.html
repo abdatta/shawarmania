@@ -1,0 +1,235 @@
+<!doctype html>
+<!--
+  /privacy/ — the privacy notice.
+
+  No script, by design: a reviewer with JavaScript disabled has to be able to
+  read this, and so does a customer on a bad connection who wants to know what
+  happened to their phone number. Business facts come from src/data via
+  plugins/legal-facts.ts — never retyped here, so a licence renewal is one
+  portal edit rather than three.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#14100B" />
+    <title>Privacy — Shawarmania</title>
+    <meta
+      name="description"
+      content="What Shawarmania collects, why, and what we never do with it. Your mobile number is used to send you your own bill — it is never sold or passed on for anyone's marketing."
+    />
+    <link rel="canonical" href="https://shawarmania.in/privacy/" />
+    <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="512x512" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="stylesheet" href="../src/styles/legal.css" />
+  </head>
+  <body>
+    <div class="doc">
+      <header class="masthead">
+        <a href="%BASE_URL%">
+          <img src="../src/assets/brand/logo.png" alt="" width="226" height="162" />
+          <span>Shawarmania</span>
+        </a>
+      </header>
+
+      <main>
+        <h1>Privacy</h1>
+        <p class="updated">Last updated 21 September 2026</p>
+
+        <p class="lead">
+          The short version: we collect your mobile number only if you hand it over at the counter,
+          we use it to send you your own bill, and we never sell it or pass it to anybody for their
+          marketing.
+        </p>
+
+        <h2>Who this is</h2>
+        <table class="facts">
+          <tbody>
+            <tr>
+              <th scope="row">Brand</th>
+              <td>{{brand.name}} — {{brand.city}}, {{brand.region}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Operated by</th>
+              <td>{{brand.legalEntityName}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Outlet</th>
+              <td>{{outlet.kalyani.name}} — {{outlet.kalyani.address}}</td>
+            </tr>
+            <tr>
+              <th scope="row">FSSAI</th>
+              <td>{{outlet.kalyani.fssai}}</td>
+            </tr>
+            <tr>
+              <th scope="row">Email</th>
+              <td><a href="{{brand.emailHref}}">{{brand.email}}</a></td>
+            </tr>
+            <tr>
+              <th scope="row">Phone</th>
+              <td><a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>This website collects nothing</h2>
+        <p>
+          <strong>shawarmania.in</strong> sets no cookies, runs no analytics, carries no advertising
+          or tracking scripts, and has no accounts or logins. Fonts and photographs are served from
+          our own domain, so loading a page here does not tell anybody else that you did. There is
+          nothing to opt out of, because nothing is switched on.
+        </p>
+
+        <h2>What we collect at the counter</h2>
+        <p>Everything below happens in person, at our counter, when you buy something.</p>
+        <ul>
+          <li>
+            <strong>Your mobile number</strong> — only if you give it to us, and only so we can send
+            you your bill or recognise you when you come back. Nothing on the menu costs more or less
+            depending on whether you do.
+          </li>
+          <li>
+            <strong>Your name</strong> — optional, and only so the counter can greet a regular
+            properly.
+          </li>
+          <li>
+            <strong>The bill</strong> — what you ordered, the prices at that moment, any discount,
+            the total, how you paid, the date and time, and which outlet served you.
+          </li>
+        </ul>
+        <div class="callout">
+          <p>
+            We do not ask for, and do not store, your home address, your email, your date of birth,
+            or your card details. A card or UPI payment is settled by your own bank or payment app —
+            we record that an amount was paid and by which method, not your account.
+          </p>
+        </div>
+
+        <h2>What we use it for</h2>
+        <ul>
+          <li>Sending you your own bill, on your phone, if you asked for it.</li>
+          <li>Recognising a returning customer at the counter, so we are not asking for the same details again.</li>
+          <li>
+            Running the business — accounts, stock, tax, and knowing which of our own outlets sold
+            what.
+          </li>
+        </ul>
+        <p>
+          That is the whole list. We do not build advertising profiles, we do not score you, and we do
+          not use your number to reach you about anything other than your own orders unless you have
+          separately asked us to.
+        </p>
+
+        <h2>Your bill on your phone</h2>
+        <p>
+          If you gave us your number, we can send you a link to your own bill. How that programme
+          works, and how to stop it, has its own page:
+          <a href="%BASE_URL%messages/">How we message you</a>.
+        </p>
+        <p>A receipt link is built to be readable only by the person holding it:</p>
+        <ul>
+          <li>
+            The address contains a long random token. It cannot be guessed, and changing a digit does
+            not show you somebody else's bill.
+          </li>
+          <li>
+            The page <strong>names nobody</strong> — not your name, not your number, not even the
+            last four digits of it. Anyone you forward it to sees one order and nothing about you.
+          </li>
+          <li>Search engines are instructed not to index it, and it is not listed in our sitemap.</li>
+          <li>
+            When a receipt link is opened, we record the time, the network address it was opened from
+            and the browser's own identifier. That record exists to spot somebody hunting for other
+            people's bills, and for no other purpose.
+          </li>
+        </ul>
+
+        <h2>We do not sell your number</h2>
+        <div class="callout">
+          <p>
+            <strong>
+              Your mobile number and your consent to be messaged are never sold, rented, shared or
+              disclosed to any third party for that party's own marketing, and never transferred as
+              part of anyone else's contact list.
+            </strong>
+          </p>
+        </div>
+
+        <h2>Who else handles it, and why</h2>
+        <p>
+          A few services process this information on our instruction, only to do the job we hired
+          them for, and with no right to use it for their own purposes:
+        </p>
+        <ul>
+          <li>
+            <strong>Our messaging provider</strong> — delivers the message carrying your bill link to
+            your phone.
+          </li>
+          <li>
+            <strong>Our hosting and database providers</strong> — store the bill and serve the receipt
+            page.
+          </li>
+        </ul>
+        <p>
+          We will tell you which companies these are if you ask —
+          <a href="{{brand.emailHref}}">{{brand.email}}</a>. Nobody else receives your number.
+        </p>
+
+        <h2>Ordering through Swiggy or Zomato</h2>
+        <p>
+          If you order through a delivery platform, that order is theirs: they take your details,
+          their app messages you, and their privacy policy governs it, not this one. We receive the
+          order and what is needed to cook and hand it over. Nothing on this page changes what a
+          platform does with your data.
+        </p>
+
+        <h2>How long we keep it</h2>
+        <p>
+          Bills stay in our accounts for as long as the law requires us to keep our books. Your
+          number and name stay in our customer records while you are a customer of ours.
+        </p>
+        <p>
+          <strong>Ask us and we will remove them.</strong> Write to
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> or call
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>. The sale itself stays in
+          our accounts — we cannot unmake a sale that happened — but it stops being connected to you,
+          and we stop being able to message you.
+        </p>
+
+        <h2>Seeing or correcting what we hold</h2>
+        <p>
+          Ask us what we have about you, ask us to fix it if it is wrong, or ask us to delete it, at
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> or
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>. It is a small business
+          and a short list — you will get a real answer from a person.
+        </p>
+
+        <h2>Changes to this notice</h2>
+        <p>
+          If this changes, the date at the top changes with it, and the previous version is in this
+          site's public history. If a change affects how we message you, it will be reflected on
+          <a href="%BASE_URL%messages/">How we message you</a> too.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          {{brand.legalEntityName}}, operating {{brand.name}}<br />
+          {{outlet.kalyani.address}}<br />
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> ·
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>
+        </p>
+      </main>
+
+      <footer class="docfoot">
+        <ul>
+          <li><a href="%BASE_URL%">Home</a></li>
+          <li><a href="%BASE_URL%terms/">Terms</a></li>
+          <li><a href="%BASE_URL%messages/">How we message you</a></li>
+        </ul>
+        <p>© 2026 {{brand.name}} · {{brand.legalEntityName}} · FSSAI {{outlet.kalyani.fssai}}</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -237,6 +237,25 @@ footer a { color: inherit; }
 }
 `
 
+/**
+ * A brand URL inside a note becomes a link.
+ *
+ * **Generic on purpose.** A renderer that matched one particular sentence to
+ * decide it is a link would be deciding something a reader can read, which is
+ * the drift `content.ts` exists to prevent. Any `shawarmania.in/…` in any note
+ * is a link here; the PDF leaves the same token as text, because a printed link
+ * is text.
+ *
+ * Escaping happens first, so the anchor is built around already-escaped text and
+ * a note can never inject markup.
+ */
+function linkifyNote(note: string): string {
+  return escapeHtml(note).replace(
+    /shawarmania\.in(?:\/[\w\-./]*)?/g,
+    (match) => `<a href="https://${match}">${match}</a>`,
+  )
+}
+
 /** One row of the bill: a name, a subtext, an amount. */
 function row(entry: ContentAmount, extraClass = ''): string {
   return `
@@ -318,7 +337,7 @@ export function renderReceiptPage(receipt: Receipt, token: string): string {
 </main>
 
 <footer>
-  <p>${content.notes.map(escapeHtml).join('<br>')}</p>
+  <p>${content.notes.map(linkifyNote).join('<br>')}</p>
 </footer>
 </body>
 </html>`

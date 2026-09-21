@@ -1,0 +1,183 @@
+<!doctype html>
+<!--
+  /messages/ — the opt-in document.
+
+  This is the page a messaging reviewer opens to check that consent is real,
+  and the page a customer opens because they want the messages to stop. Those
+  two readers want the same thing — the truth, near the top — so the links to
+  Terms and Privacy and the way out are all above the fold at 375px.
+
+  **No form, no checkbox, no submit control.** Consent for this programme is
+  taken at the counter; a web form here would invent a second consent path
+  that nothing in the business honours. See
+  openspec/changes/legal-and-messaging-pages/design.md.
+
+  No WhatsApp link either: both WhatsApp numbers in src/data are null and the
+  only destination the brand has is a broadcast channel, which cannot be
+  replied to. A dead end is the last thing to offer on a page about leaving.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#14100B" />
+    <title>How we message you — Shawarmania</title>
+    <meta
+      name="description"
+      content="Why Shawarmania has your mobile number, what we send to it, and every way to make it stop. One message per bill, no marketing, no cost from us."
+    />
+    <link rel="canonical" href="https://shawarmania.in/messages/" />
+    <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="512x512" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="stylesheet" href="../src/styles/legal.css" />
+  </head>
+  <body>
+    <div class="doc">
+      <header class="masthead">
+        <a href="%BASE_URL%">
+          <img src="../src/assets/brand/logo.png" alt="" width="226" height="162" />
+          <span>Shawarmania</span>
+        </a>
+      </header>
+
+      <main>
+        <h1>How we message you</h1>
+        <p class="updated">Last updated 21 September 2026</p>
+
+        <p class="lead">
+          You are probably here for one of two reasons: you want to know why {{brand.name}} has your
+          mobile number, or you want the messages to stop. Both answers are on this page, and the
+          second one is right here.
+        </p>
+
+        <ul class="actions">
+          <li><a class="primary" href="#stop">Make it stop</a></li>
+          <li><a href="%BASE_URL%terms/">Messaging terms</a></li>
+          <li><a href="%BASE_URL%privacy/">Privacy</a></li>
+        </ul>
+
+        <h2>How you opted in</h2>
+        <p>
+          There is one way, and it happens in person. When you pay at our counter, we ask
+          whether you want your bill on your phone. If you say yes, you give the cashier your mobile
+          number, and that is the consent — for that purpose, in those words:
+        </p>
+        <div class="callout">
+          <p>
+            <strong>
+              “Want your bill on your phone? Give us your mobile number. One message per bill, no
+              offers. Reply STOP any time.”
+            </strong>
+          </p>
+        </div>
+        <p>
+          Nobody is added any other way. We do not buy numbers, we do not take them from delivery
+          platforms, and there is no box on this website to tick — because consent given on a website
+          would not be the consent we actually rely on. A number is entered at the counter only
+          because the person standing there gave it.
+        </p>
+        <p>
+          Saying no costs you nothing. The price is the same, the paper bill is the same, and the
+          counter will not ask twice.
+        </p>
+
+        <h2>What arrives</h2>
+        <ul>
+          <li>
+            <strong>A link to your own bill</strong> — what you ordered, what it cost, how you paid.
+            The page it opens names nobody, so it is safe to keep or forward.
+          </li>
+          <li>
+            <strong>Occasionally, something about that same order</strong> — if we got it wrong and
+            need to tell you.
+          </li>
+        </ul>
+        <p>
+          <strong>No offers, no promotions, no marketing.</strong> This programme is transactional and
+          that is all it is. If we ever want to send you an offer, we will ask you separately, and
+          saying no to that will not stop your bills arriving.
+        </p>
+
+        <h2>How often, and what it costs</h2>
+        <p>
+          Roughly one message per bill — buy once, get one message. We charge you nothing.
+          <strong>Message and data rates may apply</strong> on your own mobile plan.
+        </p>
+
+        <h2 id="stop">How to stop</h2>
+        <p>Any one of these is enough. You do not have to explain why.</p>
+        <ul>
+          <li><strong>Tell the counter</strong> next time you are in. Fastest, and it is done while you watch.</li>
+          <li>
+            <strong>Call us</strong> on
+            <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>.
+          </li>
+          <li>
+            <strong>Email</strong> <a href="{{brand.emailHref}}">{{brand.email}}</a> — just the number
+            you want removed is enough.
+          </li>
+          <li><strong>Reply STOP</strong> to any message we send you.</li>
+        </ul>
+
+        <ul class="actions">
+          <li><a class="primary" href="tel:{{brand.phonePrimaryTel}}">Call {{brand.phonePrimary}}</a></li>
+          <li><a href="{{brand.emailHref}}">Email {{brand.email}}</a></li>
+        </ul>
+
+        <h2>What happens after you stop</h2>
+        <ul>
+          <li>We stop sending. No confirmation campaign, no “are you sure”, no win-back message.</li>
+          <li>
+            Your number comes out of our customer records, so the counter cannot message you again by
+            accident.
+          </li>
+          <li>
+            You still get a paper bill at the counter, as always, and we can always show you a past
+            bill if you ask.
+          </li>
+          <li>
+            Links we already sent keep working. If you want one killed, tell us and we will revoke it.
+          </li>
+        </ul>
+
+        <h2>If you are getting messages and never gave us your number</h2>
+        <p>
+          Then something is wrong and we want to know. Call
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a> or write to
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> and we will find out how the number got
+          there and remove it.
+        </p>
+
+        <h2>Who is actually sending them</h2>
+        <p>
+          {{brand.legalEntityName}}, operating {{brand.name}}, from
+          {{outlet.kalyani.name}}. The message is delivered by a
+          licensed messaging provider on our instruction; they cannot use your number for anything
+          else, and nobody else receives it. The detail is in our
+          <a href="%BASE_URL%privacy/">privacy notice</a>, and the programme's terms are in our
+          <a href="%BASE_URL%terms/">terms</a>.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          {{brand.legalEntityName}}, operating {{brand.name}}<br />
+          {{outlet.kalyani.address}}<br />
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> ·
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a><br />
+          FSSAI {{outlet.kalyani.fssai}}
+        </p>
+      </main>
+
+      <footer class="docfoot">
+        <ul>
+          <li><a href="%BASE_URL%">Home</a></li>
+          <li><a href="%BASE_URL%privacy/">Privacy</a></li>
+          <li><a href="%BASE_URL%terms/">Terms</a></li>
+        </ul>
+        <p>© 2026 {{brand.name}} · {{brand.legalEntityName}} · FSSAI {{outlet.kalyani.fssai}}</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -135,7 +135,24 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     adjustments,
     total: { label: 'Total', detail: null, amount: formatPaise(totals.total_paise) },
     tender: `Paid by ${tender}`,
-    notes: ['Shawarmania · Kalyani & Kanchrapara', 'This is a receipt, not a tax invoice.'],
+    notes: [
+      'Shawarmania · Kalyani & Kanchrapara',
+      'This is a receipt, not a tax invoice.',
+      /*
+        Where the messaging programme is explained, and every way out of it.
+
+        It lives here rather than in `page.ts` so the 80 mm roll carries it too
+        -- small print on a receipt you keep is exactly where messaging terms
+        are conventionally read, and the agreement test then holds both
+        renderers to the same wording for free.
+
+        **It says nothing about its reader.** Not "you gave us your number", not
+        "you consented": this link also travels by WhatsApp and gets forwarded,
+        and a receipt that tells the wrong person they opted in is worse than
+        one that says nothing. It names where the explanation lives and stops.
+      */
+      'How we message you: shawarmania.in/messages',
+    ],
   }
 }
 

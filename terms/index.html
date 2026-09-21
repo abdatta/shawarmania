@@ -1,0 +1,191 @@
+<!doctype html>
+<!--
+  /terms/ — website terms, and the messaging programme's terms.
+
+  Same rules as the other two documents: no script, business facts from
+  src/data via plugins/legal-facts.ts.
+
+  The messaging section is deliberately its own heading with its own anchor:
+  it is the part a messaging reviewer is looking for, and the part a customer
+  gets sent to from a receipt.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#14100B" />
+    <title>Terms — Shawarmania</title>
+    <meta
+      name="description"
+      content="Terms for shawarmania.in and for Shawarmania's bill-by-message programme: what we send, how often, what it costs you, and how to stop."
+    />
+    <link rel="canonical" href="https://shawarmania.in/terms/" />
+    <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="512x512" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="stylesheet" href="../src/styles/legal.css" />
+  </head>
+  <body>
+    <div class="doc">
+      <header class="masthead">
+        <a href="%BASE_URL%">
+          <img src="../src/assets/brand/logo.png" alt="" width="226" height="162" />
+          <span>Shawarmania</span>
+        </a>
+      </header>
+
+      <main>
+        <h1>Terms</h1>
+        <p class="updated">Last updated 21 September 2026</p>
+
+        <p class="lead">
+          Two things live on this page: the terms for this website, and the terms for our
+          bill-by-message programme. If you came here from a receipt or a message, the second one is
+          what you want — <a href="#messaging">skip to it</a>.
+        </p>
+
+        <h2>Who you are dealing with</h2>
+        <p>
+          {{brand.name}} is operated by <strong>{{brand.legalEntityName}}</strong>, from
+          {{outlet.kalyani.name}}, {{brand.city}}, {{brand.region}}, under FSSAI licence
+          {{outlet.kalyani.fssai}}. Reach us at <a href="{{brand.emailHref}}">{{brand.email}}</a> or
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>.
+        </p>
+
+        <h2>This website is information, not an offer</h2>
+        <ul>
+          <li>
+            <strong>The counter price governs.</strong> Menu items, prices, photographs and opening
+            hours here are what was true when we last updated them. They change, sometimes the same
+            day. On any given day the price at the counter — or on the delivery platform you are
+            ordering from — is the real one.
+          </li>
+          <li>
+            <strong>Availability is not promised.</strong> A dish shown here may be sold out, seasonal,
+            or off the counter menu on the day.
+          </li>
+          <li>
+            <strong>Ratings are a snapshot.</strong> Any rating or review count shown is copied from a
+            public platform on a particular day and is not live.
+          </li>
+          <li>
+            <strong>Allergens.</strong> Our kitchen handles wheat, dairy, egg, sesame, soy, mustard and
+            nuts, and prepare vegetarian and non-vegetarian food in the same space. If you have an
+            allergy, ask the counter before you order rather than relying on this website.
+          </li>
+        </ul>
+
+        <h2>Ordering and delivery</h2>
+        <p>
+          Orders placed through Swiggy or Zomato are governed by that platform's own terms, and
+          payment, cancellation and refunds are handled by them. Buying at the counter is a cash sale
+          under Indian law; food, once prepared and handed over, is not returnable, but if something
+          is wrong with your order, tell us at the counter or call
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a> and we will put it right.
+        </p>
+
+        <h2>Our brand and photographs</h2>
+        <p>
+          The {{brand.name}} name, logo, photography and page design belong to
+          {{brand.legalEntityName}}. Please do not use them to represent another business, or in a way
+          that suggests we endorse yours. Videos and reviews by other creators belong to their
+          creators and appear here as credited references.
+        </p>
+
+        <h2>Franchise enquiries</h2>
+        <p>
+          Anything on this site about franchising is an invitation to talk, not an offer, and no
+          figure on it is a projection or a guarantee of what any outlet will earn. A franchise
+          relationship exists only under a signed agreement.
+        </p>
+
+        <h2 id="messaging">The messaging programme</h2>
+        <p>
+          If you gave us your mobile number at the counter, we can send your bill to your phone.
+          These are that programme's terms. How consent is taken, and every way to stop, is set out on
+          <a href="%BASE_URL%messages/">How we message you</a>.
+        </p>
+
+        <h3>What we send</h3>
+        <ul>
+          <li>A link to your own bill for a purchase you just made.</li>
+          <li>Occasionally, a message about that specific order — for example if something was wrong with it.</li>
+        </ul>
+        <p>
+          That is all. We do not send marketing, offers or promotions through this programme. If we
+          ever want to, we will ask you separately and you will be free to say no and keep getting
+          your bills.
+        </p>
+
+        <h3>How often</h3>
+        <p>
+          Roughly one message per bill. If you buy once, you get one message. We do not send on a
+          schedule, and there is no campaign you have been added to.
+        </p>
+
+        <h3>What it costs</h3>
+        <p>
+          We charge you nothing. <strong>Message and data rates may apply</strong> depending on your
+          own mobile plan, and messages sent as RCS use your data connection. Ask your operator if you
+          are unsure.
+        </p>
+
+        <h3>Help, and stopping</h3>
+        <p>
+          To stop, tell the counter, call
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>, write to
+          <a href="{{brand.emailHref}}">{{brand.email}}</a>, or reply <strong>STOP</strong> to a
+          message. For help with anything about these messages, reply <strong>HELP</strong> or use the
+          same phone number and email. We will stop as soon as we have the request, and you will still
+          get a paper bill at the counter, as always.
+        </p>
+
+        <h3>What we cannot promise</h3>
+        <p>
+          Delivery depends on your handset, your operator and your network — no messaging programme can
+          guarantee a message arrives, and this one does not. Your bill does not depend on the message:
+          the paper bill at the counter is the record, and we can always show you the same bill again.
+        </p>
+
+        <h2>Liability, in plain terms</h2>
+        <p>
+          We take care to keep this site accurate and our receipt links working, but we do not
+          guarantee either is uninterrupted or error-free, and we are not liable for a loss arising
+          from relying on a price, an hour or a photograph here rather than checking with us. Nothing
+          in these terms limits any right you have under Indian consumer law, or our responsibility for
+          the food we actually sell you.
+        </p>
+
+        <h2>Which law, and which court</h2>
+        <p>
+          These terms are governed by the laws of India, and the courts at Kalyani, Nadia, West Bengal
+          have jurisdiction over any dispute about them.
+        </p>
+
+        <h2>Changes</h2>
+        <p>
+          If these terms change, the date at the top changes with them. Continuing to use this site, or
+          to accept messages, after that date means the updated terms apply.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          {{brand.legalEntityName}}, operating {{brand.name}}<br />
+          {{outlet.kalyani.address}}<br />
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> ·
+          <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>
+        </p>
+      </main>
+
+      <footer class="docfoot">
+        <ul>
+          <li><a href="%BASE_URL%">Home</a></li>
+          <li><a href="%BASE_URL%privacy/">Privacy</a></li>
+          <li><a href="%BASE_URL%messages/">How we message you</a></li>
+        </ul>
+        <p>© 2026 {{brand.name}} · {{brand.legalEntityName}} · FSSAI {{outlet.kalyani.fssai}}</p>
+      </footer>
+    </div>
+  </body>
+</html>

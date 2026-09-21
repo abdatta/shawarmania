@@ -81,7 +81,22 @@
 
 .legalRow {
   display: flex;
-  gap: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-2xs) var(--space-sm);
+}
+
+/* Quieter than the outlet links above them, and deliberately the same weight
+   the legal-modal triggers had before these became real pages. */
+.legalRow a {
+  color: var(--cream-dim);
+  font-size: var(--fs-small);
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.legalRow a:hover {
+  color: var(--cream);
 }
 
 .bar {

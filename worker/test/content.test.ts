@@ -287,7 +287,17 @@ describe.each(SHAPES.map((shape) => [shape.name, shape.receipt] as const))(
       const html = renderReceiptPage(receipt, "Ab3-_x9QzT");
       // `&` is the only character the receipt's own strings carry that HTML
       // escapes, and the footer note carries one.
-      const rendered = html.replace(/&amp;/g, "&");
+      let rendered = html.replace(/&amp;/g, "&");
+      /*
+        Anchors come out before the comparison.
+        A note carrying a brand URL is rendered as a link, so the string the
+        content model says is interrupted by markup in the middle -- but what
+        the page *says* is unchanged, and that is what this test is about. Only
+        `<a>`/`</a>` are dropped, not tags in general: a comparison that
+        stripped every tag would stop noticing a row split across elements,
+        which is a real way for the two renderers to diverge.
+      */
+      rendered = rendered.replace(/<\/?a\b[^>]*>/g, "");
       const missing = said.filter((value) => !rendered.includes(value));
       expect(missing).toEqual([]);
     });
@@ -367,5 +377,52 @@ describe("what the content model refuses to say", () => {
 
   it("omits a subtotal that would only restate the single line above it", () => {
     expect(receiptContent(bill()).subtotal).toBeNull();
+  });
+});
+
+/**
+ * The messaging note.
+ *
+ * `/messages/` is pasted into an RCS messaging registration and named in the
+ * receipt's small print, so the note pointing at it is not decoration — it is
+ * the receipt's own link to how the messaging works and how to stop it.
+ *
+ * Two things are worth holding still. The note must reach both renderings, which
+ * the agreement tests above already enforce by construction. And it must go on
+ * saying nothing about its reader: this link travels by WhatsApp and gets
+ * forwarded, and a receipt that tells the wrong person they opted in is worse
+ * than one that says nothing.
+ */
+describe("the messaging note", () => {
+  const NOTE = "How we message you: shawarmania.in/messages";
+
+  it("is one of the notes the content model says", () => {
+    expect(receiptContent(bill()).notes).toContain(NOTE);
+  });
+
+  it("is a followable link on the page", () => {
+    const html = renderReceiptPage(bill(), "Ab3-_x9QzT");
+    expect(html).toContain(
+      '<a href="https://shawarmania.in/messages">shawarmania.in/messages</a>',
+    );
+  });
+
+  it("is plain text in the PDF, because a printed link is text", () => {
+    expect(pdfStrings(bill())).toContain(NOTE);
+  });
+
+  it("claims nothing about the person reading it", () => {
+    // No second person, no consent claim. The note names where the explanation
+    // lives and stops -- see worker/src/content.ts.
+    expect(NOTE).not.toMatch(/\byou(r)?\s+(number|mobile|phone|consent)\b/i);
+    expect(NOTE).not.toMatch(/\b(consent|agreed|opted|subscrib)/i);
+  });
+
+  it("does not turn the brand name in another note into a link", () => {
+    // The linkifier is generic on purpose, so it is worth pinning that it keys
+    // on the domain and not on the word: `Shawarmania · Kalyani & Kanchrapara`
+    // is a note, not a URL.
+    const html = renderReceiptPage(bill(), "Ab3-_x9QzT");
+    expect(html).toContain("Shawarmania · Kalyani &amp; Kanchrapara<br>");
   });
 });

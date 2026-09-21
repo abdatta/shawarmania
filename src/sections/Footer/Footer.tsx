@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../../lib/gsap'
 import { brand, outlets } from '../../data'
-import { LegalModal } from '../../components/LegalModal/LegalModal'
+import { assetUrl } from '../../lib/assetUrl'
 import logo from '../../assets/brand/logo.png'
 import styles from './Footer.module.css'
 
@@ -77,33 +77,22 @@ export function Footer() {
               .filter(Boolean)
               .join(' · ')}
           </p>
+          {/*
+            Real documents, not modals. Messaging review loads a brand's privacy
+            policy and terms as URLs and reads them, and a <dialog> in the bundle
+            has no URL to load — see
+            openspec/changes/legal-and-messaging-pages.
+          */}
           <div className={styles.legalRow}>
-            <LegalModal label="Privacy" title="Privacy">
-              <p>
-                This is a static informational website for Shawarmania. It sets no cookies, runs no
-                trackers, and collects no personal data on its own.
-              </p>
-              <p>
-                The franchise enquiry form (when enabled) sends only what you type to our form
-                provider so we can reply to you. Ordering happens on Swiggy/Zomato under their
-                privacy policies.
-              </p>
-              <p>
-                Business details shown here come from our own public listings. Spotted something
-                off? Call {brand.phoneDelivery}. <em>(Pending owner legal review.)</em>
-              </p>
-            </LegalModal>
-            <LegalModal label="Terms" title="Terms of Use">
-              <p>
-                Content on this site is for information only. Menu items, prices and hours can
-                change at the counter without notice — the platform listing or the counter price is
-                authoritative on any given day.
-              </p>
-              <p>
-                All photography and branding belong to Shawarmania. Third-party video links belong
-                to their creators. <em>(Pending owner legal review.)</em>
-              </p>
-            </LegalModal>
+            <a className="tap-target" href={assetUrl('privacy/')}>
+              Privacy
+            </a>
+            <a className="tap-target" href={assetUrl('terms/')}>
+              Terms
+            </a>
+            <a className="tap-target" href={assetUrl('messages/')}>
+              Messaging
+            </a>
           </div>
         </div>
       </div>

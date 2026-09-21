@@ -1,9 +1,13 @@
 # Shawarmania — brand site
 
-Premium single-page landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) —
-for customers, prospective franchisees, and investors. A static bundle on GitHub Pages, plus **one
-Cloudflare Worker on `/bill/*`** that serves a customer their own receipt — see
+Premium landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) — for customers,
+prospective franchisees, and investors. A static bundle on GitHub Pages, plus **one Cloudflare Worker
+on `/bill/*`** that serves a customer their own receipt — see
 [`worker/README.md`](worker/README.md).
+
+The brand experience is still one scroll-driven page. It is no longer the only page: `/privacy/`,
+`/terms/` and `/messages/` are three script-free documents required by the RCS messaging
+registration, built as separate entries and deliberately outside the motion runtime.
 
 ## Stack
 
@@ -84,19 +88,32 @@ worker/            # the receipt Worker: /bill/* only, outside the Vite build �
 research/          # brand research: build brief, Instagram findings, deep-research reports
 scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate),
                    # geometry-sweep.mjs + hero-scroll-check.mjs (layout gates)
-plugins/           # dev-only Vite plugins: content validation, portal write API
+plugins/           # dev-only Vite plugins: content validation, portal write API;
+                   # legal-facts.ts also runs in production builds
+index.html         # the landing page — the React bundle's only entry
+privacy/  terms/  messages/
+                   # the three legal documents: additional build entries, one
+                   # HTML file each, no script, served at /privacy/ etc.
 src/
   sections/        # Hero, Marquee, Craving, Menu, Story, Proof, Testimonials,
                    # Outlets, Franchise, Footer (one folder each, co-located styles)
-  components/      # Header, SmoothScroll, Loader, FloatingCtas, Counter, VegMark, LegalModal…
+  components/      # Header, SmoothScroll, Loader, FloatingCtas, Counter, VegMark…
   data/            # content JSON + zod schemas + SOURCES.md provenance
   portal/          # dev-only /admin editor
+  styles/          # tokens, fonts, base — plus legal.css for the three documents
   assets/          # brand logo + curated Instagram photography (WebP at build)
 ```
 
 ## Notes & known limitations
 
 - JSON-LD ratings in `index.html` are a snapshot — refresh them when platform ratings move.
-- Legal modal texts are honest placeholders **pending owner legal review**.
+- **Three legal documents are live, and one messaging registration depends on them.**
+  `/privacy/`, `/terms/` and `/messages/` are pasted into an RCS messaging registration, so they must
+  stay reachable at those URLs and `/messages/` is printed in receipt small print. They carry no
+  script — a reviewer with JavaScript disabled has to be able to read them — and every business fact
+  on them is injected from `src/data/` at build time by `plugins/legal-facts.ts`, which fails the
+  build on an unresolved placeholder. Change a licence number in the portal, not in the markup.
+  `/messages/` states that replying **STOP** works: that promise is honoured in the **ops** repo, and
+  must land there before the RCS agent is submitted for review.
 - The franchise enquiry form activates once the owner adds a Web3Forms endpoint + key via the
   portal; until then it degrades to call/WhatsApp CTAs.
