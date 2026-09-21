@@ -47,20 +47,31 @@ business as it trades today, while the legal documents are forward-dated to the 
 aggregates that pulled every outlet into a sentence are gone from `legal-facts.ts` rather than the
 closing outlet being filtered out by id, which would break the day a third outlet opens.
 
-**Two launch blockers for this live outside this repo**, and the RCS agent must not be submitted
-before both land:
+**The RCS registration was submitted on 2026-09-21** (Telinfy / GreenAds Global), carrying
+`/privacy/`, `/terms/` and `/messages/` as its terms, privacy and opt-in URLs, the `brand/rcs/`
+logo and banner, and Abhishek Datta as the authorised Designated Partner. Telinfy replies to
+`admin@shawarmania.in` or +91 7003801867.
+
+**Two commitments now live outside this repo.** They were listed here as pre-submission blockers;
+the agent went in ahead of them, so they are now promises already published rather than work still
+optional. Both must land before the agent starts sending:
 
 1. **`/messages/` says replying STOP works.** The ops repo has to honour it — a suppression flag on
    the customer, set from the messaging provider's inbound webhook. Until then the page's other
    opt-out paths (counter, phone, email) are the real ones, and the STOP sentence is a promise
-   outstanding.
+   outstanding **on a published page**.
 2. **The counter has to ask the question the page quotes** — "Want your bill on your phone? Give us
    your mobile number. One message per bill, no offers. Reply STOP any time." Staff briefing, and
    ideally the line on the ops billing screen and the printed bill.
 
-Owner actions this change created: create `hello@shawarmania.in` and confirm mail arrives (it is
-named on all three documents as the contact for data and consent requests), then read `/privacy/` and
-`/messages/` end to end for factual accuracy before the registration is submitted.
+Done since: `hello@shawarmania.in` and `admin@shawarmania.in` are live on Cloudflare Email Routing,
+forwarding to the partners' inbox; Cloudflare's **Email Address Obfuscation was turned off** for the
+zone, because it was rewriting the three documents at the edge — injecting a script into pages that
+are supposed to carry none, and replacing the contact address with `[email protected]` for anyone
+reading without JavaScript, which is precisely the reader those pages exist for.
+
+Still outstanding here: `npm run worker:deploy`, so the receipt's small print carries the
+`/messages/` note.
 
 ## Sequence
 
