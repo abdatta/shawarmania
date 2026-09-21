@@ -166,24 +166,31 @@ contradicting the page a reviewer reads. One statement, one place.
 This reverses a requirement the `site-footer` spec states outright ("No routes are introduced"), so
 it is a spec delta rather than a quiet edit.
 
-### D6 — The receipt reaches the messaging page through `content.ts`, as one more note
+### D6 — The receipt says nothing about the messaging programme
 
-`receiptContent()` already ends with `notes: ['Shawarmania · Kalyani & Kanchrapara', 'This is a
-receipt, not a tax invoice.']`. A third note joins them: `'How we message you:
-shawarmania.in/messages'`.
+An earlier draft put a third note in the receipt's small print — `How we message you:
+shawarmania.in/messages` — in `content.ts` so the page and the 80 mm PDF carried it identically,
+with a generic linkifier in `page.ts`. It was built, tested and committed. **It has been taken back
+out** [owner, 2026-09-21], and the reasoning is worth keeping because the mistake is an easy one to
+make again.
 
-Putting it in `content.ts` rather than in `page.ts` is the whole point of that module — the page and
-the 80 mm PDF cannot then word it differently or carry it singly, and `content.test.ts` enforces
-that for free. It also means the **printed** receipt carries the messaging notice, which is what the
-compliance guidance actually asks restaurants to do.
+The owner's objection was simply that no restaurant receipt they had ever seen carries such a line,
+and they were right. The disclosure belongs on **the message, not the receipt**. Every SMS and RCS
+regime puts "Reply STOP to stop" in the message footer, which is where it is required and where
+people look for it. A receipt is a record of a transaction; the messaging programme is not
+transaction data. And the case is worse here than in general, because the receipt *arrives by* the
+message — so its reader already holds the artifact that should carry the instruction.
 
-`page.ts` gains one **generic** presentation rule: a `shawarmania.in/…` token inside a note renders
-as an anchor. Generic, because a renderer matching on a specific sentence to decide it is a link is
-the drift this module was built to prevent. The PDF leaves it as text — a printed link is text.
+The argument for it had been discoverability: somebody who wants the messages stopped is already
+looking at the receipt. That is true, and it is not worth a line on every bill, on the kept PDF, for
+every reader — most of whom received the link by WhatsApp or by hand and are not in the programme at
+all. `page.ts` already states the principle this violated: the motion runtime "exists to sell and has
+no business on a receipt somebody opened to check what they were charged." A messaging link is in
+that same category.
 
-The note **asserts nothing about its reader**. Not "you gave us your number", because a receipt link
-also travels by WhatsApp and gets forwarded, and a receipt that tells the wrong person they opted in
-is worse than one that says nothing. It names where the explanation lives and stops.
+What stays is the outlet line, corrected: the small print read `Shawarmania · Kalyani &
+Kanchrapara` and now reads `Shawarmania · Kalyani`, for the same reason the documents name one
+outlet.
 
 ### D7 — Indexed, listed in the sitemap, and canonical
 

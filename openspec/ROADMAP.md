@@ -37,7 +37,7 @@ none of that and are deleted.
 
 | | |
 |---|---|
-| **Built** | Three HTML entries with no script, one shared `src/styles/legal.css`, `plugins/legal-facts.ts` injecting business facts from `src/data` and failing the build on an unresolved placeholder, three footer links, three sitemap entries, and one more note in the receipt's small print. |
+| **Built** | Three HTML entries with no script, one shared `src/styles/legal.css`, `plugins/legal-facts.ts` injecting business facts from `src/data` and failing the build on an unresolved placeholder, three footer links, three sitemap entries, and the receipt's small-print outlet line corrected to Kalyani. |
 | **Verified** | `npm run build` green at 661 kB of a 1.5 MB initial budget with no new font files and no new JS chunk; the three documents emitted at their directory paths; `VITE_BASE=/shawarmania/` still resolves every asset and cross-link; the placeholder guard fails the build as intended; `npm run worker:test` 66/66 with the receipt's agreement test holding both renderers to the new note. |
 | **QA gate** | Pending — the checklist is in the change's `proposal.md`. |
 
@@ -70,8 +70,10 @@ zone, because it was rewriting the three documents at the edge — injecting a s
 are supposed to carry none, and replacing the contact address with `[email protected]` for anyone
 reading without JavaScript, which is precisely the reader those pages exist for.
 
-Still outstanding here: `npm run worker:deploy`, so the receipt's small print carries the
-`/messages/` note.
+The receipt was going to carry a `How we message you` note in its small print. It was built and
+committed, then **removed** [owner, 2026-09-21]: no restaurant receipt carries such a line, and the
+disclosure belongs on the message rather than on a record of a transaction. What shipped instead is
+the small print's outlet line, corrected to `Shawarmania · Kalyani`.
 
 ## Sequence
 
@@ -87,7 +89,7 @@ Still outstanding here: `npm run worker:deploy`, so the receipt's small print ca
 | 8 | `franchise-funnel` | tier cards, support row, process rail, FAQ, WhatsApp + enquiry form | 3, 7 |
 | 9 | `polish-seo-launch` | SEO/JSON-LD, perf budget, a11y + motion audit, launch gate | all |
 | 10 | `public-bill-receipt-page` | Cloudflare Worker on `/bill/*`: themed customer receipt page + on-demand 80 mm PDF, noindex headers, generic preview card, rate limits. **Parent: `public-bill-receipt` in shawarmania-ops** | 1, 9 |
-| 11 | `legal-and-messaging-pages` | `/privacy/`, `/terms/`, `/messages/` — three script-free documents as extra build entries, facts injected from `src/data`, footer links replacing the legal modals, sitemap entries, and a messaging note in the receipt's small print. **Unblocks the RCS bot registration** | 9, 10 |
+| 11 | `legal-and-messaging-pages` | `/privacy/`, `/terms/`, `/messages/` — three script-free documents as extra build entries, facts injected from `src/data`, footer links replacing the legal modals, and sitemap entries. **Unblocks the RCS bot registration** | 9, 10 |
 
 Changes 5–7 are parallelizable after 4; the listed order is the recommended review order
 (consumer path first, investor funnel once real content exists, polish last).

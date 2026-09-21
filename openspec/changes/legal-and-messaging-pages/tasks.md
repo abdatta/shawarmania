@@ -85,18 +85,17 @@
       and `robots.txt` untouched, and add nothing about receipts
 - [x] 6.2 Confirm none of the three documents carries a `noindex` directive
 
-## 7. The receipt's messaging note
+## 7. The receipt (reverted)
 
-- [x] 7.1 Add `'How we message you: shawarmania.in/messages'` to the `notes` array in
-      `worker/src/content.ts`, after the existing two
-- [x] 7.2 Add one **generic** rule in `worker/src/page.ts`: a `shawarmania.in/…` token inside a note
-      renders as an anchor. Generic — no matching on a specific sentence, which is the drift
-      `content.ts` exists to prevent
-- [x] 7.3 Leave `worker/src/pdf.ts` rendering the note as text (a printed link is text) and confirm
-      `worker/test/content.test.ts` — the agreement test — passes unchanged, proving both renderers
-      carry it
-- [x] 7.4 `npm run worker:test` and `npm run worker:typecheck` green; confirm the receipt still names
-      no customer
+- [x] 7.1 A `How we message you: shawarmania.in/messages` note was added to `worker/src/content.ts`,
+      with a generic linkifier in `page.ts` and five tests. **All of it has been removed again**
+      [owner, 2026-09-21]: no restaurant receipt carries such a line, and the disclosure belongs on
+      the message, not on a record of a transaction — see design D6
+- [x] 7.2 Drop Kanchrapara from the small print: `Shawarmania · Kalyani & Kanchrapara` becomes
+      `Shawarmania · Kalyani`, for the same reason the documents name one outlet
+- [x] 7.3 `npm run worker:test` back to 66/66 and `worker:typecheck` green, with the agreement test
+      restored to its original form (no anchor stripping, because no note carries a link)
+- [x] 7.4 Deploy the Worker so the corrected outlet line reaches production
 
 ## 8. Documentation
 
@@ -140,8 +139,8 @@ is recorded here so the owner knows what is left rather than what is merely clai
       leads to the WhatsApp broadcast channel as a way to opt out
 - [ ] 9.8 Landing page regression: hero pin, marquee, menu gallery, counters and
       `prefers-reduced-motion` all behave as before, at 375 px and desktop
-- [ ] 9.9 `/bill/<token>` against `wrangler dev`: renders, the new note is in the small print, the
-      link reaches `/messages/`, the PDF downloads and carries the note as text
+- [ ] 9.9 `/bill/<token>` against `wrangler dev`: renders, the small print reads `Shawarmania ·
+      Kalyani` with no third line, and the PDF downloads
 - [ ] 9.10a The three documents name **Kalyani only** — no Kanchrapara address, and FSSAI
       `22825123001193` rather than `12826013000341` — while the landing page still lists both
 - [ ] 9.10 Owner sign-off on the facts: **De & Datta LLP** is the correct entity name, Kalyani's

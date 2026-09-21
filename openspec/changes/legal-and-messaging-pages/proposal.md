@@ -39,10 +39,6 @@ collected or how a customer stops the messages.
   and `email: "hello@shawarmania.in"`, both previously `null`, both required by the registration and
   both named on the new pages. The zod schema and the portal pick them up for free.
 - **`sitemap.xml` lists the three URLs**; each page carries its own canonical, title and description.
-- **The receipt page gains one footer link** to `/messages/` — the surface a messaged bill lands on
-  should be able to reach the page that explains the messaging and how to stop it. It asserts nothing
-  about the reader and names no customer, because a receipt link also travels by WhatsApp and by
-  hand.
 
 Deliberately **not** in scope: any opt-in *form*. The consent for this programme is taken at the
 counter, so a web form would be a second, fictional consent path. `/messages/` documents the real one
@@ -60,7 +56,6 @@ and offers the opt-out as `tel:` and `mailto:` links, needing no backend.
 - `pages-deployment`: the build emits more than one document, each base-path aware, each served by
   GitHub Pages at a directory URL.
 - `seo-and-launch`: the sitemap and per-page metadata extend to the three new URLs.
-- `public-receipt-page`: the receipt footer reaches the messaging page.
 
 ## Impact
 

@@ -109,11 +109,12 @@ src/
 - JSON-LD ratings in `index.html` are a snapshot — refresh them when platform ratings move.
 - **Three legal documents are live, and one messaging registration depends on them.**
   `/privacy/`, `/terms/` and `/messages/` are pasted into an RCS messaging registration, so they must
-  stay reachable at those URLs and `/messages/` is printed in receipt small print. They carry no
+  stay reachable at those URLs. They carry no
   script — a reviewer with JavaScript disabled has to be able to read them — and every business fact
   on them is injected from `src/data/` at build time by `plugins/legal-facts.ts`, which fails the
   build on an unresolved placeholder. Change a licence number in the portal, not in the markup.
-  `/messages/` states that replying **STOP** works: that promise is honoured in the **ops** repo, and
-  must land there before the RCS agent is submitted for review.
+  `/messages/` states that replying **STOP** works. That promise is honoured in the **ops** repo and
+  has not landed yet, while the RCS agent was submitted on 2026-09-21 — so it is a published promise
+  with an implementation still owing, and it must land before the agent starts sending.
 - The franchise enquiry form activates once the owner adds a Web3Forms endpoint + key via the
   portal; until then it degrades to call/WhatsApp CTAs.
