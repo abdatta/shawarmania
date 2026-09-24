@@ -353,7 +353,7 @@ export function renderRefusal(): string {
   <h1>This receipt is not available</h1>
   <p>The link may be incomplete, or it may have been turned off. Please ask the outlet for a new one.</p>
 </main>
-<footer><p>Shawarmania · Kalyani &amp; Kanchrapara</p></footer>
+<footer><p>Shawarmania · Kalyani</p></footer>
 </body>
 </html>`
 }

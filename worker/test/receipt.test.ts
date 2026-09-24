@@ -220,6 +220,15 @@ describe('every refusal is the same refusal', () => {
   it('is byte-identical every time it is produced', () => {
     expect(renderRefusal()).toBe(renderRefusal())
   })
+
+  it('names only the trading outlet', () => {
+    // The refusal footer is hand-written rather than driven by `content.notes`,
+    // so it was missed when Kanchrapara was dropped everywhere else and went on
+    // naming a closing outlet in production. Pin it.
+    const html = renderRefusal()
+    expect(html).toContain('Shawarmania · Kalyani')
+    expect(html).not.toContain('Kanchrapara')
+  })
 })
 
 describe('the PDF', () => {
