@@ -4,12 +4,20 @@ import {
   LOGO_PNG_BASE64,
   NUNITO_WOFF2_BASE64,
 } from './assets.generated'
+import { isMenuSlug, readMenu, type PublicMenu } from './menu'
+import {
+  MENU_ASSET_PREFIX,
+  renderMenuNotFound,
+  renderMenuPage,
+  renderMenuUnavailable,
+} from './menu-page'
 import { renderRefusal, renderReceiptPage } from './page'
 import { pdfFilename, renderReceiptPdf } from './pdf'
 import { readReceipt, type Receipt } from './receipt'
 
 /**
- * `shawarmania.in/bill/*` — the customer's receipt, and nothing else.
+ * `shawarmania.in/bill/*` — the customer's receipt — and `shawarmania.in/menu*`,
+ * each outlet's live table menu (see `handleMenu` below).
  *
  * Every other path falls through to GitHub Pages exactly as before. This Worker
  * exists because Pages cannot do three things a receipt needs: set a response
@@ -47,6 +55,8 @@ export interface Env {
   RECEIPT_RATE_PER_MINUTE?: string
   /** Optional per-minute ceiling for the whole endpoint. Defaults below. */
   RECEIPT_GLOBAL_PER_MINUTE?: string
+  /** Where `/menu/` sends a customer: the outlet whose tables carry that QR code. */
+  DEFAULT_MENU_SLUG?: string
 }
 
 /**
@@ -204,9 +214,170 @@ async function receiptFor(
   return receipt
 }
 
+/**
+ * How long a menu is served from the edge before ops is asked again.
+ *
+ * A minute: a price changed or an item marked unavailable in ops reaches the
+ * table within it, and ops serves at most one call per outlet per minute of
+ * traffic — under 100 MB of egress a month at 60–80 customers a day, which the
+ * owner accepted (ops: the-menu-is-public, design D3).
+ */
+const MENU_CACHE_SECONDS = 60
+
+/**
+ * How long the last menu ops answered is kept to fall back on.
+ *
+ * If ops cannot be reached, a customer at a table is better served by the menu
+ * as it was minutes ago than by an error page. A week covers any outage worth
+ * planning for; a menu older than that is not worth showing as current.
+ */
+const MENU_LAST_GOOD_SECONDS = 7 * 24 * 60 * 60
+
+/** The `/menu/` fallback when no default is configured. */
+const DEFAULT_MENU_SLUG = 'kalyani-cafe'
+
+function menuHtml(body: string, status = 200, cacheControl = 'no-store'): Response {
+  return new Response(body, {
+    status,
+    headers: new Headers({
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': cacheControl,
+      'X-Content-Type-Options': 'nosniff',
+    }),
+  })
+}
+
+/**
+ * A menu payload, cached on the slug for a minute, with a last-good copy kept
+ * for a week behind it.
+ *
+ * The payload is cached rather than the page, exactly as the receipt is, so the
+ * page can change with a Worker deploy without waiting out a cache. Only a cache
+ * miss is rate limited, because only a miss costs a database call.
+ */
+async function menuFor(
+  request: Request,
+  env: Env,
+  slug: string,
+): Promise<PublicMenu | null | 'unavailable'> {
+  const cache = caches.default
+  const freshKey = new Request(`https://menu.internal/${slug}`, { method: 'GET' })
+  const lastGoodKey = new Request(`https://menu-last-good.internal/${slug}`, { method: 'GET' })
+
+  const fresh = await cache.match(freshKey)
+  if (fresh) return (await fresh.json()) as PublicMenu
+
+  const lastGood = async (): Promise<PublicMenu | 'unavailable'> => {
+    const kept = await cache.match(lastGoodKey)
+    return kept ? ((await kept.json()) as PublicMenu) : 'unavailable'
+  }
+
+  if (rateLimited(request, env)) return lastGood()
+
+  let menu: PublicMenu | null
+  try {
+    menu = await readMenu(
+      { url: env.OPS_SUPABASE_URL, serviceRoleKey: env.OPS_SERVICE_ROLE_KEY },
+      slug,
+    )
+  } catch (cause) {
+    // A broken Worker or an unreachable ops is not a menu that does not exist.
+    console.error('the ops menu reader failed', cause)
+    return lastGood()
+  }
+
+  if (menu === null) {
+    // Gone from ops — closed, emptied, or renamed away. The last-good copy must
+    // not outlive it, or a closed outlet would keep a menu for a week.
+    await cache.delete(lastGoodKey)
+    return null
+  }
+
+  const body = JSON.stringify(menu)
+  const store = (key: Request, seconds: number) =>
+    cache.put(
+      key,
+      new Response(body, {
+        headers: { 'Cache-Control': `max-age=${seconds}`, 'Content-Type': 'application/json' },
+      }),
+    )
+  await Promise.all([store(freshKey, MENU_CACHE_SECONDS), store(lastGoodKey, MENU_LAST_GOOD_SECONDS)])
+  return menu
+}
+
+/**
+ * `/menu*` — each outlet's live table menu.
+ *
+ *   GET /menu, /menu/        302 to the default outlet's menu
+ *   GET /menu/<slug>         301 to the address with its trailing slash
+ *   GET /menu/<slug>/        the menu, from ops, for any trading outlet
+ *   GET /menu/_/…            this page's own logo and fonts
+ *
+ * Every outlet that is trading on ops and has something on its menu has one;
+ * nobody sets it up (ops: the-menu-is-public). A closed outlet, an empty menu
+ * and an address nobody holds are one "not found" page.
+ */
+async function handleMenu(request: Request, env: Env, url: URL): Promise<Response> {
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    return new Response('Method not allowed', { status: 405 })
+  }
+
+  const rest = url.pathname.replace(/^\/menu\/?/, '')
+
+  if (url.pathname.startsWith(MENU_ASSET_PREFIX)) {
+    const file = url.pathname.slice(MENU_ASSET_PREFIX.length)
+    if (file === 'logo.png') return asset(LOGO_PNG_BASE64, 'image/png')
+    if (file === 'fonts/lilita-one.woff2') return asset(LILITA_WOFF2_BASE64, 'font/woff2')
+    if (file === 'fonts/nunito-sans.woff2') return asset(NUNITO_WOFF2_BASE64, 'font/woff2')
+    return menuHtml(renderMenuNotFound(), 404)
+  }
+
+  if (rest === '') {
+    // 302, not 301: which outlet `/menu/` means may change, and a permanent
+    // redirect would be remembered by every phone that ever followed it.
+    const target = env.DEFAULT_MENU_SLUG?.trim() || DEFAULT_MENU_SLUG
+    return Response.redirect(`${url.origin}/menu/${target}/`, 302)
+  }
+
+  const slug = rest.replace(/\/$/, '')
+  const canonical = slug.toLowerCase()
+
+  // One path segment and the shape ops enforces; anything else cannot be a menu,
+  // and never becomes a database call.
+  if (slug.includes('/') || !isMenuSlug(canonical)) {
+    return menuHtml(renderMenuNotFound(), 404)
+  }
+
+  // One address per menu: lowercase, with its trailing slash.
+  if (slug !== canonical || !rest.endsWith('/')) {
+    return Response.redirect(`${url.origin}/menu/${canonical}/`, 301)
+  }
+
+  const menu = await menuFor(request, env, canonical)
+  if (menu === 'unavailable') {
+    return new Response(renderMenuUnavailable(), {
+      status: 503,
+      headers: new Headers({
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Retry-After': '60',
+      }),
+    })
+  }
+  if (menu === null) return menuHtml(renderMenuNotFound(), 404)
+
+  // A phone may keep it for the same minute the edge does, so a customer
+  // flicking back to the menu does not refetch it.
+  return menuHtml(renderMenuPage(menu, url.origin), 200, `public, max-age=${MENU_CACHE_SECONDS}`)
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
+
+    if (url.pathname === '/menu' || url.pathname.startsWith('/menu/')) {
+      return handleMenu(request, env, url)
+    }
 
     /*
      * Not ours.

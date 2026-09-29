@@ -4,7 +4,18 @@ Premium single-page brand site for Shawarmania (Kalyani + Kanchrapara), deployed
 Source of truth for scope/design: `research/build-brief.md`. Each change ends with a **manual QA
 gate** — the owner walks the checklist in the change's `proposal.md` before the next change begins.
 
-## Status: ✅ changes 1–10 archived; change 11 implemented, awaiting owner QA
+## Status: ✅ changes 1–10 and 12 archived; change 11 awaiting owner QA; change 13 in progress
+
+✅ **Change 12 `table-menu-and-qr-maker` archived 2026-09-28 — recorded after the fact.** `/menu/`
+(the dine-in menu from the owner's PDFs, behind the table QR codes) and `/qr/` (the branded QR maker)
+shipped on 2026-09-26 and 2026-09-28 without a change folder. The folder was written afterwards so
+the living specs (`table-menu`, `qr-maker`) describe the live site; that is not the process, and
+change 13 goes back to it.
+
+🚧 **Change 13 `the-table-menu-reads-ops` in progress** — the child half of `the-menu-is-public` in
+the ops repo. The Worker serves `/menu/<slug>/` for every trading outlet, live from ops, with
+unavailable dishes greyed out; `/menu/` redirects to Kalyani Cafe's. **Live since 2026-09-29**; the
+site's own copy of the menu is removed. Waiting only on the owner's QA walk before archiving.
 
 ✅ **Change 10 `public-bill-receipt-page` archived 2026-09-10** — the child half of a pair, its
 parent being `public-bill-receipt` in the `shawarmania-ops` repo, which owns the receipt link and the

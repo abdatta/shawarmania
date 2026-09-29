@@ -2,8 +2,8 @@
 
 Premium landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) — for customers,
 prospective franchisees, and investors. A static bundle on GitHub Pages, plus **one Cloudflare Worker
-on `/bill/*`** that serves a customer their own receipt — see
-[`worker/README.md`](worker/README.md).
+on `/bill/*` and `/menu*`** that serves a customer their own receipt and each outlet's live table menu,
+read from the ops database — see [`worker/README.md`](worker/README.md).
 
 The brand experience is still one scroll-driven page. It is no longer the only page: `/privacy/`,
 `/terms/` and `/messages/` are three script-free documents required by the RCS messaging
@@ -52,8 +52,8 @@ Since the receipt page landed there are two independent things behind
 
 | | Deploys by | Serves |
 |---|---|---|
-| **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill/*` |
-| **The receipt Worker** | `npm run worker:deploy` | `/bill/*` only |
+| **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill/*` and `/menu*` |
+| **The receipt + menu Worker** | `npm run worker:deploy` | `/bill/*` and `/menu*` only |
 
 The Worker is not part of the Vite build, does not enter the Pages artifact, and does not count
 against the page-weight budget — `npm run build` asserts the second and third. It exists because the

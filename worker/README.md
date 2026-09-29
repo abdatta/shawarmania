@@ -1,11 +1,13 @@
 # The receipt Worker
 
-`shawarmania.in/bill/<token>` — a customer's own bill, as a page and as a PDF.
+`shawarmania.in/bill/<token>` — a customer's own bill, as a page and as a PDF —
+and, since change 13 `the-table-menu-reads-ops`, `shawarmania.in/menu/<slug>/`,
+each trading outlet's live table menu.
 
 This is the **first server-side code this repo has ever held**, and the first
 thing in it holding a secret. Everything else here is a static Vite bundle on
 GitHub Pages, and that has not changed: the Worker intercepts `/bill/*` and
-nothing else, is not part of the Vite build, does not enter the Pages artifact,
+`/menu*` and nothing else, is not part of the Vite build, does not enter the Pages artifact,
 and does not count against the page-weight budget.
 
 ## Why a Worker at all
@@ -31,6 +33,20 @@ Two smaller reasons follow: GitHub Pages cannot set a response header
 | `GET /bill/<token>.pdf` | the same receipt as an 80 mm roll, built on demand, never stored |
 | `GET /bill/logo.png` | the brand mark, from the Worker's own bundle |
 | `GET /bill/fonts/*.woff2` | the brand faces, likewise |
+
+| `GET /menu`, `/menu/` | 302 to `DEFAULT_MENU_SLUG` (`kalyani-cafe`) — printed `/menu/` QR codes keep working |
+| `GET /menu/<slug>/` | that outlet's menu, read live from ops through `public_menu(slug)` |
+| `GET /menu/<slug>` | 301 to the one canonical address: lowercase, trailing slash |
+| `GET /menu/_/logo.png`, `/menu/_/fonts/*.woff2` | the menu page's own assets (`_` is never in a slug) |
+
+**The menu** is cached on its slug for a minute, so an ops edit reaches the table
+within one and ops serves at most one call per outlet per minute; the last good
+answer is kept for a week and served if ops cannot be reached. An address nobody
+holds, a closed outlet and an empty menu are one "not found" page, and a closed
+outlet's week-long copy is deleted the moment ops says it is gone. Unavailable
+dishes stay on the page, greyed out, with **Unavailable** where the price was.
+The reasoning is in `openspec/changes/the-table-menu-reads-ops/design.md` and,
+for the data, the ops repo's `the-menu-is-public`.
 
 Anything else under `/bill/` is refused. Anything outside it is not the Worker's
 business — the route pattern keeps it on Pages, and the Worker returns a plain

@@ -1,7 +1,7 @@
 # The receipt Worker, beside the site and outside its build.
 #
-# It intercepts `/bill/*` and nothing else; every other path falls through to
-# GitHub Pages exactly as before. The Vite build does not see this directory,
+# It intercepts `/bill/*` and `/menu*` and nothing else; every other path falls
+# through to GitHub Pages exactly as before. The Vite build does not see this directory,
 # nothing here enters the Pages artifact, and `scripts/check-weight.mjs` does not
 # measure it.
 #
@@ -29,10 +29,19 @@ enabled = true
 # Public, so it lives in the config rather than in a secret.
 [vars]
 OPS_SUPABASE_URL = "https://iefcidjbfnmsiqithqbj.supabase.co"
+# Where `/menu/` sends a customer: the outlet whose tables carry that QR code
+# (change 13 `the-table-menu-reads-ops`). A 302, so it can change here freely.
+DEFAULT_MENU_SLUG = "kalyani-cafe"
 
 # The apex route, enabled after the owner moved the zone to Cloudflare on
 # 2026-09-10. See the ops repo's docs/OPERATIONS.md for the runbook and rollback.
 # `wrangler dev` and `workers.dev` remain available independently.
 [[routes]]
 pattern = "shawarmania.in/bill/*"
+zone_name = "shawarmania.in"
+
+# Each trading outlet's live table menu, read from ops (change 13). `menu*`
+# rather than `menu/*` so `/menu` without its slash reaches the Worker too.
+[[routes]]
+pattern = "shawarmania.in/menu*"
 zone_name = "shawarmania.in"
