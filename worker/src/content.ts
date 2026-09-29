@@ -52,6 +52,11 @@ export interface ReceiptContent {
   total: ContentAmount
   /** `Paid by Cash ₹200 + UPI ₹55` */
   tender: string
+  /**
+   * What the bill used and earned, and the balance it left, beneath the tender.
+   * Empty for a bill with no points. Counts of points, not money.
+   */
+  points: ContentAmount[]
   /** The small print, in order. */
   notes: string[]
 }
@@ -60,6 +65,9 @@ const methodLabel = (method: string): string => (method === 'upi' ? 'UPI' : 'Cas
 
 /** `Menu Discount (15%)` over the categories it covered; `Discount (₹50)` on the bill. */
 function discountLabel(row: ReceiptDiscountRow): string {
+  // One point is one rupee, so the points a row used are its rupees (ops #62).
+  if (row.source === 'points') return `Points (${Math.round(row.amount_paise / 100)})`
+  if (row.source === 'packaging') return 'Free packaging'
   const value =
     row.basis === 'percent'
       ? formatBasisPoints(row.value_bp ?? 0)
@@ -78,6 +86,8 @@ function discountLabel(row: ReceiptDiscountRow): string {
  */
 function discountDetail(row: ReceiptDiscountRow): string {
   if (row.source === 'bill') return 'On this bill'
+  if (row.source === 'points') return 'From your points'
+  if (row.source === 'packaging') return 'Gold member'
   return row.categories.length > 0 ? row.categories.join(', ') : 'Selected items'
 }
 
@@ -119,6 +129,18 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     )
     .join(' + ')
 
+  // Read, never worked out: the three figures are the bill's own ledger rows.
+  const points: ContentAmount[] = []
+  if (receipt.points) {
+    if (receipt.points.used > 0) {
+      points.push({ label: 'Points used', detail: null, amount: String(receipt.points.used) })
+    }
+    points.push(
+      { label: 'Points earned', detail: null, amount: String(receipt.points.earned) },
+      { label: 'Points balance', detail: null, amount: String(receipt.points.balance) },
+    )
+  }
+
   return {
     outletName: receipt.outlet.name,
     when: `${formatBusinessDate(receipt.business_date)} · ${formatSaleTime(receipt.sold_at)}`,
@@ -135,6 +157,7 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     adjustments,
     total: { label: 'Total', detail: null, amount: formatPaise(totals.total_paise) },
     tender: `Paid by ${tender}`,
+    points,
     notes: ['Shawarmania · Kalyani', 'This is a receipt, not a tax invoice.'],
   }
 }
@@ -167,6 +190,8 @@ export function contentStrings(content: ReceiptContent): string[] {
     out.push(row.amount)
   }
 
-  out.push(content.tender, ...content.notes)
+  out.push(content.tender)
+  for (const row of content.points) out.push(row.label, row.amount)
+  out.push(...content.notes)
   return out
 }

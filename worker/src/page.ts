@@ -188,6 +188,12 @@ body {
 .paid { margin: 0 20px 20px; padding: 12px 14px; border: 1px solid var(--hairline); border-radius: 12px; font-size: 14px; color: var(--cream-dim); }
 .paid strong { color: var(--cream); }
 
+/* The points this bill used and earned, and the balance it left: quiet figures
+   under the tender, counts rather than money, so never gold. */
+.points { list-style: none; margin: -8px 20px 20px; padding: 0 14px; }
+.points .row { padding: 7px 0; }
+.points .row .name { font-weight: 600; color: var(--cream-dim); }
+
 .download { padding: 0 20px 24px; }
 .download a {
   display: block;
@@ -311,7 +317,14 @@ export function renderReceiptPage(receipt: Receipt, token: string): string {
   </div>
 
   <p class="paid">${escapeHtml(content.tender)}</p>
-
+${
+  content.points.length > 0
+    ? `
+  <ul class="points">${content.points.map((entry) => row(entry)).join('')}
+  </ul>
+`
+    : ''
+}
   <div class="download">
     <a href="/bill/${encodeURIComponent(token)}.pdf" download>Download PDF</a>
   </div>

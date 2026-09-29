@@ -68,6 +68,70 @@ const SHAPES: Shape[] = [
   { name: "a plain one-line bill", receipt: bill() },
 
   {
+    name: "a gold member's bill with free packaging, points used, earned and a balance",
+    receipt: {
+      ...bill({
+      totals: {
+        subtotal_paise: 29300,
+        discount_paise: 3300,
+        tax_paise: 0,
+        rounding_paise: 0,
+        total_paise: 26000,
+      },
+      lines: [
+        {
+          item_name: "Classic Chicken Shawarma",
+          quantity: 2,
+          unit_price_paise: 13900,
+          line_total_paise: 27800,
+        },
+        {
+          item_name: "Packaging",
+          quantity: 3,
+          unit_price_paise: 500,
+          line_total_paise: 1500,
+        },
+      ],
+      discount_rows: [
+        {
+          source: "packaging",
+          basis: "percent",
+          value_bp: 10000,
+          value_paise: null,
+          categories: [],
+          amount_paise: 1500,
+        },
+        {
+          source: "points",
+          basis: "amount",
+          value_bp: null,
+          value_paise: 1800,
+          categories: [],
+          amount_paise: 1800,
+        },
+      ],
+      payments: [{ method: "upi", amount_paise: 26000 }],
+      points: { used: 0, earned: 6, balance: 42 },
+    }),
+      points: { used: 18, earned: 6, balance: 42 },
+    },
+  },
+
+  {
+    name: "a bill that only earned points",
+    receipt: bill({ points: { used: 0, earned: 2, balance: 2 } }),
+  },
+
+  {
+    name: "a voided bill keeps the points it was sold with",
+    receipt: bill({
+      status: "void",
+      void_reason: "Wrong order",
+      points: { used: 0, earned: 2, balance: 2 },
+    }),
+  },
+
+  {
     name: "a bill with both kinds of discount, a round-up and a split tender",
     receipt: bill({
       totals: {
@@ -363,6 +427,69 @@ describe("what the content model refuses to say", () => {
     );
     expect(said.join(" ")).not.toMatch(/all items/i);
     expect(said.join(" ")).toContain("Shawarma, Drinks, Sides");
+  });
+
+  it("names the points row by the points it used, and the waiver as free packaging", () => {
+    const content = receiptContent({
+      ...bill({
+        totals: {
+          subtotal_paise: 29300,
+          discount_paise: 3300,
+          tax_paise: 0,
+          rounding_paise: 0,
+          total_paise: 26000,
+        },
+        lines: [
+          {
+            item_name: "Classic Chicken Shawarma",
+            quantity: 2,
+            unit_price_paise: 13900,
+            line_total_paise: 27800,
+          },
+          {
+            item_name: "Packaging",
+            quantity: 3,
+            unit_price_paise: 500,
+            line_total_paise: 1500,
+          },
+        ],
+        discount_rows: [
+          {
+            source: "packaging",
+            basis: "percent",
+            value_bp: 10000,
+            value_paise: null,
+            categories: [],
+            amount_paise: 1500,
+          },
+          {
+            source: "points",
+            basis: "amount",
+            value_bp: null,
+            value_paise: 1800,
+            categories: [],
+            amount_paise: 1800,
+          },
+        ],
+        payments: [{ method: "upi", amount_paise: 26000 }],
+        points: { used: 0, earned: 6, balance: 42 },
+      }),
+      points: { used: 18, earned: 6, balance: 42 },
+    });
+    expect(content.adjustments.map((row) => [row.label, row.detail, row.amount])).toEqual([
+      ["Free packaging", "Gold member", "−₹15"],
+      ["Points (18)", "From your points", "−₹18"],
+    ]);
+    expect(content.points.map((row) => [row.label, row.amount])).toEqual([
+      ["Points used", "18"],
+      ["Points earned", "6"],
+      ["Points balance", "42"],
+    ]);
+  });
+
+  it("says nothing about points on a bill that had none", () => {
+    expect(receiptContent(bill()).points).toEqual([]);
+    expect(receiptContent(bill({ points: null })).points).toEqual([]);
   });
 
   it("omits a subtotal that would only restate the single line above it", () => {

@@ -355,6 +355,21 @@ function layout(content: ReceiptContent, logoHeight: number): Row[] {
     dim: false,
   });
 
+  // The points this bill used and earned, and the balance it left (ops #62):
+  // figures like the discounts, beneath the tender, and never gold.
+  if (content.points.length > 0) {
+    rows.push({ kind: "gap", height: 4 });
+    for (const entry of content.points) {
+      rows.push({
+        kind: "figure",
+        label: entry.label,
+        sub: entry.detail,
+        amount: entry.amount,
+        gold: false,
+      });
+    }
+  }
+
   rows.push({ kind: "gap", height: 10 });
   for (const note of content.notes) {
     rows.push({

@@ -22,7 +22,12 @@ export interface ReceiptLine {
 }
 
 export interface ReceiptDiscountRow {
-  source: 'menu' | 'bill'
+  /**
+   * `packaging` is a gold member's free packaging (ops #60); `points` is the
+   * customer's points taken off the bill (ops #62). Both are among the bill's
+   * own rows, so the printed rows still add up to the stored discount.
+   */
+  source: 'menu' | 'packaging' | 'bill' | 'points'
   basis: 'percent' | 'amount'
   value_bp: number | null
   value_paise: number | null
@@ -43,6 +48,17 @@ export interface ReceiptPayment {
   amount_paise: number
 }
 
+/**
+ * What this bill did to the customer's points at the outlet, read from the
+ * bill's own ledger rows in ops (#62): nothing recomputed, nobody named. Null for
+ * a bill that had no points.
+ */
+export interface ReceiptPoints {
+  used: number
+  earned: number
+  balance: number
+}
+
 export interface Receipt {
   outlet: { name: string }
   bill_number: number
@@ -54,6 +70,8 @@ export interface Receipt {
   lines: ReceiptLine[]
   discount_rows: ReceiptDiscountRow[]
   payments: ReceiptPayment[]
+  /** Absent from a receipt served before ops #62, which reads as none. */
+  points?: ReceiptPoints | null
 }
 
 export interface OpsProject {
