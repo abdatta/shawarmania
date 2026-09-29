@@ -190,6 +190,34 @@ export const franchiseSchema = z.object({
   roiNote: z.string().nullable(),
 })
 
+/* ---------- dine-in menu ----------
+   The printed table menu, as served at /menu/ behind the QR codes on the
+   tables. Deliberately separate from `menu`: that one is the landing page's
+   curated showcase (delivery prices, ratings, photos); this is every dish at
+   the dine-in price, in the order the printed card lists it.
+
+   Shaped to fit the ops app's menu exactly (menu_categories / menu_items):
+   a section is a category, and an item carries nothing ops cannot store.
+   Portions ("4 pieces") belong in the description; every item has a price. */
+
+export const dineInSchema = z.object({
+  sections: z.array(
+    z.object({
+      id: nonEmpty,
+      name: nonEmpty,
+      items: z.array(
+        z.object({
+          id: nonEmpty,
+          name: nonEmpty,
+          description: z.string().nullable(),
+          price: z.number().int().positive(), // ₹, dine-in; ops stores it ×100 as paise
+          isVeg: z.boolean(),
+        }),
+      ),
+    }),
+  ),
+})
+
 /* ---------- registry ---------- */
 
 export const schemas = {
@@ -199,6 +227,7 @@ export const schemas = {
   stats: statsSchema,
   testimonials: testimonialsSchema,
   franchise: franchiseSchema,
+  dinein: dineInSchema,
 } as const
 
 export type ContentName = keyof typeof schemas

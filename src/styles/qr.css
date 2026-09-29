@@ -1,0 +1,232 @@
+/* ============================================================
+   /qr/ — the QR maker. Two panes on a desktop (fields left,
+   preview right), stacked on a phone with the preview under the
+   buttons.
+   ============================================================ */
+@import './fonts.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  padding: 0 16px var(--space-xl);
+}
+
+main,
+.masthead {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.masthead {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-md) 0 0;
+}
+
+.masthead img {
+  display: block;
+  width: auto;
+  height: 4.5rem;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 1.8rem + 2.5vw, 3.25rem);
+  line-height: 1;
+  text-align: center;
+  margin: var(--space-sm) 0 var(--space-lg);
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 4.5rem;
+  height: 4px;
+  margin: var(--space-sm) auto 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-flame);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (min-width: 52rem) {
+  .layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* -- fields --------------------------------------------------------- */
+.fields {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+input {
+  width: 100%;
+  margin: 0 0 var(--space-xs);
+  padding: 0.85rem 1rem;
+  border: 1px solid rgb(245 228 199 / 0.2);
+  border-radius: var(--radius-md);
+  background: var(--bg-raised);
+  color: var(--cream);
+  font: inherit;
+  font-size: 1rem; /* ≥16px, so iOS does not zoom on focus */
+}
+
+input::placeholder {
+  color: var(--cream-faint);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--flame-gold);
+  box-shadow: 0 0 0 3px rgb(255 197 61 / 0.18);
+}
+
+.status {
+  min-height: 1.5em;
+  margin: var(--space-xs) 0 0;
+  text-align: center;
+  color: var(--cream-dim);
+  font-size: var(--fs-small);
+}
+
+/* -- preview -------------------------------------------------------- */
+.preview {
+  position: relative;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  min-height: 16rem;
+  border: 1px dashed rgb(245 228 199 / 0.16);
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm);
+  /* A strip along the top for the corner buttons, so they never sit on
+     the card whatever the frame's width. */
+  padding-top: calc(44px + 1.25rem);
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+}
+
+.card[hidden] {
+  display: none;
+}
+
+.card canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.5);
+}
+
+/* -- the image's actions --------------------------------------------
+   Round icon buttons in the preview frame's top-right corner: they
+   belong to the image without drawing on it. */
+.tools {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tools[hidden] {
+  display: none;
+}
+
+.tool {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgb(245 228 199 / 0.25);
+  border-radius: 50%;
+  background: var(--bg-raised);
+  color: var(--cream);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.tool svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hover only where there is a pointer: on a phone a tapped button
+   would otherwise stay flame-coloured after the tap. */
+@media (hover: hover) {
+  .tool:hover {
+    border-color: transparent;
+    background: var(--gradient-flame);
+    color: #201404;
+  }
+}
+
+.tool:active {
+  transform: scale(0.92);
+}
+
+.tool:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.tool .icon-done,
+.tool.done .icon-idle {
+  display: none;
+}
+
+.tool.done .icon-done {
+  display: block;
+}
+
+.tool.done {
+  border-color: transparent;
+  background: var(--color-veg);
+  color: #fff;
+}
+
+.empty {
+  margin: 0;
+  color: var(--cream-faint);
+  font-size: var(--fs-small);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool {
+    transition: none;
+  }
+}

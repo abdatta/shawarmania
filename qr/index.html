@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  /qr/ — the in-house QR maker. Paste a link or text, get a Shawarmania-styled
+  QR card, copy it to the clipboard or download it. Runs entirely in the
+  browser (src/qr/). An internal tool, so it is kept out of search engines and
+  the sitemap.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#14100B" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>QR maker — Shawarmania</title>
+    <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="512x512" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="stylesheet" href="../src/styles/qr.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <a href="%BASE_URL%">
+        <img src="../src/assets/brand/logo.png" alt="Shawarmania — home" width="226" height="162" />
+      </a>
+    </header>
+
+    <main>
+      <h1>QR maker</h1>
+
+      <div class="layout">
+        <form class="fields">
+          <input
+            id="qr-text"
+            type="text"
+            inputmode="url"
+            placeholder="Link or text"
+            aria-label="Link or text"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            autofocus
+          />
+
+          <input
+            id="qr-caption"
+            type="text"
+            maxlength="60"
+            placeholder="Caption (optional)"
+            aria-label="Caption (optional)"
+          />
+        </form>
+
+        <figure class="preview">
+          <!-- The image's actions, in the frame's corner: beside the card, never on it. -->
+          <div class="tools" id="qr-tools" hidden>
+            <button type="button" id="qr-copy" class="tool" aria-label="Copy image" title="Copy image">
+              <svg class="icon-idle" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="9" width="11" height="11" rx="2.5" />
+                <path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15" />
+              </svg>
+              <svg class="icon-done" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7.5" />
+              </svg>
+            </button>
+            <button type="button" id="qr-download" class="tool" aria-label="Download PNG" title="Download PNG">
+              <svg class="icon-idle" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 4v11" />
+                <path d="M7 10.5l5 5 5-5" />
+                <path d="M5 19.5h14" />
+              </svg>
+              <svg class="icon-done" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7.5" />
+              </svg>
+            </button>
+          </div>
+          <div class="card" id="qr-card" hidden>
+            <canvas id="qr-canvas" aria-label="QR code preview"></canvas>
+          </div>
+          <p id="qr-empty" class="empty">Paste a link to see your QR code.</p>
+          <figcaption id="qr-status" class="status" role="status" aria-live="polite"></figcaption>
+        </figure>
+      </div>
+    </main>
+
+    <script type="module" src="../src/qr/main.ts"></script>
+  </body>
+</html>

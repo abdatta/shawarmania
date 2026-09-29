@@ -7,6 +7,7 @@ import './portal.css'
 const FILES: { name: ContentName; label: string; blurb: string }[] = [
   { name: 'brand', label: 'Brand', blurb: 'Identity, taglines, phones, socials' },
   { name: 'menu', label: 'Menu', blurb: 'Categories, items, prices, badges' },
+  { name: 'dinein', label: 'Table menu', blurb: 'The /menu/ page behind the table QR codes' },
   { name: 'outlets', label: 'Outlets', blurb: 'Addresses, hours, FSSAI, order links' },
   { name: 'stats', label: 'Stats & proof', blurb: 'Counters, timeline, lab report' },
   { name: 'testimonials', label: 'Testimonials', blurb: 'Vlogger videos, quotes' },

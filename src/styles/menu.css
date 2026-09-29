@@ -1,0 +1,312 @@
+/* ============================================================
+   The table menu — /menu/
+
+   Opened from a QR code at the table, so it is designed for a
+   phone held in one hand: one column, big tap targets for the
+   section chips, prices where the thumb-scrolling eye expects
+   them (flush right, on the dish's own line).
+
+   The only motion is the section chips (pill slide, strip and
+   page glides), and all of it stops under prefers-reduced-motion.
+   ============================================================ */
+@import './fonts.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* The sticky chip bar covers the top of whatever a chip jumps to. */
+  scroll-padding-top: 4.5rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: var(--fs-body);
+  line-height: 1.45;
+  padding: 0 16px;
+}
+
+main,
+.masthead,
+.docfoot {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+/* -- masthead ------------------------------------------------------ */
+.masthead {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-md) 0 0;
+}
+
+.masthead a {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  color: var(--cream);
+  text-decoration: none;
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  font-size: 1.25rem;
+}
+
+.masthead img {
+  display: block;
+  width: auto;
+  height: 5.5rem;
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 2rem + 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  text-align: center;
+  margin: var(--space-sm) 0 0;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 4.5rem;
+  height: 4px;
+  margin: var(--space-sm) auto 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-flame);
+}
+
+/* -- section chips -------------------------------------------------
+   Sticky, and scrolls sideways inside itself: nine sections do not
+   fit a 375px phone, and the page itself must never scroll sideways. */
+.chips {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: var(--space-md) -16px 0;
+  padding: var(--space-xs) 16px;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgb(245 228 199 / 0.1);
+}
+
+.chips ul {
+  /* The positioned frame for the sliding pill (src/menu/spy.ts). */
+  position: relative;
+  display: flex;
+  gap: var(--space-2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips ul::-webkit-scrollbar {
+  display: none;
+}
+
+.chips a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--space-sm);
+  border: 1px solid rgb(245 228 199 / 0.2);
+  border-radius: var(--radius-pill);
+  /* Translucent, not solid, so the pill stays visible as it slides under. */
+  background: rgb(245 228 199 / 0.05);
+  color: var(--cream);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+  transition:
+    color 260ms var(--ease-out),
+    border-color 260ms var(--ease-out);
+}
+
+.chips a:hover {
+  border-color: var(--flame-gold);
+  color: var(--flame-gold);
+}
+
+/* The section being read, set by src/menu/spy.ts. The flame colour
+   itself is the pill underneath; the chip only changes its ink. */
+.chips a[aria-current],
+.chips a[aria-current]:hover {
+  border-color: transparent;
+  color: #201404;
+}
+
+.chip-pill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-flame);
+  pointer-events: none;
+}
+
+/* No glide on first paint: the pill appears where it belongs, then moves. */
+.spy-ready .chip-pill {
+  transition:
+    transform 420ms var(--ease-out),
+    width 420ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chips a,
+  .spy-ready .chip-pill {
+    transition: none;
+  }
+}
+
+/* -- a course ------------------------------------------------------ */
+.course h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-display);
+  color: var(--flame-gold);
+  margin: var(--space-lg) 0 var(--space-2xs);
+}
+
+.dishes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dish {
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid rgb(245 228 199 / 0.08);
+}
+
+.dish:last-child {
+  border-bottom: 0;
+}
+
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.dish h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* -- veg / non-veg mark ----------------------------------------------
+   The FSSAI symbol: a bordered square holding a green dot (veg) or a
+   brown-red triangle (non-veg). On a white tile, as it is printed on
+   every pack in India, so it reads the same on this dark page. */
+.diet {
+  display: inline-block;
+  position: relative;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-right: 0.5rem;
+  vertical-align: -0.1rem;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.diet::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  background: currentColor;
+}
+
+.diet.veg {
+  color: var(--color-veg);
+}
+
+.diet.veg::after {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+}
+
+.diet.nonveg {
+  color: var(--color-nonveg);
+}
+
+.diet.nonveg::after {
+  width: 0.55rem;
+  height: 0.48rem;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.price {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--flame-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.rupee {
+  margin-right: 0.08em;
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: 0.85em;
+}
+
+.desc {
+  margin: var(--space-2xs) 0 0;
+  color: var(--cream-dim);
+  font-size: 0.9375rem;
+  /* Clear the price column so a long line never runs under it. */
+  padding-right: 3.5rem;
+}
+
+/* -- footer -------------------------------------------------------- */
+.docfoot {
+  margin-top: var(--space-xl);
+  padding: var(--space-md) 0 var(--space-lg);
+  border-top: 1px solid rgb(245 228 199 / 0.12);
+  color: var(--cream-faint);
+  font-size: var(--fs-xs);
+}
+
+.docfoot ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  margin: 0 0 var(--space-sm);
+  padding: 0;
+  list-style: none;
+}
+
+.docfoot a {
+  color: var(--cream-dim);
+  text-underline-offset: 0.2em;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}

@@ -5,6 +5,7 @@ import { imagetools } from 'vite-imagetools'
 import { validateContent } from './plugins/validate-content'
 import { contentPortal } from './plugins/content-portal'
 import { legalFacts } from './plugins/legal-facts'
+import { dineInMenu } from './plugins/dinein-menu'
 
 validateContent()
 
@@ -14,7 +15,7 @@ const here = (p: string) => fileURLToPath(new URL(p, import.meta.url))
 // Override with VITE_BASE to build for a project page (https://<user>.github.io/<repo>/).
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? (process.env.VITE_BASE ?? '/') : '/',
-  plugins: [react(), imagetools(), contentPortal(), legalFacts()],
+  plugins: [react(), imagetools(), contentPortal(), legalFacts(), dineInMenu()],
   build: {
     /*
       Four documents, not one.
@@ -32,6 +33,12 @@ export default defineConfig(({ command }) => ({
         privacy: here('privacy/index.html'),
         terms: here('terms/index.html'),
         messages: here('messages/index.html'),
+        // The table menu behind the QR codes. Complete without script; a tiny
+        // scroll-spy chunk only highlights the current section chip.
+        menu: here('menu/index.html'),
+        // The in-house QR maker. Unlike the legal pages it needs script:
+        // it draws the code in the browser. Its own small chunk, not React.
+        qr: here('qr/index.html'),
       },
     },
   },
