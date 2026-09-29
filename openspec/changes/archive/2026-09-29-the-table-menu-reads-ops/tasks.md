@@ -31,4 +31,11 @@
   `/bill/*` and `/menu*`; `/menu/` reaches `/menu/kalyani-cafe/` with 9 sections
   and 55 dishes from ops, `/menu/kalyani/` serves, a closed outlet and an unknown
   address are 404, and the site's own pages are unchanged.
-- [ ] 4.3 Owner's manual QA gate (`proposal.md`) on production.
+- [x] 4.3 Owner's manual QA gate (`proposal.md`) on production. *Walked on
+  2026-09-29 from the owner's Edge session, at their request: an existing `/menu/`
+  code lands on `/menu/kalyani-cafe/` with the full menu; an item marked
+  unavailable in ops greyed out as Unavailable, and a price, description, veg
+  flag and section order changed in ops all showed, on both `/menu/kalyani-cafe/`
+  and `/menu/`; every edit reverted and the ops database matched its pre-test
+  snapshot exactly; `/menu/kalyani/` serves Kalyani's own menu, `/menu/nonsense/`
+  and a closed outlet (`/menu/kanchrapara/`) are not found; receipts unchanged.*
