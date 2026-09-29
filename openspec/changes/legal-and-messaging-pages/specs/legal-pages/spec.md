@@ -42,8 +42,11 @@ script, and SHALL NOT depend on script execution to render text, styling or navi
 
 - what is collected — a mobile number given at the counter, and the contents of the bill it belongs
   to;
-- why it is collected — to send that customer their own bill, and to recognise a returning customer
-  at the counter;
+- why it is collected — to send that customer their own bill, to recognise a returning customer
+  at the counter, and to keep that customer's points and gold at the outlet that gave them;
+- that the menu price is the same whether or not a number is given, and that giving one is what
+  earns points;
+- that points and gold belong to the outlet that gave them, and that removing a number ends them;
 - that a mobile number and messaging consent SHALL NOT be sold, rented, or disclosed to any third
   party for that party's own marketing;
 - who does process it on the business's behalf, by role — the messaging provider that delivers the
