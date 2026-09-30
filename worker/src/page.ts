@@ -255,7 +255,27 @@ function row(entry: ContentAmount, extraClass = ''): string {
         </li>`
 }
 
-export function renderReceiptPage(receipt: Receipt, token: string): string {
+/**
+ * How a request asks for the page to be drawn.
+ *
+ * `?view=counter` is the ops counter framing this page for a customer standing
+ * in front of it (ops #63, `a-receipt-goes-out-on-whatsapp`). There the PDF
+ * link leads nowhere a customer can use, so that view omits it and changes
+ * nothing else. Anybody may add the parameter; all it can do is hide a link.
+ */
+export interface ReceiptPageOptions {
+  download: boolean
+}
+
+export function receiptPageOptions(search: URLSearchParams): ReceiptPageOptions {
+  return { download: search.get('view') !== 'counter' }
+}
+
+export function renderReceiptPage(
+  receipt: Receipt,
+  token: string,
+  options: ReceiptPageOptions = { download: true },
+): string {
   const content = receiptContent(receipt)
 
   const lines = content.lines.map((line) => row(line)).join('')
@@ -325,10 +345,14 @@ ${
 `
     : ''
 }
-  <div class="download">
+${
+  options.download
+    ? `  <div class="download">
     <a href="/bill/${encodeURIComponent(token)}.pdf" download>Download PDF</a>
   </div>
-</main>
+`
+    : ''
+}</main>
 
 <footer>
   <p>${content.notes.map(escapeHtml).join('<br>')}</p>

@@ -2,7 +2,7 @@ import { PDFDocument } from 'pdf-lib'
 import { describe, expect, it } from 'vitest'
 
 import { formatBasisPoints, formatBusinessDate, formatPaise } from '../src/money'
-import { renderReceiptPage, renderRefusal } from '../src/page'
+import { receiptPageOptions, renderReceiptPage, renderRefusal } from '../src/page'
 import { pdfFilename, renderReceiptPdf } from '../src/pdf'
 import { assertNamesNobody, ReceiptNamesSomebody, type Receipt } from '../src/receipt'
 
@@ -135,6 +135,7 @@ describe('the page states what was charged', () => {
     expect(html).not.toContain('createObjectURL')
   })
 
+
   it('carries nothing resembling a tax invoice', () => {
     expect(html).not.toMatch(/gstin/i)
     expect(html).toContain('This is a receipt, not a tax invoice.')
@@ -156,6 +157,34 @@ describe('the page states what was charged', () => {
   it('prints as the same 80 mm roll the PDF uses, in ink a printer survives', () => {
     expect(html).toContain('@page { size: 80mm auto; margin: 0; }')
     expect(html).toMatch(/@media print[\s\S]*background: #fff/)
+  })
+})
+
+/*
+ * The ops counter frames this page for a customer standing at the counter
+ * (ops #63, `a-receipt-goes-out-on-whatsapp`). A download link there leads
+ * nowhere a customer can use, so that view omits it. The page is otherwise the
+ * same page, so the two can never disagree about the bill.
+ */
+describe('the counter’s view of the page', () => {
+  it('reads the counter view from `?view=counter` and nothing else', () => {
+    expect(receiptPageOptions(new URLSearchParams('view=counter'))).toEqual({ download: false })
+    expect(receiptPageOptions(new URLSearchParams(''))).toEqual({ download: true })
+    expect(receiptPageOptions(new URLSearchParams('view=pdf'))).toEqual({ download: true })
+    expect(receiptPageOptions(new URLSearchParams('VIEW=counter'))).toEqual({ download: true })
+  })
+
+  it('omits the PDF link and keeps everything the bill says', () => {
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { download: false })
+
+    expect(counter).not.toContain('Download PDF')
+    expect(counter).not.toContain('.pdf"')
+    expect(counter.replace(/\s+/g, '')).toBe(
+      full
+        .replace(/<div class="download">[\s\S]*?<\/div>/, '')
+        .replace(/\s+/g, ''),
+    )
   })
 })
 

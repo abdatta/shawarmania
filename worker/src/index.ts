@@ -11,7 +11,7 @@ import {
   renderMenuPage,
   renderMenuUnavailable,
 } from './menu-page'
-import { renderRefusal, renderReceiptPage } from './page'
+import { receiptPageOptions, renderRefusal, renderReceiptPage } from './page'
 import { pdfFilename, renderReceiptPdf } from './pdf'
 import { readReceipt, type Receipt } from './receipt'
 
@@ -443,7 +443,7 @@ export default {
       })
     }
 
-    return new Response(renderReceiptPage(receipt, token), {
+    return new Response(renderReceiptPage(receipt, token, receiptPageOptions(url.searchParams)), {
       headers: receiptHeaders({
         'Content-Type': 'text/html; charset=utf-8',
         // Not cached at the browser: a void or a correction must be visible on a
