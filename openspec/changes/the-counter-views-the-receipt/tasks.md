@@ -9,16 +9,16 @@
 
 ## 2. Ship
 
-- [ ] 2.1 🧍 The owner approves the deploy. **`npm run worker:deploy` also ships
+- [x] 2.1 🧍 The owner approves the deploy. **`npm run worker:deploy` also ships
       `the-receipt-shows-points`**, whose own deploy (its 2.2) has not been run; confirm
       that is wanted in the same release
-- [ ] 2.2 `npm run worker:deploy`
+- [x] 2.2 `npm run worker:deploy` (2026-09-30, version `5033fcc6`; also shipped `the-receipt-shows-points`)
 
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and
       desktop widths)
-- [ ] 3.2 The same link with `?view=counter`: no Download PDF, everything else identical;
+- [x] 3.2 The same link with `?view=counter`: no Download PDF, everything else identical;
       `?view=COUNTER` and `?view=other` keep it
 - [ ] 3.3 The ops counter at tablet width: View receipt shows the receipt without the button
 - [ ] 3.4 Archive with ops #63

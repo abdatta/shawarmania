@@ -12,6 +12,6 @@
 ## 2. Ship after the parent
 
 - [ ] 2.1 🧍 Confirm the ops migration `20260929000000_a_regular_earns_points_and_gold` is live
-- [ ] 2.2 `npm run worker:deploy`, then open a real trial receipt from Kalyani Cafe and confirm the
+- [ ] 2.2 `npm run worker:deploy` *(deployed 2026-09-30 with `the-counter-views-the-receipt`, version `5033fcc6`; the Kalyani Cafe receipt check is still to do)*, then open a real trial receipt from Kalyani Cafe and confirm the
       points row reads *Points (…)*, the figures match the bill in ops, and the PDF says the same
 - [ ] 2.3 Archive once a real customer's receipt has shown their points
