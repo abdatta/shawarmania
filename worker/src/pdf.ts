@@ -56,6 +56,10 @@ const HAIRLINE = rgb(0.28, 0.25, 0.2);
 const GOLD = rgb(1, 0.773, 0.239);
 const DANGER = rgb(0.988, 0.647, 0.647);
 
+/** A five-pointed star in a 24-unit box, for the gold line (ops #58). */
+const STAR_PATH =
+  "M12 1.5l3.1 6.9 7.4.7-5.6 5 1.7 7.4L12 17.6l-6.6 3.9 1.7-7.4-5.6-5 7.4-.7z";
+
 /**
  * Three faces, and the third exists for a single character.
  *
@@ -221,6 +225,25 @@ type Row =
       dim: boolean;
     }
   | { kind: "rule" }
+  /**
+   * Two strings on one row, one at each margin; dim, or with a cream left for the
+   * points line. An empty left draws nothing there.
+   */
+  | {
+      kind: "meta";
+      left: string;
+      /** Drawn in cream straight after `left`, past a dim " · ". */
+      accent?: string;
+      right: string;
+      size: number;
+      bright?: boolean;
+    }
+  /**
+   * Whose receipt it is (ops #58): the masked number, dim, and the gold mark, in
+   * gold after a drawn star, centred together on one line as the page has them.
+   * Either may be absent.
+   */
+  | { kind: "gold"; phone: string | null; text: string | null; size: number }
   | { kind: "gap"; height: number }
   | { kind: "banner"; text: string; sub: string | null }
   | { kind: "line"; name: string; sub: string; amount: string }
@@ -240,6 +263,8 @@ function rowHeight(row: Row): number {
     case "logo":
       return row.height;
     case "centre":
+    case "gold":
+    case "meta":
       return row.size * 1.4;
     case "rule":
       return 7;
@@ -276,22 +301,31 @@ function layout(content: ReceiptContent, logoHeight: number): Row[] {
       display: true,
       dim: false,
     },
+    { kind: "gap", height: 2 },
+    // The bill and how it was served at the left, the date and time at the
+    // right, as the page has them [owner, 2026-09-30].
     {
-      kind: "centre",
-      text: content.when,
+      kind: "meta",
+      left: content.billLabel,
+      ...(content.service ? { accent: content.service } : {}),
+      right: content.when,
       size: 7.5,
-      display: false,
-      dim: true,
     },
-    {
-      kind: "centre",
-      text: content.billLabel,
-      size: 7.5,
-      display: false,
-      dim: true,
-    },
-    { kind: "rule" },
   ];
+
+  // Whose it is without saying who (ops #58): the digits and the gold mark on one
+  // centred line beneath that row, as the page has them.
+  if (content.holder.phone || content.holder.gold) {
+    rows.push({ kind: "gap", height: 1 });
+    rows.push({
+      kind: "gold",
+      phone: content.holder.phone,
+      text: content.holder.gold,
+      size: 7.5,
+    });
+  }
+
+  rows.push({ kind: "rule" });
 
   if (content.cancelled) {
     rows.push({
@@ -355,19 +389,17 @@ function layout(content: ReceiptContent, logoHeight: number): Row[] {
     dim: false,
   });
 
-  // The points this bill used and earned, and the balance it left (ops #62):
-  // figures like the discounts, beneath the tender, and never gold.
-  if (content.points.length > 0) {
-    rows.push({ kind: "gap", height: 4 });
-    for (const entry of content.points) {
-      rows.push({
-        kind: "figure",
-        label: entry.label,
-        sub: entry.detail,
-        amount: entry.amount,
-        gold: false,
-      });
-    }
+  // What the bill earned and the balance it left, on one line beneath the
+  // tender as the page has it [owner, 2026-09-30]; never gold.
+  if (content.points) {
+    rows.push({ kind: "rule" });
+    rows.push({
+      kind: "meta",
+      left: content.points.earned ?? "",
+      right: content.points.balance,
+      size: 8,
+      bright: true,
+    });
   }
 
   rows.push({ kind: "gap", height: 10 });
@@ -409,6 +441,10 @@ export function pdfStrings(receipt: Receipt): string[] {
     switch (row.kind) {
       case "centre":
         return [row.text];
+      case "gold":
+        return [row.phone ?? "", row.text ?? ""].filter(Boolean);
+      case "meta":
+        return [row.left, row.accent ?? "", row.right].filter(Boolean);
       case "banner":
         return row.sub ? [row.text, row.sub] : [row.text];
       case "line":
@@ -507,6 +543,83 @@ export async function renderReceiptPdf(receipt: Receipt): Promise<Uint8Array> {
           font,
           faces.ext,
         );
+        break;
+      }
+
+      case "meta": {
+        const baseline = y + row.size * 0.3;
+        if (row.left) {
+          drawRuns(
+            page,
+            row.left,
+            MARGIN,
+            baseline,
+            row.size,
+            row.bright ? CREAM : CREAM_DIM,
+            faces.text,
+            faces.ext,
+          );
+        }
+        const rightWidth = widthOfRuns(row.right, row.size, faces.text, faces.ext);
+        drawRuns(
+          page,
+          row.right,
+          MARGIN + CONTENT - rightWidth,
+          baseline,
+          row.size,
+          row.bright ? CREAM : CREAM_DIM,
+          faces.text,
+          faces.ext,
+        );
+        if (row.accent) {
+          const joiner = " · ";
+          const leftWidth = widthOfRuns(row.left, row.size, faces.text, faces.ext);
+          const joinerWidth = widthOfRuns(joiner, row.size, faces.text, faces.ext);
+          drawRuns(page, joiner, MARGIN + leftWidth, baseline, row.size, CREAM_DIM, faces.text, faces.ext);
+          drawRuns(
+            page,
+            row.accent,
+            MARGIN + leftWidth + joinerWidth,
+            baseline,
+            row.size,
+            CREAM,
+            faces.text,
+            faces.ext,
+          );
+        }
+        break;
+      }
+
+      case "gold": {
+        // The star is a path, because neither embedded face carries the emoji
+        // the page uses. It stands a little taller than the text's capitals and
+        // sits on the same baseline. The two halves sit a page-sized gap apart.
+        const star = row.size * 1.1;
+        const starGap = row.size * 0.4;
+        const between = row.size * 1.8;
+        const phoneWidth = row.phone
+          ? widthOfRuns(row.phone, row.size, faces.text, faces.ext)
+          : 0;
+        const goldWidth = row.text
+          ? star + starGap + widthOfRuns(row.text, row.size, faces.text, faces.ext)
+          : 0;
+        const total = phoneWidth + (row.phone && row.text ? between : 0) + goldWidth;
+        let x = MARGIN + (CONTENT - total) / 2;
+        const baseline = y + row.size * 0.3;
+        if (row.phone) {
+          drawRuns(page, row.phone, x, baseline, row.size, CREAM_DIM, faces.text, faces.ext);
+          x += phoneWidth + (row.text ? between : 0);
+        }
+        if (row.text) {
+          page.drawSvgPath(STAR_PATH, {
+            x,
+            // An SVG path's origin is its top-left, with y running down.
+            y: baseline + star * 0.88,
+            scale: star / 24,
+            color: GOLD,
+          });
+          drawRuns(page, row.text, x + star + starGap, baseline, row.size, GOLD, faces.text, faces.ext);
+        }
         break;
       }
 

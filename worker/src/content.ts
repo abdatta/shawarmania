@@ -38,10 +38,26 @@ export interface ContentAmount {
 
 export interface ReceiptContent {
   outletName: string
-  /** `03 Sept 2026 · 1:05 pm` */
+  /** `03 Sep 2026 · 1:05 pm`: the business date and the time of sale. */
   when: string
   /** `Bill 10` */
   billLabel: string
+  /**
+   * `Dine-in` or `Takeaway`; null when the bill recorded neither. Never the
+   * table [owner, 2026-09-30]: a label for the length of a meal, like the order
+   * number, which the receipt does not show either.
+   */
+  service: string | null
+  /**
+   * Whose receipt it is, without saying who (ops #58): `+91 ••••• •0042`, and
+   * `Gold` for a customer who was gold at this outlet, which the receipt names
+   * already [owner, 2026-09-30]. Each null
+   * when the payload does not carry it. Never a name.
+   *
+   * The gold line's star is presentation, not content: the page draws an emoji
+   * and the PDF a vector star, because the PDF's faces carry no emoji.
+   */
+  holder: { phone: string | null; gold: string | null }
   /** Present only for a voided bill, and unmistakable when it is. */
   cancelled: { label: string; reason: string | null } | null
   lines: ContentAmount[]
@@ -53,10 +69,12 @@ export interface ReceiptContent {
   /** `Paid by Cash ₹200 + UPI ₹55` */
   tender: string
   /**
-   * What the bill used and earned, and the balance it left, beneath the tender.
-   * Empty for a bill with no points. Counts of points, not money.
+   * One line beneath the tender [owner, 2026-09-30]: `+14 pts earned` at the
+   * left, `Balance: 96 pts` at the right. `earned` is null for a bill that
+   * earned nothing; the whole is null for a bill with no points. What the bill
+   * used is its discount row, *Points (N)*, and is not said again here.
    */
-  points: ContentAmount[]
+  points: { earned: string | null; balance: string } | null
   /** The small print, in order. */
   notes: string[]
 }
@@ -89,6 +107,26 @@ function discountDetail(row: ReceiptDiscountRow): string {
   if (row.source === 'points') return 'From your points'
   if (row.source === 'packaging') return 'Gold member'
   return row.categories.length > 0 ? row.categories.join(', ') : 'Selected items'
+}
+
+/**
+ * The small print signs the receipt with the bill's own outlet [owner,
+ * 2026-09-30]: `Shawarmania · Kalyani Cafe`. The brand is dropped from the
+ * outlet's name before it is prefixed back on, as `pdfFilename` does, so the
+ * older outlet `Shawarmania Kalyani` reads `Shawarmania · Kalyani`.
+ */
+function smallPrint(outletName: string): string {
+  const place = outletName.replace(/shawarmania/gi, '').replace(/\s+/g, ' ').trim()
+  return place ? `Shawarmania · ${place}` : 'Shawarmania'
+}
+
+/** How the bill was served, in the counter's own words (ops #60). */
+function serviceLine(receipt: Receipt): string | null {
+  if (receipt.service_type === 'takeaway') return 'Takeaway'
+  if (receipt.service_type === 'dine_in') {
+    return 'Dine-in'
+  }
+  return null
 }
 
 export function receiptContent(receipt: Receipt): ReceiptContent {
@@ -129,22 +167,26 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     )
     .join(' + ')
 
-  // Read, never worked out: the three figures are the bill's own ledger rows.
-  const points: ContentAmount[] = []
-  if (receipt.points) {
-    if (receipt.points.used > 0) {
-      points.push({ label: 'Points used', detail: null, amount: String(receipt.points.used) })
-    }
-    points.push(
-      { label: 'Points earned', detail: null, amount: String(receipt.points.earned) },
-      { label: 'Points balance', detail: null, amount: String(receipt.points.balance) },
-    )
-  }
+  // Read, never worked out: the figures are the bill's own ledger rows. What the
+  // bill used is already its discount row, *Points (N)*, so it is not said again
+  // here; a second *Points used* read as more points spent [owner, 2026-09-30].
+  const count = (n: number): string => `${n} ${n === 1 ? 'pt' : 'pts'}`
+  const points = receipt.points
+    ? {
+        earned: receipt.points.earned > 0 ? `+${count(receipt.points.earned)} earned` : null,
+        balance: `Balance: ${count(receipt.points.balance)}`,
+      }
+    : null
 
   return {
     outletName: receipt.outlet.name,
     when: `${formatBusinessDate(receipt.business_date)} · ${formatSaleTime(receipt.sold_at)}`,
     billLabel: `Bill ${receipt.bill_number}`,
+    service: serviceLine(receipt),
+    holder: {
+      phone: receipt.phone_last4 ? `+91 ••••• •${receipt.phone_last4}` : null,
+      gold: receipt.gold_at_outlet === true ? 'Gold' : null,
+    },
     cancelled:
       receipt.status === 'void' ? { label: 'Cancelled', reason: receipt.void_reason } : null,
     lines,
@@ -158,7 +200,11 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     total: { label: 'Total', detail: null, amount: formatPaise(totals.total_paise) },
     tender: `Paid by ${tender}`,
     points,
-    notes: ['Shawarmania · Kalyani', 'This is a receipt, not a tax invoice.'],
+    // No "not a tax invoice" sentence [owner, 2026-09-30]: the receipt carries no
+    // GSTIN, no tax breakup and no tax line, which is what keeps it from
+    // resembling one, and the sentence read as clutter on the counter's pop-up
+    // before it was dropped from both.
+    notes: [smallPrint(receipt.outlet.name)],
   }
 }
 
@@ -169,7 +215,13 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
  * the reason a row cannot quietly appear in one and not the other.
  */
 export function contentStrings(content: ReceiptContent): string[] {
-  const out: string[] = [content.outletName, content.when, content.billLabel]
+  // One row at the top: the bill and how it was served at the left, the date
+  // and time at the right [owner, 2026-09-30].
+  const out: string[] = [content.outletName, content.billLabel]
+  if (content.service) out.push(content.service)
+  out.push(content.when)
+  if (content.holder.phone) out.push(content.holder.phone)
+  if (content.holder.gold) out.push(content.holder.gold)
 
   if (content.cancelled) {
     out.push(content.cancelled.label)
@@ -191,7 +243,10 @@ export function contentStrings(content: ReceiptContent): string[] {
   }
 
   out.push(content.tender)
-  for (const row of content.points) out.push(row.label, row.amount)
+  if (content.points) {
+    if (content.points.earned) out.push(content.points.earned)
+    out.push(content.points.balance)
+  }
   out.push(...content.notes)
   return out
 }

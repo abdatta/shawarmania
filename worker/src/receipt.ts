@@ -7,11 +7,13 @@
  * service-role credential this Worker holds has a blast radius bounded by that
  * function rather than by the key's own power.
  *
- * **The payload carries no customer name and no phone number.** That is enforced
- * by the function's own projection in the ops repo, not by this page declining to
- * render them. {@link assertNamesNobody} is the tripwire for a regression there:
- * if a name ever arrives, this Worker refuses to serve the receipt rather than
- * printing it.
+ * **The payload carries no customer name and no whole phone number.** Since ops
+ * #58 it carries the last four digits and whether the customer was gold at the
+ * bill's outlet, only for a bill with a customer attached. That is enforced by
+ * the function's own projection in the ops repo, not by this page declining to
+ * render anything. {@link assertNamesNobody} is the tripwire for a regression
+ * there: if a name or a whole number ever arrives, this Worker refuses to serve
+ * the receipt rather than printing it.
  */
 
 export interface ReceiptLine {
@@ -72,6 +74,19 @@ export interface Receipt {
   payments: ReceiptPayment[]
   /** Absent from a receipt served before ops #62, which reads as none. */
   points?: ReceiptPoints | null
+  /**
+   * What the receipt says of its customer (ops #58): the last four digits of the
+   * number the bill recorded, and whether they were gold at the bill's outlet.
+   * Ops returns both only for a bill with a customer attached, and never the
+   * name or the whole number. Absent before ops #58, which reads as none.
+   */
+  phone_last4?: string | null
+  gold_at_outlet?: boolean
+  /**
+   * Dine-in or takeaway (ops #60), as the bill stored it. Absent before ops #58.
+   * Never the table: a label for the length of a meal, like the order number.
+   */
+  service_type?: 'dine_in' | 'takeaway' | null
 }
 
 export interface OpsProject {
@@ -104,21 +119,44 @@ export class ReceiptNamesSomebody extends Error {
   }
 }
 
+/**
+ * A run of ten digits: the shape of a whole Indian mobile number, with or
+ * without its country code, whatever key it arrives under. Ops #58 put the first
+ * part of the number across the boundary (the last four digits), so the leak
+ * worth catching is no longer only a key somebody named but a value nobody
+ * checked. Amounts are numbers rather than strings, and a date or a time never
+ * runs to ten digits, so nothing the receipt legitimately carries matches.
+ */
+const WHOLE_NUMBER = /\d{10}/
+
 export function assertNamesNobody(payload: unknown): void {
-  const walk = (value: unknown): void => {
+  const walk = (value: unknown, key: string): void => {
+    if (typeof value === 'string') {
+      if (WHOLE_NUMBER.test(value)) throw new ReceiptNamesSomebody(key)
+      return
+    }
     if (Array.isArray(value)) {
-      for (const item of value) walk(item)
+      for (const item of value) walk(item, key)
       return
     }
     if (value === null || typeof value !== 'object') return
-    for (const [key, nested] of Object.entries(value)) {
-      if ((FORBIDDEN_KEYS as readonly string[]).includes(key)) {
-        throw new ReceiptNamesSomebody(key)
+    for (const [nestedKey, nested] of Object.entries(value)) {
+      if ((FORBIDDEN_KEYS as readonly string[]).includes(nestedKey)) {
+        throw new ReceiptNamesSomebody(nestedKey)
       }
-      walk(nested)
+      walk(nested, nestedKey)
     }
   }
-  walk(payload)
+  walk(payload, '(payload)')
+
+  // The four digits are exactly four digits, or absent. Anything else is the
+  // mask failing in ops, and printing it would print whatever it failed to.
+  if (payload !== null && typeof payload === 'object' && 'phone_last4' in payload) {
+    const last4 = (payload as { phone_last4: unknown }).phone_last4
+    if (last4 !== null && last4 !== undefined && !(typeof last4 === 'string' && /^\d{4}$/.test(last4))) {
+      throw new ReceiptNamesSomebody('phone_last4')
+    }
+  }
 }
 
 /**

@@ -150,8 +150,12 @@ security boundary — the security of the scheme is the token's entropy and the 
 that the page names nobody. A Durable Object is the next step if the ops access
 record ever shows a distributed harvest.
 
-**The page names no customer.** Not a name, not a phone number, not four masked
-digits, and not the biller or the till. That omission is enforced by the ops
-function's projection, not by this page declining to render them; `receipt.ts`
-carries a tripwire that refuses to serve a payload which somehow names anybody,
-because the fix for that belongs in the ops repo rather than here.
+**The page names no customer.** Not a name, not a whole phone number, and not the
+biller or the till. Since ops #58 (`the-receipt-says-its-yours`) it shows the last
+four digits of the number the customer gave and, for a gold member, *⭐ Gold* (gold at the
+bill's outlet), only for a bill with a customer attached. What it may not show is
+enforced by the ops function's projection, not by this page declining to render
+it; `receipt.ts` carries a tripwire that refuses to serve a payload carrying a
+name or a biller by key, a run of ten digits in any value, or last four digits
+that are not four digits, because the fix for any of those belongs in the ops
+repo rather than here.

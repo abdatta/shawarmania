@@ -89,7 +89,7 @@ describe('formatting money at the display edge', () => {
    * one is how a business date becomes the wrong day.
    */
   it('formats a business date without letting a time zone move it', () => {
-    expect(formatBusinessDate('2026-09-03')).toBe('03 Sept 2026')
+    expect(formatBusinessDate('2026-09-03')).toBe('03 Sep 2026')
     expect(formatBusinessDate('2026-01-01')).toBe('01 Jan 2026')
   })
 })
@@ -100,7 +100,7 @@ describe('the page states what was charged', () => {
   it('names the outlet, the bill and when it was sold', () => {
     expect(html).toContain('Shawarmania Kalyani')
     expect(html).toContain('Bill 10')
-    expect(html).toContain('03 Sept 2026')
+    expect(html).toContain('03 Sep 2026 · 1:05 pm')
   })
 
   it('shows each line at the list price it snapshotted, not a reduced one', () => {
@@ -136,9 +136,13 @@ describe('the page states what was charged', () => {
   })
 
 
+  /*
+   * No GSTIN, no tax breakup and no tax line is what keeps the receipt from
+   * resembling a tax invoice. The sentence saying so was dropped from both views
+   * [owner, 2026-09-30]; the absence is what is asserted.
+   */
   it('carries nothing resembling a tax invoice', () => {
-    expect(html).not.toMatch(/gstin/i)
-    expect(html).toContain('This is a receipt, not a tax invoice.')
+    expect(html).not.toMatch(/gstin|\btax\b/i)
   })
 
   /*
@@ -174,77 +178,114 @@ describe('the counter’s view of the page', () => {
     expect(receiptPageOptions(new URLSearchParams('VIEW=counter'))).toEqual({ view: 'customer' })
   })
 
-  it('omits the PDF link and keeps everything the bill says', () => {
-    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+  /*
+   * The counter shows the customer exactly what their own link shows [owner,
+   * 2026-09-30]: the same header, the same lines, *Paid by* and the small print.
+   * The earlier trims (no tender, no tax-invoice sentence, bill and time on one
+   * row, a tighter logo gap) are reversed. Three differences remain, and only one
+   * is visible: no Download PDF button, which leads nowhere from the tablet; the
+   * height report the pop-up sizes itself by; and even spacing at the foot, where
+   * the link keeps a deep margin for a phone scrolling in a browser.
+   */
+  it.each([
+    ['a plain bill', aReceipt()],
+    [
+      'a gold member at a table, with points',
+      aReceipt({
+        outlet: { name: 'Kalyani Cafe' },
+        phone_last4: '5801',
+        gold_at_outlet: true,
+        service_type: 'dine_in',
+        points: { used: 0, earned: 6, balance: 42 },
+      }),
+    ],
+    ['a cancelled bill', aReceipt({ status: 'void', void_reason: 'Rung twice' })],
+  ] as const)(
+    'is the customer’s page but for the download, the height report and the foot: %s',
+    (_name, receipt) => {
+      const full = renderReceiptPage(receipt, 'Ab3-_x9QzT')
+      const counter = renderReceiptPage(receipt, 'Ab3-_x9QzT', { view: 'counter' })
 
-    expect(counter).not.toContain('Download PDF')
-    expect(counter).not.toContain('.pdf"')
-    // The same bill, row for row: only the PDF link, the tax-invoice line, the
-    // body's spacing and the height report differ.
-    const bill = (html: string) =>
-      html
-        .slice(html.indexOf('<ul class="rows">'), html.indexOf('</main>'))
-        .replace(/<div class="download">[\s\S]*?<\/div>/, '')
-        .replace(/<p class="paid">[\s\S]*?<\/p>/, '')
-        .replace(/\s+/g, '')
-    expect(bill(counter)).toBe(bill(full))
+      expect(counter).not.toContain('Download PDF')
+      expect(counter).not.toContain('.pdf"')
+
+      const withoutDownload = full.replace(/<div class="download">[\s\S]*?<\/div>/, '')
+      const withoutCounterOnly = counter
+        .replace(/<script>[\s\S]*?<\/script>/, '')
+        .replace('<body class="counter">', '<body>')
+        .replace(/body\.counter\s*\{[^}]*\}/, '')
+      expect(withoutCounterOnly.replace(/\s+/g, '')).toBe(withoutDownload.replace(/\s+/g, ''))
+    },
+  )
+
+  /*
+   * Both views take the counter's layout and both keep the tender [owner,
+   * 2026-09-30]: the receipt must state the payment split, and the link is the
+   * customer's record of how they paid.
+   */
+  it.each(['customer', 'counter'] as const)(
+    'puts the bill number and the date on one row, and says how it was paid: %s view',
+    (view) => {
+      const html = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view })
+      const meta = html.match(/<p class="meta">([\s\S]*?)<\/p>/)?.[1] ?? ''
+      expect(meta).toMatch(
+        /^\s*<span class="lead">Bill 10<\/span>\s*<span>03 Sep 2026 · 1:05 pm<\/span>\s*$/,
+      )
+      expect(html).toContain('Paid by Cash ₹200 + UPI ₹55')
+      expect(html).not.toContain('class="bill-no"')
+      expect(html).not.toContain('tax invoice')
+      expect(html).toMatch(/\.crest img\s*\{[^}]*margin:\s*0 auto 7px/)
+    },
+  )
+
+  /*
+   * Bill and how it was served at the left, the date and time at the right
+   * [owner, 2026-09-30]. Never the table: a label for the length of a meal, like
+   * the order number, which the receipt does not show either.
+   */
+  it.each(['customer', 'counter'] as const)(
+    'reads bill and service at the left, date and time at the right: %s view',
+    (view) => {
+      const html = renderReceiptPage(
+        {
+          ...aReceipt({ service_type: 'dine_in' }),
+          ...({ table_number: 12 } as object),
+        } as Receipt,
+        'Ab3-_x9QzT',
+        { view },
+      )
+      const meta = html.match(/<p class="meta">([\s\S]*?)<\/p>/)?.[1] ?? ''
+      expect(meta).toMatch(
+        /^\s*<span class="lead">Bill 10 · <strong>Dine-in<\/strong><\/span>\s*<span>03 Sep 2026 · 1:05 pm<\/span>\s*$/,
+      )
+      expect(html).not.toMatch(/table \d/i)
+    },
+  )
+
+  /*
+   * The items are spaced like the discount rows beneath them, with no rule
+   * between one item and the next [owner, 2026-09-30]. One rule still separates
+   * the items from the money.
+   */
+  it('spaces the items like the discounts, with no rule between items', () => {
+    const html = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const row = html.match(/(?:^|\})\s*\.row\s*\{([^}]*)\}/)?.[1] ?? ''
+    expect(row).not.toMatch(/border/)
+    expect(row).toMatch(/padding:\s*7px 0/)
+    expect(html).toMatch(/\.totals\s*\{[^}]*border-top:\s*1px solid/)
   })
 
   /*
-   * The customer at the counter has just paid and knows how. Their own link keeps
-   * the tender line, which is what settles a later "I paid by UPI" [owner,
-   * 2026-09-30].
+   * *Paid by* is a quiet line under the total, as the PDF has always drawn it,
+   * not a bordered box: the box spent more height than the one fact in it
+   * deserved [owner, 2026-09-30].
    */
-  it('leaves out how the bill was paid in the counter view only', () => {
-    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
-
-    expect(full).toContain('class="paid"')
-    expect(counter).not.toContain('class="paid"')
-    expect(counter).not.toContain('Paid by')
-  })
-
-  /*
-   * In the pop-up the page is plainly a receipt, and the counter already tells
-   * nobody it is a tax invoice: no GSTIN and no tax line appear in either view.
-   * The customer's own link keeps the sentence [owner, 2026-09-30].
-   */
-  it('drops the tax-invoice sentence in the counter view only', () => {
-    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
-
-    expect(full).toContain('This is a receipt, not a tax invoice.')
-    expect(counter).not.toContain('tax invoice')
-    expect(counter).toContain('Shawarmania · Kalyani')
-  })
-
-  /*
-   * One row instead of two, to save height in the pop-up: the bill number at the
-   * left and the time at the right, both plain [owner, 2026-09-30]. The
-   * customer's page keeps its centred time and bill-number chip.
-   */
-  it('puts the bill number and the time on one plain row in the counter view', () => {
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
-    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
-
-    const meta = counter.match(/<p class="meta">([\s\S]*?)<\/p>/)?.[1] ?? ''
-    expect(meta).toMatch(/^\s*<span>Bill \d+<\/span>\s*<span>[^<]+<\/span>\s*$/)
-    expect(counter).not.toContain('class="bill-no"')
-    expect(counter).not.toContain('class="when"')
-    expect(full).toContain('class="bill-no"')
-    expect(full).toContain('class="when"')
-  })
-
-  /*
-   * The logo image carries about 4px of transparent padding beneath its artwork,
-   * so its 12px margin left more space above the outlet's name than below it.
-   * Measured off the owner's screenshot, 2026-09-30: about 29px above against
-   * 25px below. The counter view trims the margin to even them.
-   */
-  it('evens the space around the outlet name in the counter view', () => {
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
-    expect(counter).toMatch(/\.counter \.crest img\s*\{\s*margin-bottom:\s*7px;?\s*\}/)
+  it('says how it was paid as a plain line, with no box around it', () => {
+    const html = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const rule = html.match(/\.paid\s*\{([^}]*)\}/)?.[1] ?? ''
+    expect(rule).not.toMatch(/border/)
+    expect(rule).not.toMatch(/padding/)
+    expect(rule).toMatch(/text-align:\s*center/)
   })
 
   it('spaces the counter view evenly top and bottom', () => {
@@ -326,6 +367,125 @@ describe('the payload tripwire', () => {
       lines: [{ ...receipt.lines[0]!, customer_phone: '+919000000042' }],
     }
     expect(() => assertNamesNobody(poisoned)).toThrow(ReceiptNamesSomebody)
+  })
+
+  /*
+   * Ops #58 returns the last four digits, which is the first time any part of the
+   * number crosses the boundary. The leak that change could introduce is the
+   * whole number arriving under a key nobody listed, so the tripwire also reads
+   * values: a run of ten digits anywhere is refused, whatever it is called.
+   */
+  it('accepts a receipt carrying the last four digits, gold and how it was served', () => {
+    expect(() =>
+      assertNamesNobody(
+        aReceipt({
+          phone_last4: '0042',
+          gold_at_outlet: true,
+          service_type: 'dine_in',
+        }),
+      ),
+    ).not.toThrow()
+  })
+
+  it.each([
+    ['a whole number under a new key', { holder_phone: '+919000000042' }],
+    ['a whole number with no country code', { note: '9000000042' }],
+    ['a number typed into a void reason', { void_reason: 'Customer 9000000042 left' }],
+    ['more than four digits as the last four', { phone_last4: '000042' }],
+    ['fewer than four', { phone_last4: '42' }],
+    ['not digits at all', { phone_last4: 'abcd' }],
+  ] as const)('refuses %s', (_name, extra) => {
+    expect(() => assertNamesNobody({ ...aReceipt(), ...extra })).toThrow(ReceiptNamesSomebody)
+  })
+
+  it('refuses a whole number buried in a line, under an innocent key', () => {
+    const receipt = aReceipt()
+    const poisoned = {
+      ...receipt,
+      lines: [{ ...receipt.lines[0]!, item_name: 'Shawarma for 9000000042' }],
+    }
+    expect(() => assertNamesNobody(poisoned)).toThrow(ReceiptNamesSomebody)
+  })
+
+  it('does not mistake the stored figures for a number', () => {
+    // Amounts are numbers, not strings, and a date or a time is not ten digits
+    // in a row, so an ordinary large bill passes.
+    expect(() =>
+      assertNamesNobody(
+        aReceipt({
+          bill_number: 1234567890,
+          totals: {
+            subtotal_paise: 9999999999,
+            discount_paise: 0,
+            tax_paise: 0,
+            rounding_paise: 0,
+            total_paise: 9999999999,
+          },
+        }),
+      ),
+    ).not.toThrow()
+  })
+})
+
+describe('the page says whose it is and how it was served (ops #58)', () => {
+  const yours = () =>
+    aReceipt({
+      outlet: { name: 'Kalyani Cafe' },
+      phone_last4: '5801',
+      gold_at_outlet: true,
+      service_type: 'dine_in',
+    })
+
+  it('shows the last four digits, gold here and how it was served, on the customer’s page', () => {
+    const html = renderReceiptPage(yours(), 'Ab3-_x9QzT')
+    expect(html).toContain('+91 ••••• •5801')
+    expect(html).toMatch(/<span class="gold"><span aria-hidden="true">⭐<\/span> Gold<\/span>/)
+    expect(html).toContain('⭐')
+    expect(html).toContain('<strong>Dine-in</strong>')
+  })
+
+  it('shows the same in the counter’s view', () => {
+    const html = renderReceiptPage(yours(), 'Ab3-_x9QzT', { view: 'counter' })
+    expect(html).toContain('+91 ••••• •5801')
+    expect(html).toMatch(/<span class="gold"><span aria-hidden="true">⭐<\/span> Gold<\/span>/)
+    expect(html).toContain('⭐')
+    expect(html).toContain('<strong>Dine-in</strong>')
+  })
+
+  it('draws the star as decoration, so a screen reader reads the words once', () => {
+    const html = renderReceiptPage(yours(), 'Ab3-_x9QzT')
+    expect(html).toMatch(/<span[^>]*aria-hidden="true"[^>]*>⭐<\/span>/)
+  })
+
+  it('reads an old-shape payload exactly as before', () => {
+    // The live ops function before its migration returns none of the new keys,
+    // and the page it renders must carry none of the new lines.
+    const html = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    expect(html).not.toContain('Phone')
+    expect(html).not.toContain('class="gold"')
+    expect(html).not.toContain('⭐')
+    expect(html).not.toMatch(/Dine-in|Takeaway/)
+    expect(html).not.toContain('class="yours"')
+    expect(html).not.toContain('<strong>')
+  })
+
+  it('never renders a name, even beside the digits', () => {
+    const html = renderReceiptPage(
+      {
+        ...yours(),
+        ...({ customer_name: 'Placeholder Name' } as object),
+      } as Receipt,
+      'Ab3-_x9QzT',
+    )
+    expect(html).not.toContain('Placeholder')
+  })
+
+  it('draws the lines in the PDF too, and still no name', async () => {
+    const pdf = await renderReceiptPdf(yours())
+    const doc = await PDFDocument.load(pdf)
+    expect(doc.getPageCount()).toBe(1)
+    const text = new TextDecoder('latin1').decode(pdf)
+    expect(text).not.toContain('Placeholder')
   })
 })
 

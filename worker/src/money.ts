@@ -51,7 +51,7 @@ export function formatBusinessDate(isoDate: string): string {
     'Jun',
     'Jul',
     'Aug',
-    'Sept',
+    'Sep',
     'Oct',
     'Nov',
     'Dec',

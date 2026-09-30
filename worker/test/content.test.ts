@@ -334,6 +334,49 @@ const SHAPES: Shape[] = [
       payments: [{ method: "upi", amount_paise: 41700 }],
     }),
   },
+
+  // What the receipt says of its customer and how the bill was served (ops #58).
+  {
+    name: "a bill whose customer gave their number",
+    receipt: bill({ phone_last4: "0042", gold_at_outlet: false }),
+  },
+
+  {
+    name: "a gold member's bill",
+    receipt: bill({
+      outlet: { name: "Kalyani Cafe" },
+      phone_last4: "5801",
+      gold_at_outlet: true,
+    }),
+  },
+
+  {
+    name: "a dine-in bill at a table",
+    receipt: bill({ service_type: "dine_in" }),
+  },
+
+  {
+    name: "a dine-in bill with no table",
+    receipt: bill({ service_type: "dine_in" }),
+  },
+
+  {
+    name: "a takeaway bill",
+    receipt: bill({ service_type: "takeaway" }),
+  },
+
+  {
+    name: "a cancelled dine-in bill for a gold member, with points",
+    receipt: bill({
+      outlet: { name: "Kalyani Cafe" },
+      status: "void",
+      void_reason: "Wrong table",
+      phone_last4: "5801",
+      gold_at_outlet: true,
+      service_type: "dine_in",
+      points: { used: 0, earned: 2, balance: 2 },
+    }),
+  },
 ];
 
 describe.each(SHAPES.map((shape) => [shape.name, shape.receipt] as const))(
@@ -480,19 +523,118 @@ describe("what the content model refuses to say", () => {
       ["Free packaging", "Gold member", "−₹15"],
       ["Points (18)", "From your points", "−₹18"],
     ]);
-    expect(content.points.map((row) => [row.label, row.amount])).toEqual([
-      ["Points used", "18"],
-      ["Points earned", "6"],
-      ["Points balance", "42"],
-    ]);
+    // What the bill used is its discount row, *Points (18)*, and nowhere else: a
+    // second *Points used 18* beneath the payment read as eighteen more points
+    // spent [owner, 2026-09-30].
+    // One line: what it earned at the left, the balance at the right
+    // [owner, 2026-09-30].
+    expect(content.points).toEqual({ earned: "+6 pts earned", balance: "Balance: 42 pts" });
+  });
+
+  it.each([
+    [{ used: 0, earned: 1, balance: 1 }, { earned: "+1 pt earned", balance: "Balance: 1 pt" }],
+    [{ used: 0, earned: 14, balance: 96 }, { earned: "+14 pts earned", balance: "Balance: 96 pts" }],
+    // A bill paid wholly with points can earn nothing; it says only the balance
+    // rather than "+0 pts earned".
+    [{ used: 40, earned: 0, balance: 2 }, { earned: null, balance: "Balance: 2 pts" }],
+    [{ used: 12, earned: 0, balance: 0 }, { earned: null, balance: "Balance: 0 pts" }],
+  ])("words the points line: %o", (points, said) => {
+    expect(receiptContent(bill({ points })).points).toEqual(said);
+  });
+
+  it.each([
+    ["Kalyani Cafe", "Shawarmania · Kalyani Cafe"],
+    ["Shawarmania Kalyani", "Shawarmania · Kalyani"],
+    ["Shawarmania", "Shawarmania"],
+  ])("signs the small print with the bill's own outlet: %s", (outlet, note) => {
+    expect(receiptContent(bill({ outlet: { name: outlet } })).notes).toEqual([note]);
   });
 
   it("says nothing about points on a bill that had none", () => {
-    expect(receiptContent(bill()).points).toEqual([]);
-    expect(receiptContent(bill({ points: null })).points).toEqual([]);
+    expect(receiptContent(bill()).points).toBeNull();
+    expect(receiptContent(bill({ points: null })).points).toBeNull();
   });
 
   it("omits a subtotal that would only restate the single line above it", () => {
     expect(receiptContent(bill()).subtotal).toBeNull();
+  });
+});
+
+/*
+ * What the receipt says of whose it is, and how it was served (ops #58,
+ * `the-receipt-says-its-yours`). Four digits and a gold mark let the holder say
+ * "yes, mine"; neither tells a stranger who that is. Never the name.
+ */
+describe("what the receipt says of its customer", () => {
+  it("masks the number to its last four digits", () => {
+    const content = receiptContent(bill({ phone_last4: "0042" }));
+    expect(content.holder.phone).toBe("+91 ••••• •0042");
+  });
+
+  it("says gold at the bill's own outlet, in words the PDF can draw", () => {
+    const content = receiptContent(
+      bill({ outlet: { name: "Kalyani Cafe" }, phone_last4: "5801", gold_at_outlet: true }),
+    );
+    // The star is presentation: the page draws an emoji, the PDF a vector star,
+    // because the PDF's faces carry no emoji. The words are the same in both.
+    // The receipt names its outlet already; the mark says only *Gold*.
+    expect(content.holder.gold).toBe("Gold");
+  });
+
+  it("says nothing of a customer the payload does not carry", () => {
+    const content = receiptContent(bill());
+    expect(content.holder).toEqual({ phone: null, gold: null });
+    expect(content.service).toBeNull();
+  });
+
+  it("does not mark a customer gold who is not", () => {
+    const content = receiptContent(bill({ phone_last4: "0042", gold_at_outlet: false }));
+    expect(content.holder.gold).toBeNull();
+  });
+
+  it.each([
+    [{ service_type: "dine_in" }, "Dine-in"],
+    [{ service_type: "takeaway" }, "Takeaway"],
+    [{ service_type: null }, null],
+  ] as const)("words how the bill was served: %o", (served, said) => {
+    expect(receiptContent(bill(served)).service).toBe(said);
+  });
+
+  it("puts whose it is and how it was served straight after the bill number", () => {
+    const said = contentStrings(
+      receiptContent(
+        bill({
+          outlet: { name: "Kalyani Cafe" },
+          phone_last4: "5801",
+          gold_at_outlet: true,
+          service_type: "dine_in",
+        }),
+      ),
+    );
+    // One row at the top reads bill, service, date [owner, 2026-09-30]; the
+    // holder line follows it.
+    const at = said.indexOf("Bill 10");
+    expect(said.slice(at, at + 5)).toEqual([
+      "Bill 10",
+      "Dine-in",
+      "03 Sep 2026 · 1:05 pm",
+      "+91 ••••• •5801",
+      "Gold",
+    ]);
+  });
+
+  it("dates the bill by its business date and its time of sale", () => {
+    expect(receiptContent(bill()).when).toBe("03 Sep 2026 · 1:05 pm");
+  });
+
+  // A table is a label for the length of a meal, like the order number, and the
+  // receipt shows neither [owner, 2026-09-30].
+  it("never names a table, even if one reached it", () => {
+    const content = receiptContent({
+      ...bill({ service_type: "dine_in" }),
+      ...({ table_number: 12 } as object),
+    } as Receipt);
+    expect(content.service).toBe("Dine-in");
+    expect(contentStrings(content).join(" ")).not.toMatch(/table/i);
   });
 });

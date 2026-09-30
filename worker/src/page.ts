@@ -10,10 +10,12 @@ import type { Receipt } from './receipt'
  * the site's own origin with `font-display: swap`, so text paints immediately on
  * a slow connection instead of holding a blank screen.
  *
- * It names no customer. Not a name, not a phone number, not four masked digits,
- * and not the biller or the till either — see the ops repo's
- * `docs/SECURITY_AND_PRIVACY.md`. What a wrong reader learns is one order and
- * nothing about a person.
+ * It names no customer. Not a name and not a whole phone number, and not the
+ * biller or the till either — see the ops repo's `docs/SECURITY_AND_PRIVACY.md`.
+ * Since ops #58 it shows the last four digits of the number the customer gave
+ * and, for a gold member, gold at this outlet: enough for the customer to say
+ * "yes, mine". What a wrong reader learns is one order, four digits and a label,
+ * and nothing that names a person.
  *
  * **It decides nothing a reader can read.** Every label, subtext and amount comes
  * from `content.ts`, which the 80 mm PDF reads too, so the two cannot word a row
@@ -115,25 +117,54 @@ body {
 }
 
 .crest { padding: 22px 20px 18px; text-align: center; border-bottom: 1px solid var(--hairline); }
-.crest img { width: 108px; height: auto; display: block; margin: 0 auto 12px; }
+/*
+  7px, not 12: the logo image carries about 4px of transparent padding beneath
+  its artwork, so 12px left the outlet's name visibly closer to the row below
+  than to the logo above [owner, 2026-09-30].
+*/
+.crest img { width: 108px; height: auto; display: block; margin: 0 auto 7px; }
 .crest .outlet {
   font-family: var(--font-display);
   font-size: 22px;
   letter-spacing: 0.01em;
   margin: 0;
 }
-.crest .when { margin: 4px 0 0; color: var(--cream-dim); font-size: 14px; }
-.crest .bill-no {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 4px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--hairline);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/*
+  One row: the bill number and how it was served at the left, the date and time
+  at the right [owner, 2026-09-30].
+*/
+.crest .meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin: 12px 0 0;
+  color: var(--cream-dim);
+  font-size: 14px;
+}
+/* Each side stays whole: if the two ever fail to fit, the date and time drop to
+   a second line rather than breaking mid-phrase or overflowing. */
+.crest .meta > span { white-space: nowrap; }
+.crest .meta > span:last-child { margin-left: auto; }
+.crest .meta strong { color: var(--cream); font-weight: 700; }
+
+/*
+  Whose receipt it is (ops #58): four digits of a number and, for a gold member,
+  gold here -- enough for the customer to say "yes, mine", and never a name. Gold
+  takes the flame gold the page already gives to what the customer was given,
+  because it is the one thing on the line that is a benefit.
+*/
+.crest .yours {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 14px;
+  margin: 8px 0 0;
+  font-size: 13.5px;
   color: var(--cream-dim);
 }
+.crest .yours .gold { color: var(--flame-gold); font-weight: 700; }
 
 .cancelled {
   margin: 0;
@@ -149,8 +180,9 @@ body {
 .cancelled span { display: block; margin-top: 4px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--cream-dim); }
 
 .rows { padding: 6px 20px; }
-.row { display: flex; gap: 12px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--hairline); }
-.row:last-child { border-bottom: 0; }
+/* Items and discounts share one rhythm, and no rule runs between one item and
+   the next [owner, 2026-09-30]; the band rule above the totals is the only one. */
+.row { display: flex; gap: 12px; align-items: baseline; padding: 7px 0; }
 .row .what { flex: 1 1 auto; min-width: 0; }
 .row .name { display: block; font-weight: 700; }
 .row .sub { display: block; margin-top: 2px; font-size: 13px; color: var(--cream-dim); }
@@ -158,7 +190,6 @@ body {
 .row.give .amount { color: var(--flame-gold); }
 
 .totals { padding: 6px 20px 18px; border-top: 1px solid var(--hairline); }
-.totals .row { border-bottom: 0; padding: 7px 0; }
 .totals .row .name { font-weight: 600; color: var(--cream-dim); }
 /*
   Two rules, each with a job, and only one of them belongs on a bill with
@@ -185,14 +216,30 @@ body {
    display-face figure would render its currency in a fallback face. */
 .totals .grand .amount { font-size: 24px; font-weight: 800; }
 
-.paid { margin: 0 20px 20px; padding: 12px 14px; border: 1px solid var(--hairline); border-radius: 12px; font-size: 14px; color: var(--cream-dim); }
-.paid strong { color: var(--cream); }
+/* How it was paid: one quiet line under the total, as the PDF draws it. A
+   bordered box spent more height than the one fact in it deserved
+   [owner, 2026-09-30]. */
+.paid { margin: -6px 20px 16px; text-align: center; font-size: 14px; color: var(--cream-dim); }
 
-/* The points this bill used and earned, and the balance it left: quiet figures
-   under the tender, counts rather than money, so never gold. */
-.points { list-style: none; margin: -8px 20px 20px; padding: 0 14px; }
-.points .row { padding: 7px 0; }
-.points .row .name { font-weight: 600; color: var(--cream-dim); }
+/* What the bill earned and the balance it left, on one line under the tender
+   [owner, 2026-09-30]: counts rather than money, so never gold. What it used is
+   its discount row. */
+.points {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 0 20px 18px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-size: 14px;
+}
+/* Each half stays whole: "pts" keeps both on one line on a 320px phone, and a
+   balance too long to fit drops below, still at the right, rather than breaking
+   mid-phrase. */
+.points span { white-space: nowrap; }
+.points .earned { font-weight: 700; }
+.points .balance { margin-left: auto; font-weight: 700; }
 
 .download { padding: 0 20px 24px; }
 .download a {
@@ -233,10 +280,12 @@ footer a { color: inherit; }
   .sheet { max-width: none; border: 0; border-radius: 0; background: #fff; }
   .crest, .row, .totals, .totals .grand { border-color: #bbb; }
   .crest .outlet, .row .name, .totals .grand .name, .totals .grand .amount { color: #000; }
-  .crest .when, .row .sub, .totals .row .name { color: #444; }
-  .crest .bill-no { color: #444; border-color: #bbb; }
+  .crest .meta, .row .sub, .totals .row .name { color: #444; }
+  .crest .meta strong { color: #000; }
+  .crest .yours, .crest .yours .gold { color: #444; }
   .row.give .amount { color: #000; }
-  .paid { color: #000; border-color: #bbb; }
+  .paid { color: #000; }
+  .points { border-color: #bbb; }
   .cancelled { background: #fff; color: #000; border-bottom: 1px solid #000; }
   .cancelled span { color: #444; }
   .download, footer { display: none; }
@@ -259,12 +308,14 @@ function row(entry: ContentAmount, extraClass = ''): string {
  * How a request asks for the page to be drawn.
  *
  * `?view=counter` is the ops counter framing this page for a customer standing
- * in front of it (ops #63, `a-receipt-goes-out-on-whatsapp`). That view:
+ * in front of it (ops #63, `a-receipt-goes-out-on-whatsapp`). It says exactly
+ * what the customer's page says [owner, 2026-09-30], and differs in three ways:
  *
- *   - omits the PDF link, which leads nowhere a customer at the counter can use;
- *   - carries one small script reporting the page's height to the frame's parent,
- *     because the pop-up cannot measure a page on another origin and sizes itself
- *     to what this reports.
+ *   - it omits the PDF link, which leads nowhere a customer at the counter can use;
+ *   - it carries one small script reporting the page's height to the frame's
+ *     parent, because the pop-up cannot measure a page on another origin and
+ *     sizes itself to what this reports;
+ *   - it spaces top and bottom evenly (see `COUNTER_STYLES`).
  *
  * The customer's own link carries no script at all, which is part of what keeps
  * it behaving inside a chat app's in-app browser. Anybody may add the parameter;
@@ -303,21 +354,19 @@ const REPORT_HEIGHT = `<script>
 </script>`
 
 /**
- * The counter view's layout. Even spacing top and bottom: the customer's page
- * keeps a deep bottom margin for a phone scrolling in a browser, and in the ops
- * pop-up, which sizes itself to this page, that margin reads as a stray gap. And
- * the bill number and time on one row [owner, 2026-09-30].
+ * The counter view's one layout difference: even spacing top and bottom. The
+ * customer's page keeps a deep bottom margin for a phone scrolling in a browser,
+ * and in the ops pop-up, which sizes itself to this page, that margin reads as a
+ * stray gap under the footer.
+ *
+ * Everything a reader can see is otherwise the customer's page [owner,
+ * 2026-09-30]. The counter's earlier trims went one of two ways: its layout (bill
+ * and time on one row, the tighter logo gap, no tax-invoice sentence) became the
+ * layout of both, and *Paid by*, which the counter had dropped, came back to it,
+ * because the receipt must state the payment split and the link is the
+ * customer's record of how they paid.
  */
-const COUNTER_STYLES = [
-  'body.counter { padding: 20px 16px; }',
-  // The logo image carries ~4px of transparent padding under its artwork, so its
-  // 12px margin left the outlet's name visibly closer to the row below than to
-  // the logo above; 7px evens them [owner, 2026-09-30].
-  '.counter .crest img { margin-bottom: 7px; }',
-  // The bill number and the time share one plain row, bill at the left and time
-  // at the right, to save height in the pop-up [owner, 2026-09-30].
-  '.crest .meta { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0 0; color: var(--cream-dim); font-size: 14px; }',
-].join(' ')
+const COUNTER_STYLES = 'body.counter { padding: 20px 16px; }'
 
 export function renderReceiptPage(
   receipt: Receipt,
@@ -325,11 +374,6 @@ export function renderReceiptPage(
   options: ReceiptPageOptions = { view: 'customer' },
 ): string {
   const counter = options.view === 'counter'
-  // In the counter's pop-up the page is plainly a receipt; the sentence is for a
-  // customer holding the link on their own [owner, 2026-09-30].
-  const notes = counter
-    ? receiptContent(receipt).notes.filter((note) => !/tax invoice/i.test(note))
-    : receiptContent(receipt).notes
   const content = receiptContent(receipt)
 
   const lines = content.lines.map((line) => row(line)).join('')
@@ -337,6 +381,21 @@ export function renderReceiptPage(
   const adjustments = content.adjustments
     .map((entry) => row(entry, entry.giveaway ? 'give' : ''))
     .join('')
+
+  // Present only when the payload carries them, so a receipt from before ops #58
+  // renders every line as it did.
+  const served = content.service ? ` · <strong>${escapeHtml(content.service)}</strong>` : ''
+  const holderParts = [
+    content.holder.phone ? `<span>${escapeHtml(content.holder.phone)}</span>` : '',
+    content.holder.gold
+      ? `<span class="gold"><span aria-hidden="true">⭐</span> ${escapeHtml(content.holder.gold)}</span>`
+      : '',
+  ].filter(Boolean)
+  const yours =
+    holderParts.length > 0
+      ? `
+    <p class="yours">${holderParts.join('')}</p>`
+      : ''
 
   const cancelledBanner = content.cancelled
     ? `<p class="cancelled">${escapeHtml(content.cancelled.label)}${
@@ -372,12 +431,7 @@ export function renderReceiptPage(
   <header class="crest">
     <img src="/bill/logo.png" alt="Shawarmania" width="108">
     <p class="outlet">${escapeHtml(content.outletName)}</p>
-    ${
-      counter
-        ? `<p class="meta"><span>${escapeHtml(content.billLabel)}</span><span>${escapeHtml(content.when)}</span></p>`
-        : `<p class="when">${escapeHtml(content.when)}</p>
-    <span class="bill-no">${escapeHtml(content.billLabel)}</span>`
-    }
+    <p class="meta"><span class="lead">${escapeHtml(content.billLabel)}${served}</span><span>${escapeHtml(content.when)}</span></p>${yours}
   </header>
 
   ${cancelledBanner}
@@ -394,16 +448,12 @@ export function renderReceiptPage(
     </ul>
   </div>
 
+  <p class="paid">${escapeHtml(content.tender)}</p>
 ${
-  // The customer at the counter has just paid and knows how; their own link keeps
-  // the tender line for a later dispute [owner, 2026-09-30].
-  counter ? '' : `  <p class="paid">${escapeHtml(content.tender)}</p>`
-}
-${
-  content.points.length > 0
-    ? `
-  <ul class="points">${content.points.map((entry) => row(entry)).join('')}
-  </ul>
+  content.points
+    ? `  <p class="points"><span class="earned">${
+        content.points.earned ? escapeHtml(content.points.earned) : ''
+      }</span><span class="balance">${escapeHtml(content.points.balance)}</span></p>
 `
     : ''
 }
@@ -417,7 +467,7 @@ ${
 }</main>
 
 <footer>
-  <p>${notes.map(escapeHtml).join('<br>')}</p>
+  <p>${content.notes.map(escapeHtml).join('<br>')}</p>
 </footer>
 ${counter ? REPORT_HEIGHT : ''}
 </body>
