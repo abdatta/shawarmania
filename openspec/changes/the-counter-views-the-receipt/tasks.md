@@ -22,6 +22,10 @@
 - [x] 2b.3 `npm run worker:deploy` (version `e50bd734`), then the ops pop-up fits a short receipt and
       scrolls a long one
 
+- [x] 2b.4 On the owner's word: the counter view spaces top and bottom evenly and
+      drops the tax-invoice sentence; the customer's page keeps both
+- [x] 2b.5 `npm run worker:deploy`
+
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and

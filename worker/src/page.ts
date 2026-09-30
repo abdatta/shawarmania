@@ -297,12 +297,24 @@ const REPORT_HEIGHT = `<script>
 })()
 </script>`
 
+/**
+ * The counter view's spacing: even top and bottom. The customer's page keeps a
+ * deep bottom margin for a phone scrolling in a browser; in the ops pop-up, which
+ * sizes itself to this page, that margin reads as a stray gap [owner, 2026-09-30].
+ */
+const COUNTER_STYLES = 'body.counter { padding: 20px 16px; }'
+
 export function renderReceiptPage(
   receipt: Receipt,
   token: string,
   options: ReceiptPageOptions = { view: 'customer' },
 ): string {
   const counter = options.view === 'counter'
+  // In the counter's pop-up the page is plainly a receipt; the sentence is for a
+  // customer holding the link on their own [owner, 2026-09-30].
+  const notes = counter
+    ? receiptContent(receipt).notes.filter((note) => !/tax invoice/i.test(note))
+    : receiptContent(receipt).notes
   const content = receiptContent(receipt)
 
   const lines = content.lines.map((line) => row(line)).join('')
@@ -338,9 +350,9 @@ export function renderReceiptPage(
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="icon" href="/favicon.ico">
-<style>${css(FACES)}${css(STYLES)}</style>
+<style>${css(FACES)}${css(STYLES)}${counter ? COUNTER_STYLES : ''}</style>
 </head>
-<body>
+<body${counter ? ' class="counter"' : ''}>
 <main class="sheet">
   <header class="crest">
     <img src="/bill/logo.png" alt="Shawarmania" width="108">
@@ -382,7 +394,7 @@ ${
 }</main>
 
 <footer>
-  <p>${content.notes.map(escapeHtml).join('<br>')}</p>
+  <p>${notes.map(escapeHtml).join('<br>')}</p>
 </footer>
 ${counter ? REPORT_HEIGHT : ''}
 </body>

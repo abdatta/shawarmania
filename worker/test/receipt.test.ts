@@ -180,9 +180,37 @@ describe('the counter’s view of the page', () => {
 
     expect(counter).not.toContain('Download PDF')
     expect(counter).not.toContain('.pdf"')
-    expect(counter.replace(/<script>[\s\S]*?<\/script>/, '').replace(/\s+/g, '')).toBe(
-      full.replace(/<div class="download">[\s\S]*?<\/div>/, '').replace(/\s+/g, ''),
-    )
+    // The same bill, row for row: only the PDF link, the tax-invoice line, the
+    // body's spacing and the height report differ.
+    const bill = (html: string) =>
+      html
+        .slice(html.indexOf('<main class="sheet">'), html.indexOf('</main>'))
+        .replace(/<div class="download">[\s\S]*?<\/div>/, '')
+        .replace(/\s+/g, '')
+    expect(bill(counter)).toBe(bill(full))
+  })
+
+  /*
+   * In the pop-up the page is plainly a receipt, and the counter already tells
+   * nobody it is a tax invoice: no GSTIN and no tax line appear in either view.
+   * The customer's own link keeps the sentence [owner, 2026-09-30].
+   */
+  it('drops the tax-invoice sentence in the counter view only', () => {
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+
+    expect(full).toContain('This is a receipt, not a tax invoice.')
+    expect(counter).not.toContain('tax invoice')
+    expect(counter).toContain('Shawarmania · Kalyani')
+  })
+
+  it('spaces the counter view evenly top and bottom', () => {
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+
+    expect(counter).toContain('<body class="counter">')
+    expect(counter).toMatch(/body\.counter\s*\{\s*padding:\s*20px 16px;?\s*\}/)
+    expect(full).toContain('<body>')
   })
 
   /*

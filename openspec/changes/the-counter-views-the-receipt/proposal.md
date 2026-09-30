@@ -31,6 +31,12 @@ so the page has to be asked.
   asked for it to grow with the receipt. It is the view's only script; **the
   customer's own link carries no script at all**, which is part of what keeps it
   behaving in a chat app's in-app browser.
+- **The counter view spaces the page evenly and drops the tax-invoice sentence**
+  [owner, 2026-09-30]. The customer's page keeps a deep bottom margin for a phone
+  scrolling in a browser, which reads as a stray gap in a pop-up sized to the page;
+  and in the pop-up the page is plainly a receipt. No GSTIN or tax line appears in
+  either view, so the receipt still resembles no tax invoice. The customer's own
+  link keeps both.
 - **Nothing else reads the parameter.** No other value, no case variant, and no
   effect on the PDF itself, the refusal page, or the headers. Anybody may add it;
   all it can do is hide a link and announce a number of pixels.
