@@ -30,6 +30,10 @@
       the time (right) on one plain row, with no chip
 - [x] 2b.7 `npm run worker:deploy`
 
+- [x] 2b.8 On the owner's word: the counter view leaves out the tender line; the
+      height reported is the content's own rather than the scroll height
+- [x] 2b.9 `npm run worker:deploy`
+
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and

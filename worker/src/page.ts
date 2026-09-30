@@ -288,7 +288,12 @@ const REPORT_HEIGHT = `<script>
 (function () {
   function report() {
     parent.postMessage(
-      { type: 'shawarmania-receipt-height', height: document.documentElement.scrollHeight },
+      {
+        type: 'shawarmania-receipt-height',
+        // The content's own height, not the scroll height, which is at least
+        // the frame's height and so could grow the frame but never shrink it.
+        height: Math.ceil(document.documentElement.getBoundingClientRect().height),
+      },
       '*',
     )
   }
@@ -385,7 +390,11 @@ export function renderReceiptPage(
     </ul>
   </div>
 
-  <p class="paid">${escapeHtml(content.tender)}</p>
+${
+  // The customer at the counter has just paid and knows how; their own link keeps
+  // the tender line for a later dispute [owner, 2026-09-30].
+  counter ? '' : `  <p class="paid">${escapeHtml(content.tender)}</p>`
+}
 ${
   content.points.length > 0
     ? `

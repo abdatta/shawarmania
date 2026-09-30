@@ -41,6 +41,13 @@ so the page has to be asked.
   the left and time at the right, in place of the centred time and the bill-number
   chip [owner, 2026-09-30], to save height in the pop-up. The customer's page keeps
   its layout.
+- **The counter view leaves out how the bill was paid** [owner, 2026-09-30]. The
+  customer at the counter has just paid and knows how; their own link keeps the
+  tender line, which is what settles a later "I paid by UPI". A plain receipt that
+  is not a tax invoice is not required to carry it either way.
+- **The height reported is the content's own**, not the document's scroll height,
+  which is at least the frame's height and so could grow the pop-up but never
+  shrink it.
 - **Nothing else reads the parameter.** No other value, no case variant, and no
   effect on the PDF itself, the refusal page, or the headers. Anybody may add it;
   all it can do is hide a link and announce a number of pixels.

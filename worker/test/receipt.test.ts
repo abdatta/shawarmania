@@ -186,8 +186,23 @@ describe('the counter’s view of the page', () => {
       html
         .slice(html.indexOf('<ul class="rows">'), html.indexOf('</main>'))
         .replace(/<div class="download">[\s\S]*?<\/div>/, '')
+        .replace(/<p class="paid">[\s\S]*?<\/p>/, '')
         .replace(/\s+/g, '')
     expect(bill(counter)).toBe(bill(full))
+  })
+
+  /*
+   * The customer at the counter has just paid and knows how. Their own link keeps
+   * the tender line, which is what settles a later "I paid by UPI" [owner,
+   * 2026-09-30].
+   */
+  it('leaves out how the bill was paid in the counter view only', () => {
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+
+    expect(full).toContain('class="paid"')
+    expect(counter).not.toContain('class="paid"')
+    expect(counter).not.toContain('Paid by')
   })
 
   /*
@@ -245,6 +260,11 @@ describe('the counter’s view of the page', () => {
     expect(counter).toContain("type: 'shawarmania-receipt-height'")
     expect(counter).toContain('parent.postMessage(')
     expect(counter).toContain('ResizeObserver')
+    // The content's own height, never scrollHeight: a document's scrollHeight is
+    // at least its frame's height, so a frame sized to it could grow and never
+    // shrink back.
+    expect(counter).toContain('getBoundingClientRect().height')
+    expect(counter).not.toContain('scrollHeight')
   })
 })
 
