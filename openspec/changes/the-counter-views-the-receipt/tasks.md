@@ -19,7 +19,7 @@
 - [x] 2b.1 Failing first: the counter view carries one script posting
       `shawarmania-receipt-height`, and the customer's page carries no script
 - [x] 2b.2 `REPORT_HEIGHT` in `worker/src/page.ts`, only in the counter view
-- [ ] 2b.3 `npm run worker:deploy`, then the ops pop-up fits a short receipt and
+- [x] 2b.3 `npm run worker:deploy` (version `e50bd734`), then the ops pop-up fits a short receipt and
       scrolls a long one
 
 ## 3. Manual QA
