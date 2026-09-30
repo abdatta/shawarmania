@@ -310,6 +310,10 @@ const REPORT_HEIGHT = `<script>
  */
 const COUNTER_STYLES = [
   'body.counter { padding: 20px 16px; }',
+  // The logo image carries ~4px of transparent padding under its artwork, so its
+  // 12px margin left the outlet's name visibly closer to the row below than to
+  // the logo above; 7px evens them [owner, 2026-09-30].
+  '.counter .crest img { margin-bottom: 7px; }',
   // The bill number and the time share one plain row, bill at the left and time
   // at the right, to save height in the pop-up [owner, 2026-09-30].
   '.crest .meta { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0 0; color: var(--cream-dim); font-size: 14px; }',

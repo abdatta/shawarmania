@@ -236,6 +236,17 @@ describe('the counter’s view of the page', () => {
     expect(full).toContain('class="when"')
   })
 
+  /*
+   * The logo image carries about 4px of transparent padding beneath its artwork,
+   * so its 12px margin left more space above the outlet's name than below it.
+   * Measured off the owner's screenshot, 2026-09-30: about 29px above against
+   * 25px below. The counter view trims the margin to even them.
+   */
+  it('evens the space around the outlet name in the counter view', () => {
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+    expect(counter).toMatch(/\.counter \.crest img\s*\{\s*margin-bottom:\s*7px;?\s*\}/)
+  })
+
   it('spaces the counter view evenly top and bottom', () => {
     const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
     const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')

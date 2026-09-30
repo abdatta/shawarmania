@@ -34,6 +34,11 @@
       height reported is the content's own rather than the scroll height
 - [x] 2b.9 `npm run worker:deploy`
 
+- [x] 2b.10 On the owner's word: the counter view trims the logo's margin to 7px, so
+      the space above the outlet's name matches the space below (measured 29px
+      against 25px off the owner's screenshot; the logo image carries ~4px of
+      transparent padding); deployed
+
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and
