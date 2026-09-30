@@ -168,23 +168,38 @@ describe('the page states what was charged', () => {
  */
 describe('the counter’s view of the page', () => {
   it('reads the counter view from `?view=counter` and nothing else', () => {
-    expect(receiptPageOptions(new URLSearchParams('view=counter'))).toEqual({ download: false })
-    expect(receiptPageOptions(new URLSearchParams(''))).toEqual({ download: true })
-    expect(receiptPageOptions(new URLSearchParams('view=pdf'))).toEqual({ download: true })
-    expect(receiptPageOptions(new URLSearchParams('VIEW=counter'))).toEqual({ download: true })
+    expect(receiptPageOptions(new URLSearchParams('view=counter'))).toEqual({ view: 'counter' })
+    expect(receiptPageOptions(new URLSearchParams(''))).toEqual({ view: 'customer' })
+    expect(receiptPageOptions(new URLSearchParams('view=pdf'))).toEqual({ view: 'customer' })
+    expect(receiptPageOptions(new URLSearchParams('VIEW=counter'))).toEqual({ view: 'customer' })
   })
 
   it('omits the PDF link and keeps everything the bill says', () => {
     const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
-    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { download: false })
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
 
     expect(counter).not.toContain('Download PDF')
     expect(counter).not.toContain('.pdf"')
-    expect(counter.replace(/\s+/g, '')).toBe(
-      full
-        .replace(/<div class="download">[\s\S]*?<\/div>/, '')
-        .replace(/\s+/g, ''),
+    expect(counter.replace(/<script>[\s\S]*?<\/script>/, '').replace(/\s+/g, '')).toBe(
+      full.replace(/<div class="download">[\s\S]*?<\/div>/, '').replace(/\s+/g, ''),
     )
+  })
+
+  /*
+   * The counter's pop-up cannot see into this page (another origin), so it sizes
+   * itself to the height the page reports. Only the counter's view carries the
+   * script: the customer's own link stays script-free, which is what keeps it
+   * behaving inside a chat app's in-app browser.
+   */
+  it('reports its height to the counter, and only in the counter’s view', () => {
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+
+    expect(full).not.toContain('<script')
+    expect(counter.match(/<script>/g)).toHaveLength(1)
+    expect(counter).toContain("type: 'shawarmania-receipt-height'")
+    expect(counter).toContain('parent.postMessage(')
+    expect(counter).toContain('ResizeObserver')
   })
 })
 

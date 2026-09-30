@@ -259,23 +259,50 @@ function row(entry: ContentAmount, extraClass = ''): string {
  * How a request asks for the page to be drawn.
  *
  * `?view=counter` is the ops counter framing this page for a customer standing
- * in front of it (ops #63, `a-receipt-goes-out-on-whatsapp`). There the PDF
- * link leads nowhere a customer can use, so that view omits it and changes
- * nothing else. Anybody may add the parameter; all it can do is hide a link.
+ * in front of it (ops #63, `a-receipt-goes-out-on-whatsapp`). That view:
+ *
+ *   - omits the PDF link, which leads nowhere a customer at the counter can use;
+ *   - carries one small script reporting the page's height to the frame's parent,
+ *     because the pop-up cannot measure a page on another origin and sizes itself
+ *     to what this reports.
+ *
+ * The customer's own link carries no script at all, which is part of what keeps
+ * it behaving inside a chat app's in-app browser. Anybody may add the parameter;
+ * all it does is hide a link and announce a number of pixels.
  */
 export interface ReceiptPageOptions {
-  download: boolean
+  view: 'customer' | 'counter'
 }
 
 export function receiptPageOptions(search: URLSearchParams): ReceiptPageOptions {
-  return { download: search.get('view') !== 'counter' }
+  return { view: search.get('view') === 'counter' ? 'counter' : 'customer' }
 }
+
+/**
+ * The counter view's one script: the page's height, to whoever framed it, on
+ * load and whenever it changes (a web font arriving reflows the page). The
+ * height is not sensitive, so any origin may hear it; the ops pop-up checks the
+ * message came from its own frame.
+ */
+const REPORT_HEIGHT = `<script>
+(function () {
+  function report() {
+    parent.postMessage(
+      { type: 'shawarmania-receipt-height', height: document.documentElement.scrollHeight },
+      '*',
+    )
+  }
+  addEventListener('load', report)
+  if ('ResizeObserver' in window) new ResizeObserver(report).observe(document.documentElement)
+})()
+</script>`
 
 export function renderReceiptPage(
   receipt: Receipt,
   token: string,
-  options: ReceiptPageOptions = { download: true },
+  options: ReceiptPageOptions = { view: 'customer' },
 ): string {
+  const counter = options.view === 'counter'
   const content = receiptContent(receipt)
 
   const lines = content.lines.map((line) => row(line)).join('')
@@ -346,7 +373,7 @@ ${
     : ''
 }
 ${
-  options.download
+  !counter
     ? `  <div class="download">
     <a href="/bill/${encodeURIComponent(token)}.pdf" download>Download PDF</a>
   </div>
@@ -357,6 +384,7 @@ ${
 <footer>
   <p>${content.notes.map(escapeHtml).join('<br>')}</p>
 </footer>
+${counter ? REPORT_HEIGHT : ''}
 </body>
 </html>`
 }

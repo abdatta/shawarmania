@@ -14,6 +14,14 @@
       that is wanted in the same release
 - [x] 2.2 `npm run worker:deploy` (2026-09-30, version `5033fcc6`; also shipped `the-receipt-shows-points`)
 
+## 2b. The counter view reports its height (2026-09-30)
+
+- [x] 2b.1 Failing first: the counter view carries one script posting
+      `shawarmania-receipt-height`, and the customer's page carries no script
+- [x] 2b.2 `REPORT_HEIGHT` in `worker/src/page.ts`, only in the counter view
+- [ ] 2b.3 `npm run worker:deploy`, then the ops pop-up fits a short receipt and
+      scrolls a long one
+
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and

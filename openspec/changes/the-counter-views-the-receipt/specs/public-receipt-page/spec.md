@@ -14,12 +14,14 @@ through a script-generated object URL.
 No rendered receipt, in either format, SHALL be persisted.
 
 Where the page is requested with `view=counter`, exactly, it SHALL omit the download
-link and SHALL otherwise be the same page. No other value of any parameter SHALL
-change the page.
+link, SHALL report its height to the page that framed it on load and whenever its
+height changes, and SHALL otherwise be the same page. No other value of any
+parameter SHALL change the page, and the page without it SHALL carry no script.
 
 > The counter view was added by `the-counter-views-the-receipt`, the child of ops
 > #63. The ops counter frames this page in a sandbox that refuses downloads, where
-> the link would be a dead control in front of a customer.
+> the link would be a dead control in front of a customer, and sizes its pop-up to
+> the height this view reports.
 
 #### Scenario: Downloading inside a chat application's browser
 
