@@ -15,7 +15,8 @@ No rendered receipt, in either format, SHALL be persisted.
 
 Where the page is requested with `view=counter`, exactly, it SHALL omit the download
 link, SHALL report its height to the page that framed it on load and whenever its
-height changes, SHALL space its top and bottom evenly, SHALL leave out the sentence
+height changes, SHALL space its top and bottom evenly, SHALL show the bill number
+and the time on one plain row, SHALL leave out the sentence
 saying it is not a tax invoice, and SHALL otherwise show the same bill. No other value of any
 parameter SHALL change the page, and the page without it SHALL carry no script.
 

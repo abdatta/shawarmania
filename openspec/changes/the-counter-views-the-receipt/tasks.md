@@ -26,6 +26,10 @@
       drops the tax-invoice sentence; the customer's page keeps both
 - [x] 2b.5 `npm run worker:deploy`
 
+- [x] 2b.6 On the owner's word: the counter view puts the bill number (left) and
+      the time (right) on one plain row, with no chip
+- [x] 2b.7 `npm run worker:deploy`
+
 ## 3. Manual QA
 
 - [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and

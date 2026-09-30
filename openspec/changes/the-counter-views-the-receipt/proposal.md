@@ -37,6 +37,10 @@ so the page has to be asked.
   and in the pop-up the page is plainly a receipt. No GSTIN or tax line appears in
   either view, so the receipt still resembles no tax invoice. The customer's own
   link keeps both.
+- **The counter view puts the bill number and the time on one plain row**, bill at
+  the left and time at the right, in place of the centred time and the bill-number
+  chip [owner, 2026-09-30], to save height in the pop-up. The customer's page keeps
+  its layout.
 - **Nothing else reads the parameter.** No other value, no case variant, and no
   effect on the PDF itself, the refusal page, or the headers. Anybody may add it;
   all it can do is hide a link and announce a number of pixels.

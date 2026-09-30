@@ -184,7 +184,7 @@ describe('the counter’s view of the page', () => {
     // body's spacing and the height report differ.
     const bill = (html: string) =>
       html
-        .slice(html.indexOf('<main class="sheet">'), html.indexOf('</main>'))
+        .slice(html.indexOf('<ul class="rows">'), html.indexOf('</main>'))
         .replace(/<div class="download">[\s\S]*?<\/div>/, '')
         .replace(/\s+/g, '')
     expect(bill(counter)).toBe(bill(full))
@@ -202,6 +202,23 @@ describe('the counter’s view of the page', () => {
     expect(full).toContain('This is a receipt, not a tax invoice.')
     expect(counter).not.toContain('tax invoice')
     expect(counter).toContain('Shawarmania · Kalyani')
+  })
+
+  /*
+   * One row instead of two, to save height in the pop-up: the bill number at the
+   * left and the time at the right, both plain [owner, 2026-09-30]. The
+   * customer's page keeps its centred time and bill-number chip.
+   */
+  it('puts the bill number and the time on one plain row in the counter view', () => {
+    const counter = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT', { view: 'counter' })
+    const full = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+
+    const meta = counter.match(/<p class="meta">([\s\S]*?)<\/p>/)?.[1] ?? ''
+    expect(meta).toMatch(/^\s*<span>Bill \d+<\/span>\s*<span>[^<]+<\/span>\s*$/)
+    expect(counter).not.toContain('class="bill-no"')
+    expect(counter).not.toContain('class="when"')
+    expect(full).toContain('class="bill-no"')
+    expect(full).toContain('class="when"')
   })
 
   it('spaces the counter view evenly top and bottom', () => {

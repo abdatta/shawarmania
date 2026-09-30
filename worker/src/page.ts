@@ -298,11 +298,17 @@ const REPORT_HEIGHT = `<script>
 </script>`
 
 /**
- * The counter view's spacing: even top and bottom. The customer's page keeps a
- * deep bottom margin for a phone scrolling in a browser; in the ops pop-up, which
- * sizes itself to this page, that margin reads as a stray gap [owner, 2026-09-30].
+ * The counter view's layout. Even spacing top and bottom: the customer's page
+ * keeps a deep bottom margin for a phone scrolling in a browser, and in the ops
+ * pop-up, which sizes itself to this page, that margin reads as a stray gap. And
+ * the bill number and time on one row [owner, 2026-09-30].
  */
-const COUNTER_STYLES = 'body.counter { padding: 20px 16px; }'
+const COUNTER_STYLES = [
+  'body.counter { padding: 20px 16px; }',
+  // The bill number and the time share one plain row, bill at the left and time
+  // at the right, to save height in the pop-up [owner, 2026-09-30].
+  '.crest .meta { display: flex; justify-content: space-between; gap: 12px; margin: 12px 0 0; color: var(--cream-dim); font-size: 14px; }',
+].join(' ')
 
 export function renderReceiptPage(
   receipt: Receipt,
@@ -357,8 +363,12 @@ export function renderReceiptPage(
   <header class="crest">
     <img src="/bill/logo.png" alt="Shawarmania" width="108">
     <p class="outlet">${escapeHtml(content.outletName)}</p>
-    <p class="when">${escapeHtml(content.when)}</p>
-    <span class="bill-no">${escapeHtml(content.billLabel)}</span>
+    ${
+      counter
+        ? `<p class="meta"><span>${escapeHtml(content.billLabel)}</span><span>${escapeHtml(content.when)}</span></p>`
+        : `<p class="when">${escapeHtml(content.when)}</p>
+    <span class="bill-no">${escapeHtml(content.billLabel)}</span>`
+    }
   </header>
 
   ${cancelledBanner}
