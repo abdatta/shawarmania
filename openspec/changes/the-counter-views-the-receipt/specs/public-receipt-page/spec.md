@@ -13,18 +13,8 @@ through a script-generated object URL.
 
 No rendered receipt, in either format, SHALL be persisted.
 
-Where the page is requested with `view=counter`, exactly, it SHALL omit the download
-link, SHALL report its height to the page that framed it on load and whenever its
-height changes, SHALL space its top and bottom evenly, SHALL show the bill number
-and the time on one plain row, SHALL leave out how the bill was paid, SHALL leave
-out the sentence
-saying it is not a tax invoice, and SHALL otherwise show the same bill. No other value of any
-parameter SHALL change the page, and the page without it SHALL carry no script.
-
-> The counter view was added by `the-counter-views-the-receipt`, the child of ops
-> #63. The ops counter frames this page in a sandbox that refuses downloads, where
-> the link would be a dead control in front of a customer, and sizes its pop-up to
-> the height this view reports.
+Where the page is requested in the counter's view (below), it SHALL omit the
+download link.
 
 #### Scenario: Downloading inside a chat application's browser
 
@@ -37,8 +27,37 @@ parameter SHALL change the page, and the page without it SHALL carry no script.
 - **WHEN** a receipt link is opened
 - **THEN** the receipt is displayed and nothing downloads on its own
 
+## ADDED Requirements
+
+### Requirement: The counter's view of a receipt fits a pop-up
+
+> Added by `the-counter-views-the-receipt`, the child of ops #63. The ops counter
+> frames this page for a customer standing at the tablet, in a sandbox that
+> refuses downloads and a pop-up that sizes itself to the page [owner, 2026-09-30].
+
+Where the page is requested with `view=counter`, exactly, it SHALL show the same
+items, discounts and total as the customer's page, and SHALL:
+
+- omit the download link;
+- omit how the bill was paid, and the sentence saying it is not a tax invoice;
+- show the bill number and the time on one plain row;
+- space its top and bottom evenly;
+- report its own content height to the page that framed it, on load and whenever
+  that height changes.
+
+No other value of any parameter SHALL change the page. The page without it SHALL
+carry no script. Neither view SHALL carry a GSTIN or a tax line.
+
 #### Scenario: The counter's view
 
 - **WHEN** a receipt is requested with `?view=counter`
-- **THEN** the page carries no download link, and every row, total and note is the
-  same as without it
+- **THEN** it shows the same items, discounts and total as the customer's page,
+  with no download link, no tender line and no tax-invoice sentence, the bill
+  number and time on one row, and one script reporting its height
+
+#### Scenario: The customer's own link
+
+- **WHEN** a receipt is requested with no parameter, or with `?view=COUNTER` or
+  any other value
+- **THEN** it is the customer's page, with its download link, tender line and
+  tax-invoice sentence, and no script
