@@ -243,7 +243,13 @@ type Row =
    * gold after a drawn star, centred together on one line as the page has them.
    * Either may be absent.
    */
-  | { kind: "gold"; phone: string | null; text: string | null; size: number }
+  | {
+      kind: "gold";
+      service: string | null;
+      phone: string | null;
+      text: string | null;
+      size: number;
+    }
   | { kind: "gap"; height: number }
   | { kind: "banner"; text: string; sub: string | null }
   | { kind: "line"; name: string; sub: string; amount: string }
@@ -307,18 +313,18 @@ function layout(content: ReceiptContent, logoHeight: number): Row[] {
     {
       kind: "meta",
       left: content.billLabel,
-      ...(content.service ? { accent: content.service } : {}),
       right: content.when,
       size: 7.5,
     },
   ];
 
-  // Whose it is without saying who (ops #58): the digits and the gold mark on one
-  // centred line beneath that row, as the page has them.
-  if (content.holder.phone || content.holder.gold) {
+  // The second row, as the page has it [owner, 2026-09-30]: how it was served at
+  // the left, gold at the centre, the number's last four at the right (ops #58).
+  if (content.service || content.holder.phone || content.holder.gold) {
     rows.push({ kind: "gap", height: 1 });
     rows.push({
       kind: "gold",
+      service: content.service,
       phone: content.holder.phone,
       text: content.holder.gold,
       size: 7.5,
@@ -331,7 +337,7 @@ function layout(content: ReceiptContent, logoHeight: number): Row[] {
     rows.push({
       kind: "banner",
       text: content.cancelled.label.toUpperCase(),
-      sub: content.cancelled.reason,
+      sub: null,
     });
     rows.push({ kind: "rule" });
   }
@@ -442,7 +448,7 @@ export function pdfStrings(receipt: Receipt): string[] {
       case "centre":
         return [row.text];
       case "gold":
-        return [row.phone ?? "", row.text ?? ""].filter(Boolean);
+        return [row.service ?? "", row.text ?? "", row.phone ?? ""].filter(Boolean);
       case "meta":
         return [row.left, row.accent ?? "", row.right].filter(Boolean);
       case "banner":
@@ -593,24 +599,30 @@ export async function renderReceiptPdf(receipt: Receipt): Promise<Uint8Array> {
       case "gold": {
         // The star is a path, because neither embedded face carries the emoji
         // the page uses. It stands a little taller than the text's capitals and
-        // sits on the same baseline. The two halves sit a page-sized gap apart.
+        // sits on the same baseline. Service at the left margin, gold at the
+        // true centre of the roll, the number at the right margin.
         const star = row.size * 1.1;
         const starGap = row.size * 0.4;
-        const between = row.size * 1.8;
-        const phoneWidth = row.phone
-          ? widthOfRuns(row.phone, row.size, faces.text, faces.ext)
-          : 0;
-        const goldWidth = row.text
-          ? star + starGap + widthOfRuns(row.text, row.size, faces.text, faces.ext)
-          : 0;
-        const total = phoneWidth + (row.phone && row.text ? between : 0) + goldWidth;
-        let x = MARGIN + (CONTENT - total) / 2;
         const baseline = y + row.size * 0.3;
+        if (row.service) {
+          drawRuns(page, row.service, MARGIN, baseline, row.size, CREAM, faces.text, faces.ext);
+        }
         if (row.phone) {
-          drawRuns(page, row.phone, x, baseline, row.size, CREAM_DIM, faces.text, faces.ext);
-          x += phoneWidth + (row.text ? between : 0);
+          const phoneWidth = widthOfRuns(row.phone, row.size, faces.text, faces.ext);
+          drawRuns(
+            page,
+            row.phone,
+            MARGIN + CONTENT - phoneWidth,
+            baseline,
+            row.size,
+            CREAM_DIM,
+            faces.text,
+            faces.ext,
+          );
         }
         if (row.text) {
+          const goldWidth = star + starGap + widthOfRuns(row.text, row.size, faces.text, faces.ext);
+          const x = MARGIN + (CONTENT - goldWidth) / 2;
           page.drawSvgPath(STAR_PATH, {
             x,
             // An SVG path's origin is its top-left, with y running down.

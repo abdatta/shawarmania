@@ -67,7 +67,12 @@ export interface Receipt {
   business_date: string
   sold_at: string
   status: 'settled' | 'void'
-  void_reason: string | null
+  /**
+   * Why the bill was cancelled. Ops stopped returning it after #58 [owner,
+   * 2026-09-30]; a payload from before that may still carry it, and nothing
+   * renders it.
+   */
+  void_reason?: string | null
   totals: ReceiptTotals
   lines: ReceiptLine[]
   discount_rows: ReceiptDiscountRow[]

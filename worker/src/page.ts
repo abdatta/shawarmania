@@ -130,8 +130,8 @@ body {
   margin: 0;
 }
 /*
-  One row: the bill number and how it was served at the left, the date and time
-  at the right [owner, 2026-09-30].
+  Two rows under the outlet [owner, 2026-09-30]. The first: the bill number at
+  the left, the date and time at the right.
 */
 .crest .meta {
   display: flex;
@@ -147,24 +147,39 @@ body {
    a second line rather than breaking mid-phrase or overflowing. */
 .crest .meta > span { white-space: nowrap; }
 .crest .meta > span:last-child { margin-left: auto; }
-.crest .meta strong { color: var(--cream); font-weight: 700; }
 
 /*
-  Whose receipt it is (ops #58): four digits of a number and, for a gold member,
-  gold here -- enough for the customer to say "yes, mine", and never a name. Gold
+  The second: how it was served at the left, gold at the true centre, and the
+  number's last four at the right -- whose receipt it is (ops #58), enough for
+  the customer to say "yes, mine", and never a name. Three columns, the outer
+  two equal, so gold sits at the centre whatever stands either side of it. Gold
   takes the flame gold the page already gives to what the customer was given,
-  because it is the one thing on the line that is a benefit.
+  because it is the one thing on the row that is a benefit.
 */
-.crest .yours {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px 14px;
-  margin: 8px 0 0;
-  font-size: 13.5px;
+.crest .trio {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 6px 0 0;
+  font-size: 14px;
   color: var(--cream-dim);
 }
-.crest .yours .gold { color: var(--flame-gold); font-weight: 700; }
+.crest .trio span { white-space: nowrap; }
+.crest .trio .left { justify-self: start; }
+.crest .trio .right { justify-self: end; }
+.crest .trio strong { color: var(--cream); font-weight: 700; }
+.crest .trio .gold { color: var(--flame-gold); font-weight: 700; }
+/*
+  Measured: below 360px the three do not fit one row. Service and gold keep the
+  row, at the left and the right, and the number takes its own line at the right
+  rather than running off the sheet.
+*/
+@media (max-width: 359px) {
+  .crest .trio { grid-template-columns: 1fr auto; }
+  .crest .trio .mid { justify-self: end; }
+  .crest .trio .right { grid-column: 1 / -1; }
+}
 
 .cancelled {
   margin: 0;
@@ -177,7 +192,6 @@ body {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.cancelled span { display: block; margin-top: 4px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--cream-dim); }
 
 .rows { padding: 6px 20px; }
 /* Items and discounts share one rhythm, and no rule runs between one item and
@@ -281,13 +295,12 @@ footer a { color: inherit; }
   .crest, .row, .totals, .totals .grand { border-color: #bbb; }
   .crest .outlet, .row .name, .totals .grand .name, .totals .grand .amount { color: #000; }
   .crest .meta, .row .sub, .totals .row .name { color: #444; }
-  .crest .meta strong { color: #000; }
-  .crest .yours, .crest .yours .gold { color: #444; }
+  .crest .trio strong { color: #000; }
+  .crest .trio, .crest .trio .gold { color: #444; }
   .row.give .amount { color: #000; }
   .paid { color: #000; }
   .points { border-color: #bbb; }
   .cancelled { background: #fff; color: #000; border-bottom: 1px solid #000; }
-  .cancelled span { color: #444; }
   .download, footer { display: none; }
 }
 `
@@ -384,23 +397,22 @@ export function renderReceiptPage(
 
   // Present only when the payload carries them, so a receipt from before ops #58
   // renders every line as it did.
-  const served = content.service ? ` · <strong>${escapeHtml(content.service)}</strong>` : ''
-  const holderParts = [
-    content.holder.phone ? `<span>${escapeHtml(content.holder.phone)}</span>` : '',
-    content.holder.gold
-      ? `<span class="gold"><span aria-hidden="true">⭐</span> ${escapeHtml(content.holder.gold)}</span>`
-      : '',
-  ].filter(Boolean)
+  const served = content.service ? `<strong>${escapeHtml(content.service)}</strong>` : ''
+  // The second row [owner, 2026-09-30]: how it was served at the left, gold at
+  // the centre, the number's last four at the right. Each keeps its place when
+  // another is absent.
+  const goldMark = content.holder.gold
+    ? `<span class="gold"><span aria-hidden="true">⭐</span> ${escapeHtml(content.holder.gold)}</span>`
+    : ''
+  const digits = content.holder.phone ? escapeHtml(content.holder.phone) : ''
   const yours =
-    holderParts.length > 0
+    served || goldMark || digits
       ? `
-    <p class="yours">${holderParts.join('')}</p>`
+    <p class="trio"><span class="left">${served}</span><span class="mid">${goldMark}</span><span class="right">${digits}</span></p>`
       : ''
 
   const cancelledBanner = content.cancelled
-    ? `<p class="cancelled">${escapeHtml(content.cancelled.label)}${
-        content.cancelled.reason ? `<span>${escapeHtml(content.cancelled.reason)}</span>` : ''
-      }</p>`
+    ? `<p class="cancelled">${escapeHtml(content.cancelled.label)}</p>`
     : ''
 
   return `<!doctype html>
@@ -431,7 +443,7 @@ export function renderReceiptPage(
   <header class="crest">
     <img src="/bill/logo.png" alt="Shawarmania" width="108">
     <p class="outlet">${escapeHtml(content.outletName)}</p>
-    <p class="meta"><span class="lead">${escapeHtml(content.billLabel)}${served}</span><span>${escapeHtml(content.when)}</span></p>${yours}
+    <p class="meta"><span class="lead">${escapeHtml(content.billLabel)}</span><span>${escapeHtml(content.when)}</span></p>${yours}
   </header>
 
   ${cancelledBanner}

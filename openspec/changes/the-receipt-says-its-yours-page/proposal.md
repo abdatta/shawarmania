@@ -38,8 +38,8 @@ recorded since ops #60.
   (`?view=counter`) and the PDF, drawn from the content model so they cannot word a
   line differently.
 - **The counter and the link say the same thing** [owner, 2026-09-30]. Both take
-  the counter view's layout (*Bill 46 · Takeaway* at the left of one row and *30 Sep 2026 · 7:05 pm* at the
-  right, the tighter logo gap,
+  the same layout (*Bill 12046* and *30 Sep 2026 · 7:05 pm* on one row; *Takeaway*,
+  *⭐ Gold* centred and *+91 ••••• •5801* on the next; the tighter logo gap,
   no "not a tax invoice" sentence) and both show *Paid by*, which the counter view
   had dropped: the receipt must state how it was paid, and the link is the
   customer's record of it. The counter view keeps only its three invisible-or-
@@ -56,6 +56,9 @@ recorded since ops #60.
   discount rows, with no rule between one item and the next. This modifies
   `the-receipt-shows-points`'s requirement, so this change archives after that
   one too.
+- **A cancelled receipt says *Cancelled* and never why** [owner, 2026-09-30]: the
+  reason is the outlet's own note. Ops stops sending it; the Worker does not
+  render it from an older payload either.
 - **The tripwire is widened, not removed.** It still refuses a payload carrying a
   name or a biller by key. It now also refuses any string value with a run of ten
   or more digits (the shape of a whole phone number, which is the leak the parent

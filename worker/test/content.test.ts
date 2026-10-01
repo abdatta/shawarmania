@@ -611,15 +611,15 @@ describe("what the receipt says of its customer", () => {
         }),
       ),
     );
-    // One row at the top reads bill, service, date [owner, 2026-09-30]; the
-    // holder line follows it.
+    // Bill and date and time, then service, gold and the number, reading order
+    // [owner, 2026-09-30].
     const at = said.indexOf("Bill 10");
     expect(said.slice(at, at + 5)).toEqual([
       "Bill 10",
-      "Dine-in",
       "03 Sep 2026 · 1:05 pm",
-      "+91 ••••• •5801",
+      "Dine-in",
       "Gold",
+      "+91 ••••• •5801",
     ]);
   });
 

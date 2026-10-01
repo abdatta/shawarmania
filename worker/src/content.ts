@@ -59,7 +59,7 @@ export interface ReceiptContent {
    */
   holder: { phone: string | null; gold: string | null }
   /** Present only for a voided bill, and unmistakable when it is. */
-  cancelled: { label: string; reason: string | null } | null
+  cancelled: { label: string } | null
   lines: ContentAmount[]
   /** Shown only when something adjusted the subtotal, or it would restate a line. */
   subtotal: ContentAmount | null
@@ -187,8 +187,10 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
       phone: receipt.phone_last4 ? `+91 ••••• •${receipt.phone_last4}` : null,
       gold: receipt.gold_at_outlet === true ? 'Gold' : null,
     },
-    cancelled:
-      receipt.status === 'void' ? { label: 'Cancelled', reason: receipt.void_reason } : null,
+    // Cancelled, and never why: the reason is the outlet's own note, not the
+    // customer's business [owner, 2026-09-30]. Ops stops sending it; a payload
+    // from before that may still carry it, and it is not read.
+    cancelled: receipt.status === 'void' ? { label: 'Cancelled' } : null,
     lines,
     // Restating a single undiscounted line as a subtotal is noise; beside
     // adjustments it is what they adjust.
@@ -217,16 +219,14 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
 export function contentStrings(content: ReceiptContent): string[] {
   // One row at the top: the bill and how it was served at the left, the date
   // and time at the right [owner, 2026-09-30].
-  const out: string[] = [content.outletName, content.billLabel]
+  // Reading order [owner, 2026-09-30]: bill and the date and time, then how it
+  // was served, gold and the number.
+  const out: string[] = [content.outletName, content.billLabel, content.when]
   if (content.service) out.push(content.service)
-  out.push(content.when)
-  if (content.holder.phone) out.push(content.holder.phone)
   if (content.holder.gold) out.push(content.holder.gold)
+  if (content.holder.phone) out.push(content.holder.phone)
 
-  if (content.cancelled) {
-    out.push(content.cancelled.label)
-    if (content.cancelled.reason) out.push(content.cancelled.reason)
-  }
+  if (content.cancelled) out.push(content.cancelled.label)
 
   for (const row of [
     ...content.lines,

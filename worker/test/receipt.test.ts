@@ -239,16 +239,17 @@ describe('the counter’s view of the page', () => {
   )
 
   /*
-   * Bill and how it was served at the left, the date and time at the right
-   * [owner, 2026-09-30]. Never the table: a label for the length of a meal, like
-   * the order number, which the receipt does not show either.
+   * Two rows under the outlet [owner, 2026-09-30]: the bill and the date and
+   * time; then how it was served at the left, gold at the centre and the
+   * number's last four at the right. Never the table: a label for the length of
+   * a meal, like the order number, which the receipt does not show either.
    */
   it.each(['customer', 'counter'] as const)(
-    'reads bill and service at the left, date and time at the right: %s view',
+    'reads bill | date, then service | gold | number: %s view',
     (view) => {
       const html = renderReceiptPage(
         {
-          ...aReceipt({ service_type: 'dine_in' }),
+          ...aReceipt({ service_type: 'dine_in', phone_last4: '5801', gold_at_outlet: true }),
           ...({ table_number: 12 } as object),
         } as Receipt,
         'Ab3-_x9QzT',
@@ -256,11 +257,51 @@ describe('the counter’s view of the page', () => {
       )
       const meta = html.match(/<p class="meta">([\s\S]*?)<\/p>/)?.[1] ?? ''
       expect(meta).toMatch(
-        /^\s*<span class="lead">Bill 10 · <strong>Dine-in<\/strong><\/span>\s*<span>03 Sep 2026 · 1:05 pm<\/span>\s*$/,
+        /^\s*<span class="lead">Bill 10<\/span>\s*<span>03 Sep 2026 · 1:05 pm<\/span>\s*$/,
+      )
+      const trio = html.match(/<p class="trio">([\s\S]*?)<\/p>/)?.[1] ?? ''
+      expect(trio).toMatch(
+        /^\s*<span class="left"><strong>Dine-in<\/strong><\/span>\s*<span class="mid"><span class="gold"><span aria-hidden="true">⭐<\/span> Gold<\/span><\/span>\s*<span class="right">\+91 ••••• •5801<\/span>\s*$/,
       )
       expect(html).not.toMatch(/table \d/i)
     },
   )
+
+  it('keeps each part of the second row in its place when another is absent', () => {
+    const takeaway = renderReceiptPage(aReceipt({ service_type: 'takeaway' }), 'Ab3-_x9QzT')
+    expect(takeaway.match(/<p class="trio">([\s\S]*?)<\/p>/)?.[1]).toMatch(
+      /<span class="left"><strong>Takeaway<\/strong><\/span>\s*<span class="mid"><\/span>\s*<span class="right"><\/span>/,
+    )
+    const numberOnly = renderReceiptPage(aReceipt({ phone_last4: '0042' }), 'Ab3-_x9QzT')
+    expect(numberOnly.match(/<p class="trio">([\s\S]*?)<\/p>/)?.[1]).toMatch(
+      /<span class="left"><\/span>\s*<span class="mid"><\/span>\s*<span class="right">\+91 ••••• •0042<\/span>/,
+    )
+  })
+
+  /*
+   * Below 360px the three parts do not fit one row, measured; the number drops
+   * to its own line at the right rather than running off the sheet.
+   */
+  it('gives the number its own line on the narrowest phones', () => {
+    const html = renderReceiptPage(aReceipt(), 'Ab3-_x9QzT')
+    expect(html).toMatch(/@media \(max-width: 359px\)\s*\{[^}]*\.crest \.trio\s*\{[^}]*grid-template-columns:\s*1fr auto/)
+  })
+
+  /*
+   * Why a bill was cancelled is the outlet's own note, not the customer's
+   * business [owner, 2026-09-30]. Ops stops sending it; a payload from before
+   * that still carries it, and the page and the PDF must not print it.
+   */
+  it('says cancelled and never why, even from a payload that carries the reason', async () => {
+    const receipt = aReceipt({ status: 'void', void_reason: 'Wrong table, rung twice' })
+    for (const view of ['customer', 'counter'] as const) {
+      const html = renderReceiptPage(receipt, 'Ab3-_x9QzT', { view })
+      expect(html).toContain('<p class="cancelled">Cancelled</p>')
+      expect(html).not.toContain('Wrong table')
+    }
+    const pdf = await renderReceiptPdf(receipt)
+    expect(new TextDecoder('latin1').decode(pdf)).not.toContain('Wrong table')
+  })
 
   /*
    * The items are spaced like the discount rows beneath them, with no rule

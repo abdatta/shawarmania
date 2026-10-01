@@ -10,6 +10,9 @@ last four digits the receipt payload carries, shown masked (*+91 •••••
 SHALL show those digits, and that the customer was gold at the bill's outlet, only
 when the payload carries them, and SHALL NOT derive either from anything else.
 
+They SHALL NOT display why a bill was cancelled, even if a payload carries it: a
+cancelled receipt reads *Cancelled* and nothing more [owner, 2026-09-30].
+
 They SHALL NOT display any other person's identity, including the biller, the
 approving manager, or the till.
 
@@ -61,9 +64,10 @@ that it:
 - reports its own content height to the page that framed it, on load and whenever
   that height changes.
 
-Both views SHALL show the bill number and how it was served at the left of one plain
-row, and the date and time of sale at the right, and SHALL
-show how the bill was paid. Neither SHALL carry a sentence about tax invoices, a
+Both views SHALL show, under the outlet's name, the bill number at the left of one
+row and the date and time of sale at its right; and on a second row how the bill
+was served at the left, the gold mark at the centre and the masked number at the
+right. Both SHALL show how the bill was paid. Neither SHALL carry a sentence about tax invoices, a
 GSTIN or a tax line.
 
 No other value of any parameter SHALL change the page. The page without it SHALL
@@ -80,8 +84,8 @@ carry no script.
 - **WHEN** a receipt is requested with no parameter, or with `?view=COUNTER` or
   any other value
 - **THEN** it is the customer's page, with its download link and no script, and
-  the bill number and how it was served at the left of one row, the date and time
-  at the right
+  the bill number with the date and time on one row, and how it was served, the
+  gold mark and the masked number on the next
 
 ### Requirement: The receipt says what the bill did to the customer's points
 
@@ -125,8 +129,8 @@ A bill whose payload carries no points SHALL say nothing about points.
 ### Requirement: The receipt says how the bill was served
 
 Where the payload carries how a bill was served, the page, its counter view and the
-PDF SHALL say *Dine-in* or *Takeaway* beside the bill number: *Bill 46 · Takeaway*.
-A payload that carries none SHALL produce nothing there.
+PDF SHALL say *Dine-in* or *Takeaway* at the left of the row beneath the bill
+number. A payload that carries none SHALL produce nothing there.
 
 The receipt SHALL NOT show a table number [owner, 2026-09-30]: a table is a label for
 the length of a meal, like the day's order number, which the receipt does not show
@@ -135,9 +139,11 @@ either. The Worker SHALL NOT render one even if a payload carries it.
 #### Scenario: Dine-in
 
 - **WHEN** a receipt for a dine-in bill is served
-- **THEN** all three renderings read *Bill N · Dine-in*, and no table appears
+- **THEN** all three renderings read *Dine-in* at the left of the second row, and
+  no table appears
 
 #### Scenario: A bill from before the choice existed
 
 - **WHEN** a receipt whose payload carries no service type is served
-- **THEN** the bill number stands alone at the left of the row
+- **THEN** the left of the second row is empty, and gold and the number keep their
+  places
