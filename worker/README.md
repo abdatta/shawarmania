@@ -1,13 +1,13 @@
 # The receipt Worker
 
-`shawarmania.in/bill/<token>` — a customer's own bill, as a page and as a PDF —
+`shawarmania.in/bill?t=<token>` — a customer's own bill, as a page and as a PDF —
 and, since change 13 `the-table-menu-reads-ops`, `shawarmania.in/menu/<slug>/`,
 each trading outlet's live table menu.
 
 This is the **first server-side code this repo has ever held**, and the first
 thing in it holding a secret. Everything else here is a static Vite bundle on
-GitHub Pages, and that has not changed: the Worker intercepts `/bill/*` and
-`/menu*` and nothing else, is not part of the Vite build, does not enter the Pages artifact,
+GitHub Pages, and that has not changed: the Worker intercepts `/bill`, `/bill/*`
+and `/menu*` and nothing else, is not part of the Vite build, does not enter the Pages artifact,
 and does not count against the page-weight budget.
 
 ## Why a Worker at all
@@ -29,10 +29,18 @@ Two smaller reasons follow: GitHub Pages cannot set a response header
 
 | Route | |
 |---|---|
-| `GET /bill/<token>` | the themed receipt page |
+| `GET /bill?t=<token>` | the themed receipt page; `&view=counter` is the ops counter's view of it |
 | `GET /bill/<token>.pdf` | the same receipt as an 80 mm roll, built on demand, never stored |
+| `GET /bill/<token>` | 301 to `/bill?t=<token>`, keeping `view` |
 | `GET /bill/logo.png` | the brand mark, from the Worker's own bundle |
 | `GET /bill/fonts/*.woff2` | the brand faces, likewise |
+
+**The receipt's token follows a `?`** (ops #66, `a-receipt-link-fits-an-sms`). The
+link goes out by SMS, where it is checked against the dynamic URL
+`https://shawarmania.in/bill?` registered on Airtel DLT, so nothing before the `?`
+may vary. Cloudflare routes ignore the query, so the route is exactly
+`shawarmania.in/bill`, beside `shawarmania.in/bill/*` for the PDF, the assets and
+the redirect. Routing is decided from the URL alone in `src/route.ts`.
 
 | `GET /menu`, `/menu/` | 302 to `DEFAULT_MENU_SLUG` (`kalyani-cafe`) — printed `/menu/` QR codes keep working |
 | `GET /menu/<slug>/` | that outlet's menu, read live from ops through `public_menu(slug)` |
@@ -73,7 +81,7 @@ cp .dev.vars.example .dev.vars   # paste the local key into it
 npm run worker:dev
 ```
 
-Then open `http://127.0.0.1:8787/bill/<token>`, where a token comes from
+Then open `http://127.0.0.1:8787/bill?t=<token>`, where a token comes from
 `bill_public_links` — every bill has one. To make the ops app's **Share** button
 hand out local links, set `VITE_RECEIPT_BASE_URL=http://127.0.0.1:8787` in the ops
 repo's `.env`.

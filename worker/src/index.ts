@@ -14,10 +14,12 @@ import {
 import { receiptPageOptions, renderRefusal, renderReceiptPage } from './page'
 import { pdfFilename, renderReceiptPdf } from './pdf'
 import { readReceipt, type Receipt } from './receipt'
+import { isReceiptPath, routeReceipt } from './route'
 
 /**
- * `shawarmania.in/bill/*` — the customer's receipt — and `shawarmania.in/menu*`,
- * each outlet's live table menu (see `handleMenu` below).
+ * `shawarmania.in/bill` and `shawarmania.in/bill/*` — the customer's receipt —
+ * and `shawarmania.in/menu*`, each outlet's live table menu (see `handleMenu`
+ * below).
  *
  * Every other path falls through to GitHub Pages exactly as before. This Worker
  * exists because Pages cannot do three things a receipt needs: set a response
@@ -26,12 +28,14 @@ import { readReceipt, type Receipt } from './receipt'
  * WhatsApp's in-app browser on Android, where a `blob:` download fails silently,
  * so the download has to be an ordinary navigation to a real URL.
  *
- * Routes:
+ * Routes, decided from the URL alone in `route.ts`:
  *
- *   GET /bill/<token>       the themed page
+ *   GET /bill?t=<token>     the themed page (ops #66: the token after a `?`, so
+ *                           the link registers on DLT as a dynamic URL)
  *   GET /bill/<token>.pdf   the same receipt, 80 mm, on demand, never stored
  *   GET /bill/logo.png      the brand mark, from the Worker's own bundle
  *   GET /bill/fonts/*.woff2 the brand faces, same
+ *   GET /bill/<token>       301 to `/bill?t=<token>`
  *
  * **Every refusal is one refusal.** Unknown, malformed, revoked,
  * endpoint-disabled and rate-limited all answer with the same page and the same
@@ -58,18 +62,6 @@ export interface Env {
   /** Where `/menu/` sends a customer: the outlet whose tables carry that QR code. */
   DEFAULT_MENU_SLUG?: string
 }
-
-/**
- * A token is base64url and nothing else.
- *
- * Checked here so an obviously malformed path never becomes a request to the
- * database — which is the cheap half of not letting a flood of invalid tokens
- * cost anything. The length is deliberately a floor and a generous ceiling
- * rather than exactly ten: the ops schema puts no length constraint on the
- * column precisely so a longer token can be minted later, and a Worker that
- * hard-coded ten would silently refuse every new link on the day that happens.
- */
-const TOKEN_SHAPE = /^[A-Za-z0-9_-]{8,64}$/
 
 const DEFAULT_PER_CLIENT_PER_MINUTE = 30
 const DEFAULT_GLOBAL_PER_MINUTE = 600
@@ -382,15 +374,15 @@ export default {
     /*
      * Not ours.
      *
-     * **Deliberately not proxied.** The route pattern is `shawarmania.in/bill/*`,
-     * so in production this Worker is never invoked for another path and Pages
-     * serves it without this code being involved at all. Forwarding with
-     * `fetch(request)` looks like the polite thing to do and is a trap: under
-     * `wrangler dev` there is no Pages origin behind the Worker, so the request
-     * re-enters this same handler and hangs until it times out. Found by a health
-     * check on `/` filling the log with 19-second 500s.
+     * **Deliberately not proxied.** The routes are `shawarmania.in/bill` and
+     * `shawarmania.in/bill/*`, so in production this Worker is never invoked for
+     * another path and Pages serves it without this code being involved at all.
+     * Forwarding with `fetch(request)` looks like the polite thing to do and is a
+     * trap: under `wrangler dev` there is no Pages origin behind the Worker, so
+     * the request re-enters this same handler and hangs until it times out. Found
+     * by a health check on `/` filling the log with 19-second 500s.
      */
-    if (!url.pathname.startsWith('/bill/')) {
+    if (!isReceiptPath(url.pathname)) {
       return new Response('Not found', {
         status: 404,
         headers: receiptHeaders({ 'Content-Type': 'text/plain; charset=utf-8' }),
@@ -401,18 +393,30 @@ export default {
       return new Response('Method not allowed', { status: 405, headers: receiptHeaders() })
     }
 
-    const rest = url.pathname.slice('/bill/'.length)
+    const route = routeReceipt(url)
 
     // The Worker's own assets, so nothing enters the Pages artifact and the page
     // makes every request to one origin.
-    if (rest === 'logo.png') return asset(LOGO_PNG_BASE64, 'image/png')
-    if (rest === 'fonts/lilita-one.woff2') return asset(LILITA_WOFF2_BASE64, 'font/woff2')
-    if (rest === 'fonts/nunito-sans.woff2') return asset(NUNITO_WOFF2_BASE64, 'font/woff2')
+    if (route.kind === 'asset') {
+      if (route.asset === 'logo') return asset(LOGO_PNG_BASE64, 'image/png')
+      if (route.asset === 'lilita') return asset(LILITA_WOFF2_BASE64, 'font/woff2')
+      return asset(NUNITO_WOFF2_BASE64, 'font/woff2')
+    }
 
-    const wantsPdf = rest.endsWith('.pdf')
-    const token = wantsPdf ? rest.slice(0, -'.pdf'.length) : rest
+    // Before any lookup, and so before the rate limit: it costs nothing and
+    // says nothing about whether the bill exists.
+    if (route.kind === 'redirect') {
+      return new Response(null, {
+        status: 301,
+        headers: receiptHeaders({ Location: route.location, 'Cache-Control': 'no-store' }),
+      })
+    }
 
-    if (!TOKEN_SHAPE.test(token)) return refuse()
+    if (route.kind === 'refuse') return refuse()
+
+    const { token } = route
+    const wantsPdf = route.kind === 'pdf'
+
     if (rateLimited(request, env)) return refuse()
 
     const receipt = await receiptFor(request, env, token)

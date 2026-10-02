@@ -1,6 +1,6 @@
 # The receipt Worker, beside the site and outside its build.
 #
-# It intercepts `/bill/*` and `/menu*` and nothing else; every other path falls
+# It intercepts `/bill`, `/bill/*` and `/menu*` and nothing else; every other path falls
 # through to GitHub Pages exactly as before. The Vite build does not see this directory,
 # nothing here enters the Pages artifact, and `scripts/check-weight.mjs` does not
 # measure it.
@@ -38,6 +38,15 @@ DEFAULT_MENU_SLUG = "kalyani-cafe"
 # `wrangler dev` and `workers.dev` remain available independently.
 [[routes]]
 pattern = "shawarmania.in/bill/*"
+zone_name = "shawarmania.in"
+
+# The receipt's own address, `/bill?t=<token>` (ops #66): the token after a `?`,
+# so the link registers on DLT as the dynamic URL `https://shawarmania.in/bill?`.
+# A route matches the host and path and ignores the query, so this catches every
+# receipt link and nothing else. Exactly `/bill`, not `bill*`: that would also
+# take `/billing` or `/bills` from the site.
+[[routes]]
+pattern = "shawarmania.in/bill"
 zone_name = "shawarmania.in"
 
 # Each trading outlet's live table menu, read from ops (change 13). `menu*`
