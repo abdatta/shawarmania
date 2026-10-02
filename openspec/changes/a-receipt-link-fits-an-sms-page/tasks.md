@@ -15,7 +15,7 @@
 
 ## 2. Ship, in the owner's window, before the ops push
 
-- [ ] 2.1 🧍 Push `main`, then `npm run worker:deploy`. Then, before the ops push:
+- [x] 2.1 🧍 Push `main`, then `npm run worker:deploy`. Then, before the ops push:
       `https://shawarmania.in/bill?t=AAAAAAAAAA` is the Worker's refusal (it carries
       `X-Robots-Tag`), a real `/bill/<token>` redirects, and `/`, `/menu/`,
       `/privacy/` are unchanged
