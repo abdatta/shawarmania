@@ -58,9 +58,11 @@ const ASSETS = new Map<string, ReceiptAsset>([
 /**
  * The paths this Worker answers: `/bill` exactly, and anything under `/bill/`.
  *
- * Not a prefix match on `/bill`, which would take `/billing` or `/bills` from the
- * static site. The Cloudflare routes are the same two patterns; under
- * `wrangler dev`, which has no routes, this is the only boundary.
+ * Narrower than the Cloudflare route, `shawarmania.in/bill*`, on purpose. That
+ * route has to be a prefix, because a pattern with no wildcard does not match a
+ * URL with a query string, and every receipt link has one. So `/billing` would
+ * reach this Worker too, and is answered 404 here. Under `wrangler dev`, which
+ * has no routes, this is the only boundary.
  */
 export function isReceiptPath(pathname: string): boolean {
   return pathname === '/bill' || pathname.startsWith('/bill/')

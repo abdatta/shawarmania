@@ -6,7 +6,7 @@ each trading outlet's live table menu.
 
 This is the **first server-side code this repo has ever held**, and the first
 thing in it holding a secret. Everything else here is a static Vite bundle on
-GitHub Pages, and that has not changed: the Worker intercepts `/bill`, `/bill/*`
+GitHub Pages, and that has not changed: the Worker intercepts `/bill*`
 and `/menu*` and nothing else, is not part of the Vite build, does not enter the Pages artifact,
 and does not count against the page-weight budget.
 
@@ -38,9 +38,11 @@ Two smaller reasons follow: GitHub Pages cannot set a response header
 **The receipt's token follows a `?`** (ops #66, `a-receipt-link-fits-an-sms`). The
 link goes out by SMS, where it is checked against the dynamic URL
 `https://shawarmania.in/bill?` registered on Airtel DLT, so nothing before the `?`
-may vary. Cloudflare routes ignore the query, so the route is exactly
-`shawarmania.in/bill`, beside `shawarmania.in/bill/*` for the PDF, the assets and
-the redirect. Routing is decided from the URL alone in `src/route.ts`.
+may vary. The route is `shawarmania.in/bill*`: a pattern with no wildcard does
+not match once the URL has a query string, which is every receipt link (found in
+production on 2026-10-02). Routing is decided from the URL alone in
+`src/route.ts`, which answers `/bill` and `/bill/…` and 404s anything else the
+route lets in.
 
 | `GET /menu`, `/menu/` | 302 to `DEFAULT_MENU_SLUG` (`kalyani-cafe`) — printed `/menu/` QR codes keep working |
 | `GET /menu/<slug>/` | that outlet's menu, read live from ops through `public_menu(slug)` |

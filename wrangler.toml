@@ -1,6 +1,6 @@
 # The receipt Worker, beside the site and outside its build.
 #
-# It intercepts `/bill`, `/bill/*` and `/menu*` and nothing else; every other path falls
+# It intercepts `/bill*` and `/menu*` and nothing else; every other path falls
 # through to GitHub Pages exactly as before. The Vite build does not see this directory,
 # nothing here enters the Pages artifact, and `scripts/check-weight.mjs` does not
 # measure it.
@@ -36,17 +36,15 @@ DEFAULT_MENU_SLUG = "kalyani-cafe"
 # The apex route, enabled after the owner moved the zone to Cloudflare on
 # 2026-09-10. See the ops repo's docs/OPERATIONS.md for the runbook and rollback.
 # `wrangler dev` and `workers.dev` remain available independently.
+# The receipt, its PDF and its assets: `/bill?t=<token>` (ops #66, the token after
+# a `?` so the link registers on DLT as the dynamic URL `https://shawarmania.in/bill?`)
+# and everything under `/bill/`. `bill*` rather than an exact `bill` plus `bill/*`:
+# a pattern with no wildcard does not match once the URL carries a query string,
+# which is every receipt link. Found in production on 2026-10-02, when the exact
+# route answered `/bill` and let `/bill?t=…` fall through to Pages. The site has no
+# other page under `/bill`, and the Worker 404s anything it does not own.
 [[routes]]
-pattern = "shawarmania.in/bill/*"
-zone_name = "shawarmania.in"
-
-# The receipt's own address, `/bill?t=<token>` (ops #66): the token after a `?`,
-# so the link registers on DLT as the dynamic URL `https://shawarmania.in/bill?`.
-# A route matches the host and path and ignores the query, so this catches every
-# receipt link and nothing else. Exactly `/bill`, not `bill*`: that would also
-# take `/billing` or `/bills` from the site.
-[[routes]]
-pattern = "shawarmania.in/bill"
+pattern = "shawarmania.in/bill*"
 zone_name = "shawarmania.in"
 
 # Each trading outlet's live table menu, read from ops (change 13). `menu*`

@@ -6,8 +6,8 @@
       spelling an object property is still a token; every mangled `t` and malformed
       old-shape token is the one refusal; `/billing` and `/bills` are not ours
 - [x] 1.2 `worker/src/route.ts`, `worker/src/index.ts` (uses it; the redirect before
-      the rate limit and the lookup), `wrangler.toml` (the exact `shawarmania.in/bill`
-      route)
+      the rate limit and the lookup), `wrangler.toml` (the route becomes `shawarmania.in/bill*`;
+      an exact `bill` route does not match a URL with a query string)
 - [x] 1.3 `README.md`, `worker/README.md`: the routes and the local URL
 - [x] 1.4 `npm run worker:typecheck`, `npm run worker:test`, `npm run build`; the real
       runtime under `wrangler dev`, pointed at the **local** ops database: the page,

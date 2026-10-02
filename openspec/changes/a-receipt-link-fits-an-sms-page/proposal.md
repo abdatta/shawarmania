@@ -30,8 +30,12 @@ registers `https://shawarmania.in/bill?`.
 - **The PDF and the assets keep their addresses**: `/bill/<token>.pdf`,
   `/bill/logo.png`, `/bill/fonts/*.woff2`. The page's Download PDF link is unchanged.
 - **A missing, empty, repeated or malformed `t` is the one refusal.**
-- **One more route, exactly `shawarmania.in/bill`**, beside `shawarmania.in/bill/*`.
-  Not `bill*`, which would take `/billing` and `/bills` from the site.
+- **The route becomes `shawarmania.in/bill*`**, replacing `shawarmania.in/bill/*`.
+  An exact `shawarmania.in/bill` route was tried first and deployed on 2026-10-02:
+  Cloudflare does not match a pattern with no wildcard once the URL carries a
+  query string, so it answered `/bill` and let every `/bill?t=…` fall through to
+  Pages. `bill*` also reaches `/billing` or `/bills`, which the site does not have
+  and the Worker answers with its 404.
 - **Routing is a pure function** (`worker/src/route.ts`) with its own tests, where
   until now it was checked only against `wrangler dev`.
 

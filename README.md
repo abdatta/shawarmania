@@ -2,7 +2,7 @@
 
 Premium landing/brand site for **Shawarmania** (Kalyani & Kanchrapara, West Bengal) — for customers,
 prospective franchisees, and investors. A static bundle on GitHub Pages, plus **one Cloudflare Worker
-on `/bill`, `/bill/*` and `/menu*`** that serves a customer their own receipt and each outlet's live table menu,
+on `/bill*` and `/menu*`** that serves a customer their own receipt and each outlet's live table menu,
 read from the ops database — see [`worker/README.md`](worker/README.md).
 
 The brand experience is still one scroll-driven page. It is no longer the only page: `/privacy/`,
@@ -52,8 +52,8 @@ Since the receipt page landed there are two independent things behind
 
 | | Deploys by | Serves |
 |---|---|---|
-| **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill`, `/bill/*` and `/menu*` |
-| **The receipt + menu Worker** | `npm run worker:deploy` | `/bill`, `/bill/*` and `/menu*` only |
+| **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill*` and `/menu*` |
+| **The receipt + menu Worker** | `npm run worker:deploy` | `/bill*` and `/menu*` only |
 
 The Worker is not part of the Vite build, does not enter the Pages artifact, and does not count
 against the page-weight budget — `npm run build` asserts the second and third. It exists because the
@@ -84,7 +84,7 @@ If the domain is ever dropped, set `VITE_BASE: /shawarmania/` in the workflow, d
 
 ```
 openspec/          # spec-driven change history — see openspec/ROADMAP.md
-worker/            # the receipt + menu Worker: /bill, /bill/* and /menu*, outside the Vite build — worker/README.md
+worker/            # the receipt + menu Worker: /bill* and /menu*, outside the Vite build — worker/README.md
 research/          # brand research: build brief, Instagram findings, deep-research reports
 scripts/           # shoot.mjs (visual review), check-weight.mjs (budget gate),
                    # geometry-sweep.mjs + hero-scroll-check.mjs (layout gates)

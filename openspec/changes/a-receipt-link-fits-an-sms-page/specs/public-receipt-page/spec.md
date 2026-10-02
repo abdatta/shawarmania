@@ -14,9 +14,10 @@ shape SHALL receive the one refusal.
 A request to `/bill/<token>` for a token of the right shape SHALL be redirected to
 `/bill?t=<token>`, keeping any other query parameter, before any lookup.
 
-The receipt runtime SHALL intercept `/bill` and the `/bill/` path prefix only.
-Every other path on the domain, including any other path beginning with `/bill`,
-SHALL continue to be served by the existing static deployment, unchanged.
+The receipt runtime SHALL answer `/bill` and the `/bill/` path prefix only, and
+SHALL answer any other path routed to it with a plain not-found. Every path outside
+`/bill` and `/menu` SHALL continue to be served by the existing static deployment,
+unchanged.
 
 The operations host SHALL NOT appear in any customer-facing receipt URL, in any
 link on the page, or in the PDF.

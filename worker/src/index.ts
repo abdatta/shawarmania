@@ -17,8 +17,7 @@ import { readReceipt, type Receipt } from './receipt'
 import { isReceiptPath, routeReceipt } from './route'
 
 /**
- * `shawarmania.in/bill` and `shawarmania.in/bill/*` — the customer's receipt —
- * and `shawarmania.in/menu*`, each outlet's live table menu (see `handleMenu`
+ * `shawarmania.in/bill*` — the customer's receipt — and `shawarmania.in/menu*`, each outlet's live table menu (see `handleMenu`
  * below).
  *
  * Every other path falls through to GitHub Pages exactly as before. This Worker
@@ -374,9 +373,10 @@ export default {
     /*
      * Not ours.
      *
-     * **Deliberately not proxied.** The routes are `shawarmania.in/bill` and
-     * `shawarmania.in/bill/*`, so in production this Worker is never invoked for
-     * another path and Pages serves it without this code being involved at all.
+     * **Deliberately not proxied.** The routes are `shawarmania.in/bill*` and
+     * `shawarmania.in/menu*`, so in production this Worker is invoked for nothing
+     * else but `/billing`-like paths the site does not have, and Pages serves every
+     * other path without this code being involved at all.
      * Forwarding with `fetch(request)` looks like the polite thing to do and is a
      * trap: under `wrangler dev` there is no Pages origin behind the Worker, so
      * the request re-enters this same handler and hangs until it times out. Found
