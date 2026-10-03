@@ -36,6 +36,13 @@ registers `https://shawarmania.in/bill?`.
   query string, so it answered `/bill` and let every `/bill?t=…` fall through to
   Pages. `bill*` also reaches `/billing` or `/bills`, which the site does not have
   and the Worker answers with its 404.
+- **The receipt names the LLP behind the brand**: *Operated by De & Datta LLP*
+  under *Shawarmania · Kalyani*, on the page, the counter view, the PDF and the
+  refusal [owner, 2026-10-03]. The DLT registration is the LLP's, and a reviewer
+  who opens the registered `https://shawarmania.in/bill?` lands on the refusal, so
+  that page carries it too. One line by the owner's choice: not the LLPIN, office
+  address and limited-liability statement LLP Act s.21 lists for invoices, a
+  question left to the LLP's CA.
 - **Routing is a pure function** (`worker/src/route.ts`) with its own tests, where
   until now it was checked only against `wrangler dev`.
 

@@ -535,7 +535,8 @@ describe('every refusal is the same refusal', () => {
     const html = renderRefusal()
     expect(html).toContain('This receipt is not available')
     // No hint of revoked-versus-unknown-versus-off, and no bill referenced.
-    expect(html).not.toMatch(/revoked|expired|disabled|unknown|invalid|rate/i)
+    // Whole words: "Operated by De & Datta LLP" contains the letters r-a-t-e.
+    expect(html).not.toMatch(/\b(revoked|expired|disabled|unknown|invalid|rate)\b/i)
   })
 
   it('is byte-identical every time it is produced', () => {
@@ -549,6 +550,12 @@ describe('every refusal is the same refusal', () => {
     const html = renderRefusal()
     expect(html).toContain('Shawarmania · Kalyani')
     expect(html).not.toContain('Kanchrapara')
+  })
+
+  // The bare registered URL, `https://shawarmania.in/bill?`, lands here, and it
+  // is the first thing a DLT reviewer is likely to open (ops #66).
+  it('names the LLP that operates the brand, like a receipt does', () => {
+    expect(renderRefusal()).toContain('Operated by De &amp; Datta LLP')
   })
 })
 

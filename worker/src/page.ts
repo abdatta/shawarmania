@@ -1,4 +1,4 @@
-import { contentStrings, receiptContent, type ContentAmount } from './content'
+import { contentStrings, OPERATOR_LINE, receiptContent, type ContentAmount } from './content'
 import type { Receipt } from './receipt'
 
 /**
@@ -515,7 +515,7 @@ export function renderRefusal(): string {
   <h1>This receipt is not available</h1>
   <p>The link may be incomplete, or it may have been turned off. Please ask the outlet for a new one.</p>
 </main>
-<footer><p>Shawarmania · Kalyani</p></footer>
+<footer><p>Shawarmania · Kalyani<br>${escapeHtml(OPERATOR_LINE)}</p></footer>
 </body>
 </html>`
 }

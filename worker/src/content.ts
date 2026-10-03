@@ -120,6 +120,18 @@ function smallPrint(outletName: string): string {
   return place ? `Shawarmania · ${place}` : 'Shawarmania'
 }
 
+/**
+ * The legal entity behind the brand, beneath the outlet [owner, 2026-10-03].
+ *
+ * The receipt link goes out by SMS under a DLT registration held by the LLP, not
+ * by "Shawarmania", and a reviewer who opens one should see they are the same
+ * business (ops #66). One line, in the words the legal pages already use ("De &
+ * Datta LLP, operating Shawarmania"). The name is `src/data/brand.json`'s
+ * `legalEntityName`, which a test holds this to; it is copied rather than
+ * imported because the Worker is built apart from the site.
+ */
+export const OPERATOR_LINE = 'Operated by De & Datta LLP'
+
 /** How the bill was served, in the counter's own words (ops #60). */
 function serviceLine(receipt: Receipt): string | null {
   if (receipt.service_type === 'takeaway') return 'Takeaway'
@@ -206,7 +218,7 @@ export function receiptContent(receipt: Receipt): ReceiptContent {
     // GSTIN, no tax breakup and no tax line, which is what keeps it from
     // resembling one, and the sentence read as clutter on the counter's pop-up
     // before it was dropped from both.
-    notes: [smallPrint(receipt.outlet.name)],
+    notes: [smallPrint(receipt.outlet.name), OPERATOR_LINE],
   }
 }
 

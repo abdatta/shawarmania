@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import brand from "../../src/data/brand.json";
 import { contentStrings, receiptContent } from "../src/content";
 import { renderReceiptPage } from "../src/page";
 import { pdfRowKinds, pdfStrings } from "../src/pdf";
@@ -547,7 +548,20 @@ describe("what the content model refuses to say", () => {
     ["Shawarmania Kalyani", "Shawarmania · Kalyani"],
     ["Shawarmania", "Shawarmania"],
   ])("signs the small print with the bill's own outlet: %s", (outlet, note) => {
-    expect(receiptContent(bill({ outlet: { name: outlet } })).notes).toEqual([note]);
+    expect(receiptContent(bill({ outlet: { name: outlet } })).notes).toEqual([
+      note,
+      "Operated by De & Datta LLP",
+    ]);
+  });
+
+  /*
+   * The legal entity behind the brand, under the outlet (ops #66). The DLT
+   * registration that sends these links is the LLP's, and a reviewer opening one
+   * should see the two are the same business. Read from the site's own record so
+   * the receipt cannot name a different entity from the legal pages.
+   */
+  it("names the LLP that operates the brand, as the site's legal pages do", () => {
+    expect(receiptContent(bill()).notes.at(-1)).toBe(`Operated by ${brand.legalEntityName}`);
   });
 
   it("says nothing about points on a bill that had none", () => {

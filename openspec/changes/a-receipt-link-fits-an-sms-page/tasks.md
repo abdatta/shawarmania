@@ -13,6 +13,11 @@
       runtime under `wrangler dev`, pointed at the **local** ops database: the page,
       the counter view, the PDF, the redirect and each refusal
 
+- [x] 1.5 *Operated by De & Datta LLP* beneath the outlet in `content.ts` (so the
+      page, counter view and PDF), and in the refusal's hand-written footer; held to
+      `brand.json`'s `legalEntityName` by a test. The refusal's "says nothing about
+      which case" check now matches whole words, since *Operated* contains *rate*
+
 ## 2. Ship, in the owner's window, before the ops push
 
 - [x] 2.1 🧍 Push `main`, then `npm run worker:deploy`. Then, before the ops push:
