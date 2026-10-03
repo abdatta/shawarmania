@@ -43,6 +43,13 @@ registers `https://shawarmania.in/bill?`.
   that page carries it too. One line by the owner's choice: not the LLPIN, office
   address and limited-liability statement LLP Act s.21 lists for invoices, a
   question left to the LLP's CA.
+- **Every page under the domain says the same** [owner, 2026-10-03]: the home
+  footer gains *Operated by De & Datta LLP* beneath *Shawarmania · Kalyani, West
+  Bengal*; the privacy, terms and messages footers read *Shawarmania · Operated by
+  De & Datta LLP · FSSAI …*; the table menu and its two refusals carry the line
+  under *Shawarmania · Privacy*. **No copyright line anywhere**: the owner holds
+  none to assert yet, so the home and legal pages drop their *© 2026*. `/qr/`, the
+  owner's own unindexed tool, is left alone.
 - **Routing is a pure function** (`worker/src/route.ts`) with its own tests, where
   until now it was checked only against `wrangler dev`.
 

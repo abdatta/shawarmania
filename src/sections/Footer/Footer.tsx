@@ -7,7 +7,6 @@ import styles from './Footer.module.css'
 
 export function Footer() {
   const scope = useRef<HTMLElement>(null)
-  const year = new Date().getFullYear()
 
   useGSAP(
     () => {
@@ -98,8 +97,19 @@ export function Footer() {
       </div>
 
       <div className={styles.bar}>
+        {/*
+          The LLP behind the brand, on every page under the domain, in the receipt's
+          own words (ops #66) [owner, 2026-10-03]. No copyright line: the owner holds
+          none to assert yet.
+        */}
         <p>
-          © {year} {brand.name} · {brand.city}, {brand.region}
+          {brand.name} · {brand.city}, {brand.region}
+          {brand.legalEntityName && (
+            <>
+              <br />
+              Operated by {brand.legalEntityName}
+            </>
+          )}
         </p>
         <p className={styles.made}>Made in {brand.city} with 🔥</p>
       </div>

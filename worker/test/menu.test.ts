@@ -128,6 +128,16 @@ describe('the page', () => {
   })
 })
 
+describe('the footer', () => {
+  // The LLP behind the brand, in the receipt's words, on every menu page a table
+  // customer can land on (ops #66).
+  it('names the LLP that operates the brand, on the menu and on both refusals', () => {
+    for (const html of [renderMenuPage(aMenu()), renderMenuNotFound(), renderMenuUnavailable()]) {
+      expect(html).toContain('<p>Operated by De &amp; Datta LLP</p>')
+    }
+  })
+})
+
 describe('the pages for a missing menu', () => {
   it('say the same thing whatever the reason, naming no outlet', () => {
     const page = renderMenuNotFound()

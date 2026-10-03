@@ -17,6 +17,9 @@
       page, counter view and PDF), and in the refusal's hand-written footer; held to
       `brand.json`'s `legalEntityName` by a test. The refusal's "says nothing about
       which case" check now matches whole words, since *Operated* contains *rate*
+- [x] 1.6 The same line on every page under the domain: `Footer.tsx` (home), the
+      three legal pages' footers, and `menu-page.ts` (menu, not-found, unavailable,
+      held by a test). No *©* anywhere; `site-footer` spec modified to say so
 
 ## 2. Ship, in the owner's window, before the ops push
 

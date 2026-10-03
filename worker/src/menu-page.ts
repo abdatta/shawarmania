@@ -1,3 +1,4 @@
+import { OPERATOR_LINE } from './content'
 import type { PublicMenu, PublicMenuItem } from './menu'
 
 /**
@@ -422,8 +423,12 @@ const MASTHEAD = `<header class="masthead">
   <a href="/"><img src="${MENU_ASSET_PREFIX}logo.png" alt="Shawarmania — home" width="226" height="162"></a>
 </header>`
 
+// The LLP line is the receipt's own, so the two pages a table customer can
+// reach say it in the same words (ops #66). `&` is escaped by hand: this
+// footer is a constant, not run through the page's escaper.
 const FOOTER = `<footer class="docfoot">
   <p><a href="/">Shawarmania</a> · <a href="/privacy/">Privacy</a></p>
+  <p>${OPERATOR_LINE.replace(/&/g, '&amp;')}</p>
 </footer>`
 
 export function renderMenuPage(menu: PublicMenu, origin = 'https://shawarmania.in'): string {
