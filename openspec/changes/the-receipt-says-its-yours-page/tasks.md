@@ -15,10 +15,15 @@
 
 ## 2. Ship, in the owner's window
 
-- [ ] 2.1 🧍 The owner approves the privacy page's words
-- [ ] 2.2 🧍 Push `main` (publishes the privacy page), then `npm run worker:deploy`;
+- [x] 2.1 🧍 The owner approves the privacy page's words *(with the release,
+      2026-10-01)*
+- [x] 2.2 🧍 Push `main` (publishes the privacy page), then `npm run worker:deploy`;
       the page no later than the Worker. Either order against the ops migration
-      `20260930000000_the_receipt_says_its_yours`
-- [ ] 2.3 Open a real receipt from a bill where a customer gave their number, and the
-      same bill from the ops counter's View receipt; both show the digits
+      `20260930000000_the_receipt_says_its_yours` *(2026-10-01: `ae97f9d`, the
+      privacy page live, then Worker `a634c8f4`; the two-row header and the
+      reasonless cancellation followed as `960e55a`, Worker `946bea0a`)*
+- [x] 2.3 Open a real receipt from a bill where a customer gave their number, and the
+      same bill from the ops counter's View receipt; both show the digits *(Bill
+      199 at Kalyani Cafe, 2026-10-03: the link and `view=counter` both show
+      *Dine-in* and the masked digits, and no whole number)*
 - [ ] 2.4 Archive once a real customer's receipt has shown them
