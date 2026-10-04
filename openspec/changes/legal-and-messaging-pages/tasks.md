@@ -147,3 +147,11 @@ is recorded here so the owner knows what is left rather than what is merely clai
       FSSAI number and address are right, `hello@shawarmania.in` receives a test mail and is read by
       someone, and every claim on `/messages/` about stopping messages is true today or scheduled
       before the RCS agent is submitted
+
+## 10. After the channel moved to SMS (2026-10-03)
+
+- [x] 10.1 `/messages/` and `/terms/` stop offering *reply STOP* and *reply HELP*,
+      and `/terms/` drops the RCS data-connection line: the programme is SMS from the
+      DLT header `DEDTTL` (ops #59, #66), which cannot receive a reply, and the spec
+      offers STOP "only while that reply is honoured". The consent sentence now ends
+      *Tell us any time and we stop.* Counter, phone and email remain the three ways.
