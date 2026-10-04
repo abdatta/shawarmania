@@ -1,21 +1,5 @@
 <!doctype html>
-<!--
-  /messages/ — the opt-in document.
-
-  This is the page a messaging reviewer opens to check that consent is real,
-  and the page a customer opens because they want the messages to stop. Those
-  two readers want the same thing — the truth, near the top — so the links to
-  Terms and Privacy and the way out are all above the fold at 375px.
-
-  **No form, no checkbox, no submit control.** Consent for this programme is
-  taken at the counter; a web form here would invent a second consent path
-  that nothing in the business honours. See
-  openspec/changes/legal-and-messaging-pages/design.md.
-
-  No WhatsApp link either: both WhatsApp numbers in src/data are null and the
-  only destination the brand has is a broadcast channel, which cannot be
-  replied to. A dead end is the last thing to offer on a page about leaving.
--->
+<!-- /messages/ describes the number-as-opt-in receipt SMS programme. No web consent form. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -25,7 +9,7 @@
     <title>How we message you — Shawarmania</title>
     <meta
       name="description"
-      content="Why Shawarmania has your mobile number, what we send to it, and every way to make it stop. One message per bill, no marketing, no cost from us."
+      content="Giving your number at Shawarmania gets your receipt and points by SMS. One message per bill, no marketing, no cost from us."
     />
     <link rel="canonical" href="https://shawarmania.in/messages/" />
     <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
@@ -47,28 +31,27 @@
         <p class="updated">Last updated 3 October 2026</p>
 
         <p class="lead">
-          You are probably here for one of two reasons: you want to know why {{brand.name}} has your
-          mobile number, or you want the messages to stop. Both answers are on this page, and the
-          second one is right here.
+          When you give your mobile number at {{brand.name}}'s counter, your receipt comes by SMS
+          automatically after payment, together with the points the bill earned and your balance.
+          One message per bill, no offers, and no charge from us.
         </p>
 
         <ul class="actions">
-          <li><a class="primary" href="#stop">Make it stop</a></li>
+          <li><a class="primary" href="#help">Get help</a></li>
           <li><a href="%BASE_URL%terms/">Messaging terms</a></li>
           <li><a href="%BASE_URL%privacy/">Privacy</a></li>
         </ul>
 
         <h2>How you opted in</h2>
         <p>
-          There is one way, and it happens in person. When you pay at our counter, we ask
-          whether you want your bill on your phone. If you say yes, you give the cashier your mobile
-          number, and that is the consent — for that purpose, in those words:
+          There is one way, and it happens in person. Providing your mobile number at our counter
+          opts you into an automatic receipt SMS for that purchase. The same number identifies your
+          points and gold at the outlet. There is no separate messaging checkbox or confirmation.
         </p>
         <div class="callout">
           <p>
             <strong>
-              “Want your bill on your phone? Give us your mobile number. One message per bill, no
-              offers. Tell us any time and we stop.”
+              “Your number gets your receipt and points by SMS. One message per bill, no offers.”
             </strong>
           </p>
         </div>
@@ -79,8 +62,8 @@
           because the person standing there gave it.
         </p>
         <p>
-          Saying no costs you nothing. The price is the same, the paper bill is the same, and the
-          counter will not ask twice.
+          If you do not want a receipt SMS for a purchase, skip providing your number for that bill.
+          You can still buy normally and ask the counter to show your receipt. Points need your number.
         </p>
 
         <h2>What arrives</h2>
@@ -90,8 +73,7 @@
             The page it opens names nobody, so it is safe to keep or forward.
           </li>
           <li>
-            <strong>Occasionally, something about that same order</strong> — if we got it wrong and
-            need to tell you.
+            <strong>Your points</strong> — what this bill earned and the balance it left at this outlet.
           </li>
         </ul>
         <p>
@@ -106,45 +88,19 @@
           <strong>Message and data rates may apply</strong> on your own mobile plan.
         </p>
 
-        <h2 id="stop">How to stop</h2>
-        <p>Any one of these is enough. You do not have to explain why.</p>
-        <ul>
-          <li><strong>Tell the counter</strong> next time you are in. Fastest, and it is done while you watch.</li>
-          <li>
-            <strong>Call us</strong> on
-            <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a>.
-          </li>
-          <li>
-            <strong>Email</strong> <a href="{{brand.emailHref}}">{{brand.email}}</a> — just the number
-            you want removed is enough.
-          </li>
-        </ul>
+        <h2 id="help">Help with your receipt</h2>
         <p>
-          <strong>Replying to a message does not reach us.</strong> Bills arrive by SMS from a sender
-          name (<em>DEDTTL</em>), not a phone number, so a reply has nowhere to go. Use any of the
-          three ways above instead.
+          Call <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a> or email
+          <a href="{{brand.emailHref}}">{{brand.email}}</a> if your receipt is missing or incorrect.
+          Bills arrive by SMS from the sender name <em>DEDTTL</em>; replying to one does not reach us.
         </p>
-
-        <ul class="actions">
-          <li><a class="primary" href="tel:{{brand.phonePrimaryTel}}">Call {{brand.phonePrimary}}</a></li>
-          <li><a href="{{brand.emailHref}}">Email {{brand.email}}</a></li>
-        </ul>
-
-        <h2>What happens after you stop</h2>
-        <ul>
-          <li>We stop sending. No confirmation campaign, no “are you sure”, no win-back message.</li>
-          <li>
-            Your number comes out of our customer records, so the counter cannot message you again by
-            accident.
-          </li>
-          <li>
-            You still get a paper bill at the counter, as always, and we can always show you a past
-            bill if you ask.
-          </li>
-          <li>
-            Links we already sent keep working. If you want one killed, tell us and we will revoke it.
-          </li>
-        </ul>
+        <p>
+          There is no separate SMS subscription or messaging preference. A receipt is sent only for
+          a paid bill carrying your number. Giving your number on a later purchase gets that bill's
+          receipt too. To request removal of your customer details, see our
+          <a href="%BASE_URL%privacy/">privacy notice</a>; removal also ends points and gold.
+        </p>
+        <p>Links already sent keep working unless you ask us to revoke a particular receipt link.</p>
 
         <h2>If you are getting messages and never gave us your number</h2>
         <p>
