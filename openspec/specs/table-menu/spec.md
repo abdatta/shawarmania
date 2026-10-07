@@ -19,13 +19,14 @@ reduced-motion preference every one of these moves SHALL be instant.
 ### Requirement: The menu opens by asking for a Google review, as a thank-you
 
 When ops sends an outlet's review ask with its menu (`public_menu`'s `review`:
-a review link and a whole thank-you percentage), the page SHALL open with a popup
-asking the customer to share an honest review on Google, naming the percentage as
-a thank-you for their feedback — never asking for stars or a good review — with a
-button straight to the outlet's Google review page. Its close button SHALL carry a
+a review link and a whole discount percentage), the page SHALL open with a short
+popup — "Review us, get 5% off", "Leave a Google review", "Then show it at the
+counter" — never asking for stars or a good review, with a button straight to the
+outlet's Google review page. Its close button SHALL carry a
 five-second countdown; when it runs out, or the button, the backdrop or Escape is
 pressed, the popup SHALL become a banner fixed to the bottom of the screen over the
-menu, with the same link and its own close. Closing either SHALL last for that
+menu — the popup's own button, "Leave a review. Get 5% off!", with a close where
+its arrow was. Closing either SHALL last for that
 visit only: a reload or a fresh scan SHALL ask again. With no ask, a null one, or
 one the page cannot show safely (not `https://`, or a percentage outside 1–50),
 there SHALL be no popup. Under a reduced-motion preference it SHALL appear and

@@ -327,16 +327,16 @@ a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; bor
  *
  * The motion is the brand site's hero: things pop in on an overshooting ease
  * with a little rotation (`back.out`), the copy rises in a stagger, the line
- * that matters is in the flame gradient and the offer sits on a tilted paper
- * sticker like the hero's rating badge. Here it is CSS keyframes, not GSAP —
+ * that matters is in the flame gradient. Here it is CSS keyframes, not GSAP —
  * this page carries no library.
  *
- * **It thanks, it does not pay** [owner, 2026-10-07]. The words are about
- * valuing what a customer has to say; the discount is the thank-you for saying
- * it, not the price of a good review — so the copy never asks for stars or a
- * good word, and the stars it draws are decoration.
+ * **Few words, read in one line** [owner, 2026-10-07]: "Review us / get 5% off",
+ * "Leave a Google review", "Then show it at the counter". The offer is said once,
+ * in the headline; the rest is implicit.
+ * The copy never asks for stars or a good word; the stars it draws are
+ * decoration.
  *
- * Whether an outlet asks at all, its listing's review link and the thank-you
+ * Whether an outlet asks at all, its listing's review link and the discount
  * percentage are set by its manager on the ops outlet page and arrive with the
  * menu (`public_menu`'s `review`). Off, or anything this page could not show
  * honestly, and there is no popup.
@@ -469,24 +469,6 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 .rv-paused .rv-ring-arc { animation-play-state: paused; }
 .rv-close b { position: relative; font-size: 1.25rem; line-height: 1; font-weight: 400; }
 
-/* The offer, on a tilted paper sticker like the hero's rating badge. */
-.rv-sticker {
-  position: absolute;
-  top: 0.875rem;
-  left: 0.875rem;
-  z-index: 2;
-  padding: 0.3rem 0.7rem;
-  border-radius: 0.5rem;
-  background: var(--cream);
-  color: #2b1d12;
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
-  letter-spacing: 0.02em;
-  box-shadow: 0 6px 16px rgb(0 0 0 / 0.4);
-  transform: rotate(-6deg);
-  animation: rv-sticker 550ms cubic-bezier(0.34, 1.9, 0.64, 1) 650ms both;
-}
-.rv-sticker em { font-style: normal; color: var(--flame-red); }
 
 .rv-stars { display: flex; justify-content: center; gap: 0.25rem; margin: 0.5rem 0 0.875rem; }
 .rv-stars svg {
@@ -578,110 +560,89 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 .rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
 .rv-cta:hover .rv-arrow { transform: translateX(4px); }
 
-.rv-fine { margin: 0.75rem 0 0; color: var(--cream-faint); font-size: 0.75rem; animation-delay: 820ms; }
+.rv-fine { margin: 0.875rem 0 0; color: var(--cream-dim); font-size: 0.9375rem; font-weight: 600; text-wrap: balance; animation-delay: 820ms; }
+.rv-fine strong { color: var(--flame-gold); font-weight: 800; }
 
 /* Closing: the card shrinks and drops toward where the banner will be. */
 .rv-out .rv-backdrop { animation: rv-fade 380ms cubic-bezier(0.22, 1, 0.36, 1) reverse both; }
 .rv-out .rv-frame { animation: rv-dock 420ms cubic-bezier(0.55, 0, 0.75, 0) both; }
 
-/* -- the banner --------------------------------------------------------- */
+/* -- the banner ---------------------------------------------------------
+   The popup's own button, docked: the same flame pill, the same G, with a
+   close where its arrow was [owner, 2026-10-07]. */
 .rv-bar {
   position: fixed;
   left: 50%;
   bottom: max(12px, env(safe-area-inset-bottom));
   z-index: 40;
-  width: min(40rem, calc(100% - 24px));
-  border: 1px solid rgb(255 197 61 / 0.35);
+  display: flex;
+  align-items: center;
+  width: min(23rem, calc(100% - 32px));
+  min-height: 3.25rem;
   border-radius: 999px;
   overflow: hidden;
-  box-shadow: 0 14px 34px rgb(0 0 0 / 0.55);
+  background: var(--gradient-flame);
+  color: #201404;
+  box-shadow: 0 10px 28px rgb(249 115 22 / 0.45), 0 14px 34px rgb(0 0 0 / 0.5);
   transform: translateX(-50%);
   animation: rv-bar-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-.rv-bar-in {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background:
-    radial-gradient(12rem 4rem at 10% 50%, rgb(249 115 22 / 0.25), transparent 70%),
-    var(--bg-raised);
-}
-.rv-bar-link {
-  position: relative;
-  overflow: hidden;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  min-width: 0;
-  min-height: 3rem;
-  padding: 0 0.5rem 0 0.625rem;
-  border-radius: 999px;
-  color: var(--cream);
-  text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-.rv-bar-link::after {
+.rv-bar::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 35%, rgb(255 197 61 / 0.18) 50%, transparent 65%);
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
   transform: translateX(-120%);
-  animation: rv-shine 3.2s ease-in-out 1s infinite;
+  animation: rv-shine 2.4s ease-in-out 1.2s infinite;
+  pointer-events: none;
 }
-.rv-bar-link .rv-g { width: 2rem; height: 2rem; }
-.rv-bar-copy { min-width: 0; }
-.rv-bar-copy b {
-  display: block;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.0625rem;
-  letter-spacing: 0.01em;
-  background: var(--gradient-flame);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  width: fit-content;
-}
-.rv-bar-copy small { display: block; color: var(--cream-dim); font-size: 0.75rem; font-weight: 700; }
-.rv-bar-go {
-  flex: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  background: var(--gradient-flame);
-  color: #201404;
-  font-size: 0.8125rem;
+.rv-bar-link {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  min-width: 0;
+  min-height: 3.25rem;
+  padding: 0 0 0 1.25rem;
+  color: inherit;
   font-weight: 800;
+  font-size: 1.0625rem;
   white-space: nowrap;
+  text-decoration: none;
 }
 .rv-bar-x {
   flex: none;
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  margin-right: 0.375rem;
+  width: 2.75rem;
+  height: 3.25rem;
+  margin-right: 0.5rem;
   padding: 0;
   border: 0;
-  border-radius: 50%;
-  background: rgb(245 228 199 / 0.08);
-  color: var(--cream-dim);
-  font-size: 1.125rem;
+  background: none;
+  color: inherit;
+  font-size: 1.375rem;
   line-height: 1;
   cursor: pointer;
 }
-.rv-bar-x:hover { color: var(--cream); background: rgb(245 228 199 / 0.16); }
 .rv-bar.rv-gone { animation: rv-bar-out 320ms cubic-bezier(0.55, 0, 0.75, 0) both; }
+/* The narrowest phones: smaller type and mark, so the line never clips. */
+@media (max-width: 359px) {
+  .rv-bar-link { gap: 0.4rem; padding-left: 0.75rem; font-size: 0.875rem; }
+  .rv-bar-link .rv-g { width: 1.5rem; height: 1.5rem; }
+  .rv-bar-link .rv-g svg { width: 0.9rem; height: 0.9rem; }
+  .rv-bar-x { width: 2.25rem; margin-right: 0.25rem; }
+}
 
 .rv button:focus-visible, .rv a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
+/* Gold on a gold pill would vanish: the banner focuses in its own ink. */
+.rv-bar a:focus-visible, .rv-bar button:focus-visible { outline-color: #201404; outline-offset: -4px; border-radius: 999px; }
 
 @keyframes rv-fade { from { opacity: 0; } }
 @keyframes rv-pop { from { opacity: 0; transform: scale(0.55) rotate(8deg) translateY(40px); } }
 @keyframes rv-spin { to { transform: rotate(1turn); } }
 @keyframes rv-count { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 113.1; } }
-@keyframes rv-sticker { from { opacity: 0; transform: scale(0) rotate(24deg); } }
 @keyframes rv-star { from { opacity: 0; transform: scale(0) rotate(-40deg); } }
 @keyframes rv-rise { from { opacity: 0; transform: translateY(26px); } }
 @keyframes rv-throb { 50% { transform: scale(1.035); box-shadow: 0 14px 36px rgb(249 115 22 / 0.65); } }
@@ -699,8 +660,8 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
    the pops, the embers, the spinning border or the shine. The ring stays: it
    is a progress bar, and the docking hangs off its end. */
 @media (prefers-reduced-motion: reduce) {
-  .rv-backdrop, .rv-frame, .rv-sticker, .rv-stars svg, .rv-rise, .rv-title span,
-  .rv-cta, .rv-cta::after, .rv-bar, .rv-bar-link::after, .rv-embers i,
+  .rv-backdrop, .rv-frame, .rv-stars svg, .rv-rise, .rv-title span,
+  .rv-cta, .rv-cta::after, .rv-bar, .rv-bar::after, .rv-embers i,
   .rv-frame::before, .rv-out .rv-backdrop, .rv-out .rv-frame,
   .rv-bar.rv-gone { animation: none; }
   .rv-embers { display: none; }
@@ -767,7 +728,6 @@ function reviewAsk({ url, percent }: PublicMenuReview): string {
     <div class="rv-frame">
       <div class="rv-card">
         <div class="rv-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <span class="rv-sticker">A <em>${percent}%</em> thank-you</span>
         <button type="button" class="rv-close" aria-label="Close">
           <svg viewBox="0 0 44 44" aria-hidden="true">
             <defs><linearGradient id="rv-flame" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc53d"/><stop offset="0.52" stop-color="#f97316"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>
@@ -777,19 +737,17 @@ function reviewAsk({ url, percent }: PublicMenuReview): string {
           <b aria-hidden="true">×</b>
         </button>
         <div class="rv-stars" aria-hidden="true">${STAR.repeat(5)}</div>
-        <p class="rv-kicker rv-rise">We’d love to hear from you</p>
-        <h2 class="rv-title" id="rv-title"><span>How was</span><span>your meal?</span></h2>
-        <p class="rv-text rv-rise">Your feedback is how we get better, and it helps others find us. Share your honest review on Google — and as our thank-you, enjoy <strong>an extra ${percent}% off</strong> your bill.</p>
-        <a class="rv-cta" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Share your review</span><span class="rv-arrow" aria-hidden="true">→</span></a>
-        <p class="rv-fine rv-rise">Just show it at the counter. Good or bad, we read every one.</p>
+        <p class="rv-kicker rv-rise">Love Shawarmania?</p>
+        <h2 class="rv-title" id="rv-title"><span>Review us</span><span>get ${percent}% off</span></h2>
+        <p class="rv-text rv-rise">Takes less than a minute.</p>
+        <a class="rv-cta" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a Google review</span><span class="rv-arrow" aria-hidden="true">→</span></a>
+        <p class="rv-fine rv-rise">Then show it at the counter</p>
       </div>
     </div>
   </div>
-  <div class="rv-bar" role="complementary" aria-label="Share your review on Google" hidden>
-    <div class="rv-bar-in">
-      <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span class="rv-bar-copy"><b>Tell us how we did</b><small>${percent}% off as our thank-you</small></span><span class="rv-bar-go">Review</span></a>
-      <button type="button" class="rv-bar-x" aria-label="Hide">×</button>
-    </div>
+  <div class="rv-bar" role="complementary" aria-label="Leave a Google review" hidden>
+    <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span></a>
+    <button type="button" class="rv-bar-x" aria-label="Hide">×</button>
   </div>
 </div>`
 }

@@ -165,11 +165,11 @@ describe('the Google review ask', () => {
     expect(html).toContain('<div class="rv-bar" role="complementary"')
   })
 
-  it('names the percentage ops sets, as a thank-you rather than a price', () => {
+  it('names the percentage ops sets, in the headline, where it is claimed, and on the banner', () => {
     const html = renderMenuPage(aMenu({ review: { ...review, percent: 8 } }))
-    expect(html).toContain('<em>8%</em> thank-you')
-    expect(html).toContain('an extra 8% off</strong>')
-    expect(html).toContain('8% off as our thank-you')
+    expect(html).toContain('<span>get 8% off</span>')
+    expect(html).toContain('Then show it at the counter</p>')
+    expect(html).toContain('<span>Leave a review. Get 8% off!</span>')
     expect(html).not.toMatch(/(?<![\d.])5%/)
     expect(html).not.toMatch(/5[- ]star|good review|positive review/i)
   })
