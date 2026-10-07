@@ -16,6 +16,36 @@ reduced-motion preference every one of these moves SHALL be instant.
 - **WHEN** the reader is on the first section and taps the chip of a later one
 - **THEN** the page glides to it and the pill goes straight to the tapped chip without passing through the sections in between
 
+### Requirement: The menu opens by asking for a Google review, as a thank-you
+
+When ops sends an outlet's review ask with its menu (`public_menu`'s `review`:
+a review link and a whole thank-you percentage), the page SHALL open with a popup
+asking the customer to share an honest review on Google, naming the percentage as
+a thank-you for their feedback — never asking for stars or a good review — with a
+button straight to the outlet's Google review page. Its close button SHALL carry a
+five-second countdown; when it runs out, or the button, the backdrop or Escape is
+pressed, the popup SHALL become a banner fixed to the bottom of the screen over the
+menu, with the same link and its own close. Closing either SHALL last for that
+visit only: a reload or a fresh scan SHALL ask again. With no ask, a null one, or
+one the page cannot show safely (not `https://`, or a percentage outside 1–50),
+there SHALL be no popup. Under a reduced-motion preference it SHALL appear and
+dock without its animations.
+
+#### Scenario: A customer scans the code at Kalyani Cafe
+
+- **WHEN** the menu opens and the customer does nothing
+- **THEN** the review popup shows for five seconds, then docks into a banner at the bottom while they read the menu
+
+#### Scenario: The manager changes the thank-you
+
+- **WHEN** the outlet's manager sets it to eight percent on the ops outlet page
+- **THEN** the popup and banner name eight percent within a minute, with no deploy
+
+#### Scenario: The customer closes everything, then rescans
+
+- **WHEN** they close the banner and later open the menu again
+- **THEN** the popup asks again
+
 ### Requirement: Every dish says whether it is vegetarian
 
 Every dish SHALL carry the FSSAI mark — a square with a green dot for vegetarian,

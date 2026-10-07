@@ -6,6 +6,7 @@ import {
   renderMenuNotFound,
   renderMenuPage,
   renderMenuUnavailable,
+  REVIEW_POPUP_SECONDS,
   sectionIds,
 } from '../src/menu-page'
 
@@ -148,5 +149,59 @@ describe('the pages for a missing menu', () => {
 
   it('tell a customer to try again when ops cannot be reached', () => {
     expect(renderMenuUnavailable()).toContain('try again in a minute')
+  })
+})
+
+describe('the Google review ask', () => {
+  const review = { url: 'https://g.page/r/Cef3CrZy-ZyuEBE/review', percent: 5 }
+
+  it('opens when ops sends one, linking straight to the listing’s review page', () => {
+    const html = renderMenuPage(aMenu({ review }))
+    expect(html).toContain('<div class="rv" id="rv" hidden>')
+    expect(html).toContain('role="dialog" aria-modal="true"')
+    expect(html).toContain('href="https://g.page/r/Cef3CrZy-ZyuEBE/review"')
+    // The countdown that docks it, and the banner it docks into.
+    expect(html).toContain(`animation: rv-count ${REVIEW_POPUP_SECONDS}s linear`)
+    expect(html).toContain('<div class="rv-bar" role="complementary"')
+  })
+
+  it('names the percentage ops sets, as a thank-you rather than a price', () => {
+    const html = renderMenuPage(aMenu({ review: { ...review, percent: 8 } }))
+    expect(html).toContain('<em>8%</em> thank-you')
+    expect(html).toContain('an extra 8% off</strong>')
+    expect(html).toContain('8% off as our thank-you')
+    expect(html).not.toMatch(/(?<![\d.])5%/)
+    expect(html).not.toMatch(/5[- ]star|good review|positive review/i)
+  })
+
+  it('remembers nothing, so every visit asks again', () => {
+    expect(renderMenuPage(aMenu({ review }))).not.toMatch(/localStorage|sessionStorage|document.cookie/)
+  })
+
+  it('is left off when ops sends none, sends null, or sends something it cannot show', () => {
+    for (const menu of [
+      aMenu(),
+      aMenu({ review: null }),
+      aMenu({ review: { url: 'javascript:alert(1)', percent: 5 } }),
+      aMenu({ review: { url: 'https://g.page/x" onclick="x', percent: 5 } }),
+      aMenu({ review: { ...review, percent: 0 } }),
+      aMenu({ review: { ...review, percent: 2.5 } }),
+      aMenu({ review: { ...review, percent: 90 } }),
+    ]) {
+      const html = renderMenuPage(menu)
+      expect(html).not.toContain('id="rv"')
+      expect(html).not.toContain('.rv-pop')
+    }
+  })
+
+  it('carries no bundler helpers in its script', () => {
+    const html = renderMenuPage(aMenu({ review }))
+    expect(html).toContain("document.getElementById('rv')")
+    expect(html).not.toContain('__name')
+  })
+
+  it('is a field the menu reader accepts', () => {
+    expect(() => assertOnlyMenu({ ...aMenu(), review })).not.toThrow()
+    expect(() => assertOnlyMenu({ ...aMenu(), review: { ...review, owner_note: 'x' } })).toThrow(MenuSaysTooMuch)
   })
 })

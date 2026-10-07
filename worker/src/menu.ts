@@ -18,9 +18,21 @@ export interface PublicMenuItem {
   is_available: boolean
 }
 
+/**
+ * The outlet's Google review ask, as its manager set it on the ops outlet page:
+ * where its Google listing takes a review, and the thank-you discount, in whole
+ * percent. Absent, or null, when the outlet has it off — and absent from every
+ * menu ops served before it existed, which the page treats the same way.
+ */
+export interface PublicMenuReview {
+  url: string
+  percent: number
+}
+
 export interface PublicMenu {
   outlet: { name: string; slug: string }
   sections: { name: string; items: PublicMenuItem[] }[]
+  review?: PublicMenuReview | null
 }
 
 /**
@@ -53,6 +65,9 @@ const ALLOWED_KEYS = new Set([
   'price_paise',
   'is_veg',
   'is_available',
+  'review',
+  'url',
+  'percent',
 ])
 
 export class MenuSaysTooMuch extends Error {

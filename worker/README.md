@@ -55,6 +55,11 @@ answer is kept for a week and served if ops cannot be reached. An address nobody
 holds, a closed outlet and an empty menu are one "not found" page, and a closed
 outlet's week-long copy is deleted the moment ops says it is gone. Unavailable
 dishes stay on the page, greyed out, with **Unavailable** where the price was.
+An outlet whose manager has turned on the Google review ask (ops: the-menu-asks-for-a-review)
+gets a popup asking for a review, which docks into a bottom banner after five seconds; its
+link and thank-you percentage arrive with the menu as `review`, so changing them needs no
+deploy. **Deploy this Worker before an ops migration adds a field to `public_menu`**: the
+reader refuses any field it does not know, and every menu would fail until it is.
 The reasoning is in `openspec/changes/the-table-menu-reads-ops/design.md` and,
 for the data, the ops repo's `the-menu-is-public`.
 

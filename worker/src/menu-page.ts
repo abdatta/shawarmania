@@ -1,5 +1,5 @@
 import { OPERATOR_LINE } from './content'
-import type { PublicMenu, PublicMenuItem } from './menu'
+import type { PublicMenu, PublicMenuItem, PublicMenuReview } from './menu'
 
 /**
  * The table menu: what a customer reads after scanning a table's QR code.
@@ -314,6 +314,486 @@ a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; bor
 }
 `
 
+/**
+ * The Google review ask: a popup on every visit, docking into a banner.
+ *
+ * Every open of the menu — by URL or by the table's QR code — first shows a
+ * popup asking for a Google review. Its close button is
+ * ringed by a five-second countdown; when the ring runs out, or the button is
+ * pressed, the popup does not vanish but flies down into a banner fixed to the
+ * bottom of the screen, over the menu, which has its own small close. Closing
+ * either is for this visit only: nothing is remembered, so a reload or the next
+ * scan asks again [owner, 2026-10-07].
+ *
+ * The motion is the brand site's hero: things pop in on an overshooting ease
+ * with a little rotation (`back.out`), the copy rises in a stagger, the line
+ * that matters is in the flame gradient and the offer sits on a tilted paper
+ * sticker like the hero's rating badge. Here it is CSS keyframes, not GSAP —
+ * this page carries no library.
+ *
+ * **It thanks, it does not pay** [owner, 2026-10-07]. The words are about
+ * valuing what a customer has to say; the discount is the thank-you for saying
+ * it, not the price of a good review — so the copy never asks for stars or a
+ * good word, and the stars it draws are decoration.
+ *
+ * Whether an outlet asks at all, its listing's review link and the thank-you
+ * percentage are set by its manager on the ops outlet page and arrive with the
+ * menu (`public_menu`'s `review`). Off, or anything this page could not show
+ * honestly, and there is no popup.
+ */
+export function reviewAskFor(menu: PublicMenu): PublicMenuReview | null {
+  const review = menu.review
+  if (!review || typeof review !== 'object') return null
+  const { url, percent } = review
+  if (typeof url !== 'string' || !/^https:\/\/[^\s"<>]+$/.test(url)) return null
+  if (!Number.isInteger(percent) || percent < 1 || percent > 50) return null
+  return { url, percent }
+}
+
+/** How long the popup stays before it docks itself, in seconds. */
+export const REVIEW_POPUP_SECONDS = 5
+
+const REVIEW_STYLES = `
+.rv [hidden], .rv[hidden] { display: none !important; }
+
+html.rv-lock { overflow: hidden; }
+
+/* The banner covers the bottom of the page; the footer must still clear it. */
+body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+
+/* -- the popup ---------------------------------------------------------- */
+.rv-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.rv-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(30rem 22rem at 70% 25%, rgb(249 115 22 / 0.22), transparent 70%),
+    radial-gradient(26rem 20rem at 15% 85%, rgb(127 29 29 / 0.4), transparent 70%),
+    rgb(10 8 5 / 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: rv-fade 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* A flame border that turns: a spinning conic gradient behind a 2 px gap. */
+.rv-frame {
+  position: relative;
+  width: min(23rem, 100%);
+  padding: 2px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 30px 80px rgb(0 0 0 / 0.6), 0 0 60px rgb(249 115 22 / 0.25);
+  animation: rv-pop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 80ms both;
+}
+
+.rv-frame::before {
+  content: '';
+  position: absolute;
+  inset: -60%;
+  z-index: -1;
+  background: conic-gradient(from 0deg, #ffc53d, #f97316, #dc2626, #7f1d1d, #dc2626, #f97316, #ffc53d);
+  animation: rv-spin 4s linear infinite;
+}
+
+.rv-card {
+  position: relative;
+  overflow: hidden;
+  padding: 2.25rem 1.5rem 1.5rem;
+  border-radius: calc(1.5rem - 2px);
+  background:
+    radial-gradient(18rem 12rem at 80% 0%, rgb(249 115 22 / 0.28), transparent 70%),
+    radial-gradient(14rem 10rem at 0% 100%, rgb(127 29 29 / 0.45), transparent 70%),
+    var(--bg-raised);
+  text-align: center;
+}
+
+/* Embers drifting up behind the copy. */
+.rv-embers { position: absolute; inset: 0; pointer-events: none; }
+.rv-embers i {
+  position: absolute;
+  bottom: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffc53d;
+  box-shadow: 0 0 10px 2px rgb(249 115 22 / 0.8);
+  opacity: 0;
+  animation: rv-ember 3.2s ease-in infinite;
+}
+.rv-embers i:nth-child(1) { left: 8%;  animation-delay: 0.2s; }
+.rv-embers i:nth-child(2) { left: 22%; animation-delay: 1.4s; width: 4px; height: 4px; }
+.rv-embers i:nth-child(3) { left: 38%; animation-delay: 0.8s; background: #f97316; }
+.rv-embers i:nth-child(4) { left: 55%; animation-delay: 2.1s; width: 4px; height: 4px; }
+.rv-embers i:nth-child(5) { left: 70%; animation-delay: 0.5s; background: #f97316; }
+.rv-embers i:nth-child(6) { left: 84%; animation-delay: 1.7s; }
+.rv-embers i:nth-child(7) { left: 94%; animation-delay: 2.6s; width: 4px; height: 4px; background: #dc2626; }
+
+/* The close button, ringed by the countdown. */
+.rv-close {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(20 16 11 / 0.6);
+  color: var(--cream);
+  cursor: pointer;
+  transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1), color 180ms;
+}
+.rv-close:hover { transform: scale(1.08); color: var(--flame-gold); }
+.rv-close svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.rv-ring-track { fill: none; stroke: rgb(245 228 199 / 0.15); stroke-width: 2.5; }
+.rv-ring-arc {
+  fill: none;
+  stroke: url(#rv-flame);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 113.1;
+  animation: rv-count ${REVIEW_POPUP_SECONDS}s linear 600ms both;
+}
+.rv-paused .rv-ring-arc { animation-play-state: paused; }
+.rv-close b { position: relative; font-size: 1.25rem; line-height: 1; font-weight: 400; }
+
+/* The offer, on a tilted paper sticker like the hero's rating badge. */
+.rv-sticker {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  z-index: 2;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.5rem;
+  background: var(--cream);
+  color: #2b1d12;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.4);
+  transform: rotate(-6deg);
+  animation: rv-sticker 550ms cubic-bezier(0.34, 1.9, 0.64, 1) 650ms both;
+}
+.rv-sticker em { font-style: normal; color: var(--flame-red); }
+
+.rv-stars { display: flex; justify-content: center; gap: 0.25rem; margin: 0.5rem 0 0.875rem; }
+.rv-stars svg {
+  width: 1.875rem;
+  height: 1.875rem;
+  fill: #ffc53d;
+  filter: drop-shadow(0 0 8px rgb(255 197 61 / 0.55));
+  animation: rv-star 550ms cubic-bezier(0.34, 1.9, 0.64, 1) both;
+}
+.rv-stars svg:nth-child(1) { animation-delay: 380ms; }
+.rv-stars svg:nth-child(2) { animation-delay: 450ms; }
+.rv-stars svg:nth-child(3) { animation-delay: 520ms; }
+.rv-stars svg:nth-child(4) { animation-delay: 590ms; }
+.rv-stars svg:nth-child(5) { animation-delay: 660ms; }
+
+.rv-rise { animation: rv-rise 600ms cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+
+.rv-kicker {
+  margin: 0;
+  color: var(--flame-gold);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation-delay: 300ms;
+}
+
+.rv-title {
+  margin: 0.375rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 1.8rem + 2.5vw, 2.75rem);
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+.rv-title span { display: block; animation: rv-rise 700ms cubic-bezier(0.34, 1.6, 0.64, 1) both; }
+.rv-title span:nth-child(1) { animation-delay: 380ms; }
+.rv-title span:nth-child(2) {
+  animation-delay: 500ms;
+  width: fit-content;
+  margin: 0 auto;
+  background: var(--gradient-flame);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rv-text { margin: 0.875rem 0 0; color: var(--cream-dim); font-size: 0.9375rem; animation-delay: 620ms; }
+.rv-text strong { color: var(--cream); }
+
+.rv-cta {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  min-height: 3.25rem;
+  margin-top: 1.375rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: var(--gradient-flame);
+  color: #201404;
+  font-weight: 800;
+  font-size: 1.0625rem;
+  text-decoration: none;
+  box-shadow: 0 10px 28px rgb(249 115 22 / 0.45);
+  animation: rv-rise 600ms cubic-bezier(0.34, 1.4, 0.64, 1) 740ms both, rv-throb 2.4s ease-in-out 1.6s infinite;
+}
+.rv-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: rv-shine 2.4s ease-in-out 1.2s infinite;
+}
+.rv-g {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: #fff;
+  flex: none;
+}
+.rv-g svg { width: 1.05rem; height: 1.05rem; }
+.rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
+.rv-cta:hover .rv-arrow { transform: translateX(4px); }
+
+.rv-fine { margin: 0.75rem 0 0; color: var(--cream-faint); font-size: 0.75rem; animation-delay: 820ms; }
+
+/* Closing: the card shrinks and drops toward where the banner will be. */
+.rv-out .rv-backdrop { animation: rv-fade 380ms cubic-bezier(0.22, 1, 0.36, 1) reverse both; }
+.rv-out .rv-frame { animation: rv-dock 420ms cubic-bezier(0.55, 0, 0.75, 0) both; }
+
+/* -- the banner --------------------------------------------------------- */
+.rv-bar {
+  position: fixed;
+  left: 50%;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 40;
+  width: min(40rem, calc(100% - 24px));
+  border: 1px solid rgb(255 197 61 / 0.35);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 14px 34px rgb(0 0 0 / 0.55);
+  transform: translateX(-50%);
+  animation: rv-bar-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.rv-bar-in {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background:
+    radial-gradient(12rem 4rem at 10% 50%, rgb(249 115 22 / 0.25), transparent 70%),
+    var(--bg-raised);
+}
+.rv-bar-link {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+  min-height: 3rem;
+  padding: 0 0.5rem 0 0.625rem;
+  border-radius: 999px;
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.rv-bar-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 197 61 / 0.18) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: rv-shine 3.2s ease-in-out 1s infinite;
+}
+.rv-bar-link .rv-g { width: 2rem; height: 2rem; }
+.rv-bar-copy { min-width: 0; }
+.rv-bar-copy b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  letter-spacing: 0.01em;
+  background: var(--gradient-flame);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+}
+.rv-bar-copy small { display: block; color: var(--cream-dim); font-size: 0.75rem; font-weight: 700; }
+.rv-bar-go {
+  flex: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--gradient-flame);
+  color: #201404;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.rv-bar-x {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.375rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(245 228 199 / 0.08);
+  color: var(--cream-dim);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.rv-bar-x:hover { color: var(--cream); background: rgb(245 228 199 / 0.16); }
+.rv-bar.rv-gone { animation: rv-bar-out 320ms cubic-bezier(0.55, 0, 0.75, 0) both; }
+
+.rv button:focus-visible, .rv a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
+
+@keyframes rv-fade { from { opacity: 0; } }
+@keyframes rv-pop { from { opacity: 0; transform: scale(0.55) rotate(8deg) translateY(40px); } }
+@keyframes rv-spin { to { transform: rotate(1turn); } }
+@keyframes rv-count { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 113.1; } }
+@keyframes rv-sticker { from { opacity: 0; transform: scale(0) rotate(24deg); } }
+@keyframes rv-star { from { opacity: 0; transform: scale(0) rotate(-40deg); } }
+@keyframes rv-rise { from { opacity: 0; transform: translateY(26px); } }
+@keyframes rv-throb { 50% { transform: scale(1.035); box-shadow: 0 14px 36px rgb(249 115 22 / 0.65); } }
+@keyframes rv-shine { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
+@keyframes rv-ember {
+  0% { opacity: 0; transform: translateY(0) scale(1); }
+  15% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-26rem) translateX(12px) scale(0.3); }
+}
+@keyframes rv-dock { to { opacity: 0; transform: translateY(42vh) scale(0.25); } }
+@keyframes rv-bar-in { from { opacity: 0; transform: translateX(-50%) translateY(120%) scale(0.9); } }
+@keyframes rv-bar-out { to { opacity: 0; transform: translateX(-50%) translateY(120%); } }
+
+/* Under reduced motion it still appears, counts down and docks — without
+   the pops, the embers, the spinning border or the shine. The ring stays: it
+   is a progress bar, and the docking hangs off its end. */
+@media (prefers-reduced-motion: reduce) {
+  .rv-backdrop, .rv-frame, .rv-sticker, .rv-stars svg, .rv-rise, .rv-title span,
+  .rv-cta, .rv-cta::after, .rv-bar, .rv-bar-link::after, .rv-embers i,
+  .rv-frame::before, .rv-out .rv-backdrop, .rv-out .rv-frame,
+  .rv-bar.rv-gone { animation: none; }
+  .rv-embers { display: none; }
+}
+`
+
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9z"/></svg>'
+
+const GOOGLE_G = `<span class="rv-g" aria-hidden="true"><svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.4 5.8c4.3-4 6.9-9.9 6.9-17.2z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s.9 7.4 2.6 10.6l7.9-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.8c-2.2 1.5-5 2.3-8.5 2.3-6.2 0-11.5-4.2-13.4-9.8l-7.9 6C6.6 42.6 14.6 48 24 48z"/></svg></span>`
+
+/*
+  The popup's behaviour. A plain string for the same reason as the chip script.
+  Without script none of it shows: the root starts `hidden`, and a popup that
+  could never close would be worse than no popup.
+*/
+const REVIEW_SCRIPT = `(function () {
+  var root = document.getElementById('rv');
+  if (!root) return;
+  var html = document.documentElement;
+  var pop = root.querySelector('.rv-pop');
+  var bar = root.querySelector('.rv-bar');
+  var ring = root.querySelector('.rv-ring-arc');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var state = 'pop';
+  function dock() {
+    if (state !== 'pop') return;
+    state = 'bar';
+    pop.classList.add('rv-out');
+    html.classList.remove('rv-lock');
+    setTimeout(function () {
+      pop.hidden = true;
+      bar.hidden = false;
+      document.body.classList.add('rv-docked');
+    }, reduce ? 0 : 400);
+  }
+  function dismiss() {
+    if (state !== 'bar') return;
+    state = 'gone';
+    bar.classList.add('rv-gone');
+    setTimeout(function () {
+      bar.hidden = true;
+      document.body.classList.remove('rv-docked');
+    }, reduce ? 0 : 300);
+  }
+  root.hidden = false;
+  html.classList.add('rv-lock');
+  ring.addEventListener('animationend', dock);
+  root.querySelector('.rv-close').addEventListener('click', dock);
+  root.querySelector('.rv-backdrop').addEventListener('click', dock);
+  root.querySelector('.rv-cta').addEventListener('click', function () { setTimeout(dock, 200); });
+  root.querySelector('.rv-bar-x').addEventListener('click', dismiss);
+  document.addEventListener('keydown', function (event) { if (event.key === 'Escape') dock(); });
+  // A menu opened in a background tab should still get its five seconds.
+  function onVisibility() { root.classList.toggle('rv-paused', document.hidden); }
+  document.addEventListener('visibilitychange', onVisibility);
+  onVisibility();
+})();`
+
+function reviewAsk({ url, percent }: PublicMenuReview): string {
+  const href = escapeHtml(url)
+  return `<div class="rv" id="rv" hidden>
+  <div class="rv-pop" role="dialog" aria-modal="true" aria-labelledby="rv-title">
+    <div class="rv-backdrop"></div>
+    <div class="rv-frame">
+      <div class="rv-card">
+        <div class="rv-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span class="rv-sticker">A <em>${percent}%</em> thank-you</span>
+        <button type="button" class="rv-close" aria-label="Close">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <defs><linearGradient id="rv-flame" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc53d"/><stop offset="0.52" stop-color="#f97316"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>
+            <circle class="rv-ring-track" cx="22" cy="22" r="18"/>
+            <circle class="rv-ring-arc" cx="22" cy="22" r="18"/>
+          </svg>
+          <b aria-hidden="true">×</b>
+        </button>
+        <div class="rv-stars" aria-hidden="true">${STAR.repeat(5)}</div>
+        <p class="rv-kicker rv-rise">We’d love to hear from you</p>
+        <h2 class="rv-title" id="rv-title"><span>How was</span><span>your meal?</span></h2>
+        <p class="rv-text rv-rise">Your feedback is how we get better, and it helps others find us. Share your honest review on Google — and as our thank-you, enjoy <strong>an extra ${percent}% off</strong> your bill.</p>
+        <a class="rv-cta" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Share your review</span><span class="rv-arrow" aria-hidden="true">→</span></a>
+        <p class="rv-fine rv-rise">Just show it at the counter. Good or bad, we read every one.</p>
+      </div>
+    </div>
+  </div>
+  <div class="rv-bar" role="complementary" aria-label="Share your review on Google" hidden>
+    <div class="rv-bar-in">
+      <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span class="rv-bar-copy"><b>Tell us how we did</b><small>${percent}% off as our thank-you</small></span><span class="rv-bar-go">Review</span></a>
+      <button type="button" class="rv-bar-x" aria-label="Hide">×</button>
+    </div>
+  </div>
+</div>`
+}
+
 /*
   The chip scroll-spy, as the brand site's src/menu/spy.ts had it: one flame
   pill slides to the chip of the section being read, the strip keeps that chip
@@ -405,7 +885,7 @@ function dish(item: PublicMenuItem): string {
 </li>`
 }
 
-function head(title: string, description: string, canonical: string | null): string {
+function head(title: string, description: string, canonical: string | null, extraCss = ''): string {
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
@@ -416,7 +896,7 @@ ${canonical ? `<link rel="canonical" href="${escapeHtml(canonical)}">\n` : ''}<l
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="${MENU_ASSET_PREFIX}fonts/lilita-one.woff2" as="font" type="font/woff2" crossorigin>
-<style>${css(FACES)}${css(STYLES)}</style>`
+<style>${css(FACES)}${css(STYLES)}${extraCss ? css(extraCss) : ''}</style>`
 }
 
 const MASTHEAD = `<header class="masthead">
@@ -434,6 +914,7 @@ const FOOTER = `<footer class="docfoot">
 export function renderMenuPage(menu: PublicMenu, origin = 'https://shawarmania.in'): string {
   const ids = sectionIds(menu.sections.map((s) => s.name))
   const outletName = escapeHtml(menu.outlet.name)
+  const review = reviewAskFor(menu)
 
   const nav = menu.sections
     .map((s, i) => `<li><a href="#${ids[i]}">${escapeHtml(s.name)}</a></li>`)
@@ -457,10 +938,11 @@ ${head(
   `Menu — ${menu.outlet.name} · Shawarmania`,
   `The ${menu.outlet.name} menu, with today's prices and what is available right now.`,
   `${origin}/menu/${menu.outlet.slug}/`,
+  review ? REVIEW_STYLES : '',
 )}
 </head>
 <body>
-${MASTHEAD}
+${review ? `${reviewAsk(review)}\n<script>${REVIEW_SCRIPT}</script>\n` : ''}${MASTHEAD}
 <main>
   <h1>Menu</h1>
   <p class="outlet">${outletName}</p>
