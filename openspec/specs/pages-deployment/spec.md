@@ -58,14 +58,15 @@ while the apex `A` records remain
 `185.199.111.153`, with the matching GitHub Pages `AAAA` records and `www` as a
 `CNAME` to `abdatta.github.io`.
 
-Cloudflare SHALL route only `shawarmania.in/bill/*` to the receipt Worker. Every
-other path SHALL continue to reach the existing GitHub Pages deployment.
+Cloudflare SHALL route only `shawarmania.in/bill*` and `shawarmania.in/menu*` to
+the receipt Worker. Every other path SHALL continue to
+reach the existing GitHub Pages deployment.
 
 #### Scenario: DNS remains on the existing site
 
-- **WHEN** the Cloudflare nameservers and receipt route are active
+- **WHEN** the Cloudflare nameservers and receipt routes are active
 - **THEN** the marketing site continues to resolve from GitHub Pages and only
-  `/bill/*` reaches the Worker
+  paths beginning `/bill` or `/menu` reach the Worker
 
 ### Requirement: The site keeps its deployment, and the receipt runtime gets its own
 
@@ -130,7 +131,8 @@ reverted.
 ### Requirement: The Worker answers the menu as well as the receipt
 
 The Worker SHALL be routed on `shawarmania.in/menu*` as well as
-`shawarmania.in/bill/*`, and GitHub Pages SHALL keep serving every other path.
+`shawarmania.in/bill*`, and GitHub Pages SHALL keep
+serving every other path.
 The menu SHALL be read with the same deployment-secret credential as the
 receipt, through `public_menu(slug)` alone. The site's own build SHALL NOT carry
 a copy of any outlet's menu once the route is live.

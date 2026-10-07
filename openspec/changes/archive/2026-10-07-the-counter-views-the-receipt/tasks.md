@@ -39,11 +39,15 @@
 
 ## 3. Manual QA
 
-- [ ] 3.1 A real receipt link: Download PDF present and still downloads (phone and
+- [x] 3.1 A real receipt link: Download PDF present and still downloads (phone and
       desktop widths)
+      *(2026-10-07, live site, a Kalyani Cafe bill with no customer attached: *Download
+      PDF* is visible and inside the viewport at 375 px and 1280 px with no horizontal
+      scroll, and its `/bill/<token>.pdf` answers 200 `application/pdf` with a real
+      PDF.)*
 - [x] 3.2 The same link with `?view=counter`: no Download PDF, no *Paid by*, no
       tax-invoice sentence, one-row header, one script; `?view=COUNTER` and
       `?view=other` get the customer's page (checked against the live site)
 - [x] 3.3 The ops counter at tablet width: View receipt shows the counter view fitted
       to the pop-up (walked with real Kalyani receipts; the owner signed it off)
-- [ ] 3.4 Archive with ops #63
+- [x] 3.4 Archive with ops #63 *(Archived with it, 2026-10-07.)*

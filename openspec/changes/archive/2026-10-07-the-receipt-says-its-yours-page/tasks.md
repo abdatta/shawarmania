@@ -26,4 +26,7 @@
       same bill from the ops counter's View receipt; both show the digits *(Bill
       199 at Kalyani Cafe, 2026-10-03: the link and `view=counter` both show
       *Dine-in* and the masked digits, and no whole number)*
-- [ ] 2.4 Archive once a real customer's receipt has shown them
+- [x] 2.4 Archive once a real customer's receipt has shown them
+      *(Since 2026-10-04, customers have opened their own receipts from the SMS more
+      than a hundred times, and the owner checked one on 2026-10-07. Archived with ops
+      #58 that day.)*

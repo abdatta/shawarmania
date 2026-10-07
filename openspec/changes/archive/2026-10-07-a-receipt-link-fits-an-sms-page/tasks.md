@@ -27,5 +27,8 @@
       `https://shawarmania.in/bill?t=AAAAAAAAAA` is the Worker's refusal (it carries
       `X-Robots-Tag`), a real `/bill/<token>` redirects, and `/`, `/menu/`,
       `/privacy/` are unchanged
-- [ ] 2.2 Archive with the parent, once DLT has accepted the template and a real
+- [x] 2.2 Archive with the parent, once DLT has accepted the template and a real
       receipt has been opened at the new address
+      *(DLT approved the receipt template on 2026-10-03. Since ops #59 began sending on
+      2026-10-04, every SMS has carried a `/bill?t=` link, and customers have opened
+      more than a hundred of them. Archived with ops #59 on 2026-10-07.)*

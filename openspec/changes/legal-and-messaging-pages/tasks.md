@@ -155,3 +155,10 @@ is recorded here so the owner knows what is left rather than what is merely clai
       DLT header `DEDTTL` (ops #59, #66), which cannot receive a reply, and the spec
       offers STOP "only while that reply is honoured". The consent sentence now ends
       *Tell us any time and we stop.* Counter, phone and email remain the three ways.
+- [ ] 10.2 Before this change archives, reconcile `legal-pages` with the living
+      `receipt-messaging` spec. `receipt-sms-at-settlement` was archived first, on
+      2026-10-07, and wrote what the three pages say today: giving a valid number at
+      billing is the opt-in to one receipt SMS per paid bill, with no separate consent
+      question and no stop setting. The *opt-in document* requirement here still
+      describes counter consent wording and opt-out paths, so restate it against that
+      decision instead of syncing it as written.

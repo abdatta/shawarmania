@@ -43,7 +43,7 @@ not exactly four digits, rather than rendering it.
 - **WHEN** a payload carries a customer name, or a whole phone number in any field
 - **THEN** the Worker refuses to serve it, and nothing is rendered
 
-#### Scenario: Nothing personal in the metadata or the preview
+#### Scenario: Nothing personal is rendered
 
 - **WHEN** any receipt is served
 - **THEN** no name and no whole telephone number appears in the page, the PDF, the
@@ -123,6 +123,11 @@ A bill whose payload carries no points SHALL say nothing about points.
 
 - **WHEN** a bill with no points is served
 - **THEN** neither the page nor the PDF mentions points
+
+#### Scenario: A voided bill
+
+- **WHEN** a voided bill that had earned points is served
+- **THEN** it reads as cancelled, and still shows the points line it was sold with
 
 ## ADDED Requirements
 

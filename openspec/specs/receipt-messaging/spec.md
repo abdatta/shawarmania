@@ -1,4 +1,12 @@
-## MODIFIED Requirements
+# receipt-messaging Specification
+
+## Purpose
+
+What the site's messaging, terms and privacy pages promise about the receipt SMS
+that ops sends: a customer opts in by giving a valid number at billing, receives
+one receipt per paid bill, and nothing else is promised.
+
+## Requirements
 
 ### Requirement: Published messaging matches automatic receipt SMS
 The messaging, terms and privacy pages SHALL explain that supplying a valid
@@ -12,3 +20,4 @@ privacy data-removal requests from skipping receipt SMS for a purchase.
 - **WHEN** a customer visits messaging, terms or privacy
 - **THEN** the pages consistently describe number-as-opt-in, one service receipt
   per bill and no marketing, and do not promise STOP or a separate stop setting.
+
