@@ -539,6 +539,8 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   box-shadow: 0 10px 28px rgb(249 115 22 / 0.45);
   animation: rv-rise 600ms cubic-bezier(0.34, 1.4, 0.64, 1) 740ms both, rv-throb 2.4s ease-in-out 1.6s infinite;
 }
+.rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
+.rv-cta:hover .rv-arrow { transform: translateX(4px); }
 .rv-cta::after {
   content: '';
   position: absolute;
@@ -557,8 +559,6 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   flex: none;
 }
 .rv-g svg { width: 1.05rem; height: 1.05rem; }
-.rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
-.rv-cta:hover .rv-arrow, .rv-bar-link:hover .rv-arrow { transform: translateX(4px); }
 
 .rv-fine { margin: 0.875rem 0 0; color: var(--cream-dim); font-size: 0.9375rem; font-weight: 600; text-wrap: balance; animation-delay: 820ms; }
 .rv-fine strong { color: var(--flame-gold); font-weight: 800; }
@@ -612,12 +612,22 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   white-space: nowrap;
   text-decoration: none;
 }
+/* Drawn at the weight of the words, and swaying a few pixels at the popup
+   button's own slow pulse, so it reads as "this goes somewhere". */
+.rv-go {
+  flex: none;
+  display: grid;
+  place-items: center;
+  animation: rv-sway 2.4s ease-in-out infinite;
+}
+.rv-go svg { width: 1.375rem; height: 1.375rem; }
 /* The narrowest phones: smaller type and mark, so the line never clips. */
 @media (max-width: 359px) {
   .rv-bar-link { gap: 0.4rem; padding-left: 0.75rem; font-size: 0.875rem; }
   .rv-bar-link .rv-g { width: 1.5rem; height: 1.5rem; }
   .rv-bar-link .rv-g svg { width: 0.9rem; height: 0.9rem; }
   .rv-bar-link { padding-right: 0.875rem; }
+  .rv-bar-link .rv-go svg { width: 1.125rem; height: 1.125rem; }
 }
 
 .rv button:focus-visible, .rv a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
@@ -630,6 +640,7 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 @keyframes rv-count { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 113.1; } }
 @keyframes rv-star { from { opacity: 0; transform: scale(0) rotate(-40deg); } }
 @keyframes rv-rise { from { opacity: 0; transform: translateY(26px); } }
+@keyframes rv-sway { 0%, 100% { transform: translateX(-1px); } 50% { transform: translateX(3px); } }
 @keyframes rv-throb { 50% { transform: scale(1.035); box-shadow: 0 14px 36px rgb(249 115 22 / 0.65); } }
 @keyframes rv-shine { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
 @keyframes rv-ember {
@@ -645,7 +656,7 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
    is a progress bar, and the docking hangs off its end. */
 @media (prefers-reduced-motion: reduce) {
   .rv-backdrop, .rv-frame, .rv-stars svg, .rv-rise, .rv-title span,
-  .rv-cta, .rv-cta::after, .rv-bar, .rv-bar::after, .rv-embers i,
+  .rv-cta, .rv-cta::after, .rv-bar, .rv-bar::after, .rv-go, .rv-embers i,
   .rv-frame::before, .rv-out .rv-backdrop, .rv-out .rv-frame { animation: none; }
   .rv-embers { display: none; }
 }
@@ -701,6 +712,13 @@ const REVIEW_SCRIPT = `(function () {
 })();`
 
 /** The popup that opens the menu, docking into the banner. */
+/**
+ * The banner's arrow: drawn at the text's weight, so it does not look timid
+ * beside it [owner, 2026-10-08]. The popup's button keeps its text arrow: the
+ * drawn one is wider and pushed that button's words onto two lines.
+ */
+const GO_ARROW = '<span class="rv-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>'
+
 function reviewPopup(href: string, percent: number): string {
   return `
   <div class="rv-pop" role="dialog" aria-modal="true" aria-labelledby="rv-title">
@@ -736,7 +754,7 @@ function reviewAsk({ url, percent, popup }: PublicMenuReview): string {
   const href = escapeHtml(url)
   return `<div class="rv" id="rv" hidden>${popup === false ? '' : reviewPopup(href, percent)}
   <div class="rv-bar" role="complementary" aria-label="Leave a Google review" hidden>
-    <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span><span class="rv-arrow" aria-hidden="true">→</span></a>
+    <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span>${GO_ARROW}</a>
   </div>
 </div>`
 }
