@@ -27,6 +27,8 @@ export interface PublicMenuItem {
 export interface PublicMenuReview {
   url: string
   percent: number
+  /** False: the outlet keeps only the bottom banner, with no popup. Absent means true. */
+  popup?: boolean
 }
 
 export interface PublicMenu {
@@ -68,6 +70,7 @@ const ALLOWED_KEYS = new Set([
   'review',
   'url',
   'percent',
+  'popup',
 ])
 
 export class MenuSaysTooMuch extends Error {

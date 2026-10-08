@@ -174,6 +174,20 @@ describe('the Google review ask', () => {
     expect(html).not.toMatch(/5[- ]star|good review|positive review/i)
   })
 
+  it('keeps only the banner when the outlet switches the popup off', () => {
+    const html = renderMenuPage(aMenu({ review: { ...review, popup: false } }))
+    expect(html).toContain('<div class="rv-bar" role="complementary"')
+    expect(html).not.toContain('class="rv-pop"')
+    expect(html).not.toContain('class="rv-ring-arc"')
+    // The script shows the banner at once when there is no popup to dock.
+    expect(html).toContain("if (!pop) {")
+  })
+
+  it('opens with the popup when ops says so, or says nothing about it', () => {
+    expect(renderMenuPage(aMenu({ review: { ...review, popup: true } }))).toContain('class="rv-pop"')
+    expect(renderMenuPage(aMenu({ review }))).toContain('class="rv-pop"')
+  })
+
   it('remembers nothing, so every visit asks again', () => {
     expect(renderMenuPage(aMenu({ review }))).not.toMatch(/localStorage|sessionStorage|document.cookie/)
   })
@@ -201,7 +215,7 @@ describe('the Google review ask', () => {
   })
 
   it('is a field the menu reader accepts', () => {
-    expect(() => assertOnlyMenu({ ...aMenu(), review })).not.toThrow()
+    expect(() => assertOnlyMenu({ ...aMenu(), review: { ...review, popup: false } })).not.toThrow()
     expect(() => assertOnlyMenu({ ...aMenu(), review: { ...review, owner_note: 'x' } })).toThrow(MenuSaysTooMuch)
   })
 })

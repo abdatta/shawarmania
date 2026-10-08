@@ -347,7 +347,7 @@ export function reviewAskFor(menu: PublicMenu): PublicMenuReview | null {
   const { url, percent } = review
   if (typeof url !== 'string' || !/^https:\/\/[^\s"<>]+$/.test(url)) return null
   if (!Number.isInteger(percent) || percent < 1 || percent > 50) return null
-  return { url, percent }
+  return { url, percent, popup: review.popup !== false }
 }
 
 /** How long the popup stays before it docks itself, in seconds. */
@@ -707,12 +707,19 @@ const REVIEW_SCRIPT = `(function () {
     }, reduce ? 0 : 300);
   }
   root.hidden = false;
+  root.querySelector('.rv-bar-x').addEventListener('click', dismiss);
+  // The outlet keeps only the banner: no popup, no countdown.
+  if (!pop) {
+    state = 'bar';
+    bar.hidden = false;
+    document.body.classList.add('rv-docked');
+    return;
+  }
   html.classList.add('rv-lock');
   ring.addEventListener('animationend', dock);
   root.querySelector('.rv-close').addEventListener('click', dock);
   root.querySelector('.rv-backdrop').addEventListener('click', dock);
   root.querySelector('.rv-cta').addEventListener('click', function () { setTimeout(dock, 200); });
-  root.querySelector('.rv-bar-x').addEventListener('click', dismiss);
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') dock(); });
   // A menu opened in a background tab should still get its five seconds.
   function onVisibility() { root.classList.toggle('rv-paused', document.hidden); }
@@ -720,9 +727,9 @@ const REVIEW_SCRIPT = `(function () {
   onVisibility();
 })();`
 
-function reviewAsk({ url, percent }: PublicMenuReview): string {
-  const href = escapeHtml(url)
-  return `<div class="rv" id="rv" hidden>
+/** The popup that opens the menu, docking into the banner. */
+function reviewPopup(href: string, percent: number): string {
+  return `
   <div class="rv-pop" role="dialog" aria-modal="true" aria-labelledby="rv-title">
     <div class="rv-backdrop"></div>
     <div class="rv-frame">
@@ -744,13 +751,24 @@ function reviewAsk({ url, percent }: PublicMenuReview): string {
         <p class="rv-fine rv-rise">Then show it at the counter</p>
       </div>
     </div>
-  </div>
+  </div>`
+}
+
+/**
+ * The review ask's markup: the popup, unless the outlet keeps only the banner,
+ * and the banner it docks into. `popup` absent — an ops that predates the
+ * switch — means the popup.
+ */
+function reviewAsk({ url, percent, popup }: PublicMenuReview): string {
+  const href = escapeHtml(url)
+  return `<div class="rv" id="rv" hidden>${popup === false ? '' : reviewPopup(href, percent)}
   <div class="rv-bar" role="complementary" aria-label="Leave a Google review" hidden>
     <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span></a>
     <button type="button" class="rv-bar-x" aria-label="Hide">×</button>
   </div>
 </div>`
 }
+
 
 /*
   The chip scroll-spy, as the brand site's src/menu/spy.ts had it: one flame

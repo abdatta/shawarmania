@@ -27,7 +27,9 @@ five-second countdown; when it runs out, or the button, the backdrop or Escape i
 pressed, the popup SHALL become a banner fixed to the bottom of the screen over the
 menu — the popup's own button, "Leave a review. Get 5% off!", with a close where
 its arrow was. Closing either SHALL last for that
-visit only: a reload or a fresh scan SHALL ask again. With no ask, a null one, or
+visit only: a reload or a fresh scan SHALL ask again. When ops sends `popup: false`, the
+page SHALL skip the popup and show only the banner from the start — the quieter
+version an outlet may choose. With no ask, a null one, or
 one the page cannot show safely (not `https://`, or a percentage outside 1–50),
 there SHALL be no popup. Under a reduced-motion preference it SHALL appear and
 dock without its animations.
@@ -41,6 +43,11 @@ dock without its animations.
 
 - **WHEN** the outlet's manager sets it to eight percent on the ops outlet page
 - **THEN** the popup and banner name eight percent within a minute, with no deploy
+
+#### Scenario: An outlet keeps only the banner
+
+- **WHEN** the outlet's manager switches the popup off on the ops outlet page
+- **THEN** within a minute the menu opens with no popup, showing only the bottom banner
 
 #### Scenario: The customer closes everything, then rescans
 
