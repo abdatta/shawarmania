@@ -525,11 +525,12 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.625rem;
+  gap: 0.5rem;
   width: 100%;
   min-height: 3.25rem;
   margin-top: 1.375rem;
-  padding: 0 1.25rem;
+  padding: 0 1rem;
+  white-space: nowrap;
   border-radius: 999px;
   background: var(--gradient-flame);
   color: #201404;
@@ -539,8 +540,6 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   box-shadow: 0 10px 28px rgb(249 115 22 / 0.45);
   animation: rv-rise 600ms cubic-bezier(0.34, 1.4, 0.64, 1) 740ms both, rv-throb 2.4s ease-in-out 1.6s infinite;
 }
-.rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
-.rv-cta:hover .rv-arrow { transform: translateX(4px); }
 .rv-cta::after {
   content: '';
   position: absolute;
@@ -621,13 +620,17 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   animation: rv-sway 2.4s ease-in-out infinite;
 }
 .rv-go svg { width: 1.375rem; height: 1.375rem; }
-/* The narrowest phones: smaller type and mark, so the line never clips. */
-@media (max-width: 359px) {
-  .rv-bar-link { gap: 0.4rem; padding-left: 0.75rem; font-size: 0.875rem; }
-  .rv-bar-link .rv-g { width: 1.5rem; height: 1.5rem; }
+/* Phones narrower than 375 px: smaller type and mark, so the popup's button
+   and the banner each stay on one line. */
+@media (max-width: 374px) {
+  .rv-cta { gap: 0.4rem; padding: 0 0.75rem; font-size: 0.9375rem; }
+  .rv-cta .rv-g, .rv-bar-link .rv-g { width: 1.5rem; height: 1.5rem; }
   .rv-bar-link .rv-g svg { width: 0.9rem; height: 0.9rem; }
-  .rv-bar-link { padding-right: 0.875rem; }
-  .rv-bar-link .rv-go svg { width: 1.125rem; height: 1.125rem; }
+  .rv-cta .rv-go svg, .rv-bar-link .rv-go svg { width: 1.125rem; height: 1.125rem; }
+  .rv-bar-link { gap: 0.4rem; padding: 0 0.875rem 0 0.75rem; font-size: 0.875rem; }
+}
+@media (max-width: 339px) {
+  .rv-cta { font-size: 0.875rem; padding: 0 0.625rem; }
 }
 
 .rv button:focus-visible, .rv a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
@@ -713,9 +716,8 @@ const REVIEW_SCRIPT = `(function () {
 
 /** The popup that opens the menu, docking into the banner. */
 /**
- * The banner's arrow: drawn at the text's weight, so it does not look timid
- * beside it [owner, 2026-10-08]. The popup's button keeps its text arrow: the
- * drawn one is wider and pushed that button's words onto two lines.
+ * The arrow on the popup's button and on the banner, the same on both: drawn at
+ * the words' weight, so it does not look timid beside them [owner, 2026-10-08].
  */
 const GO_ARROW = '<span class="rv-go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>'
 
@@ -738,7 +740,7 @@ function reviewPopup(href: string, percent: number): string {
         <p class="rv-kicker rv-rise">Love Shawarmania?</p>
         <h2 class="rv-title" id="rv-title"><span>Review us</span><span>get ${percent}% off</span></h2>
         <p class="rv-text rv-rise">Takes less than a minute.</p>
-        <a class="rv-cta" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a Google review</span><span class="rv-arrow" aria-hidden="true">→</span></a>
+        <a class="rv-cta" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a Google review</span>${GO_ARROW}</a>
         <p class="rv-fine rv-rise">Then show it at the counter</p>
       </div>
     </div>
