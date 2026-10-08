@@ -25,9 +25,9 @@ counter" — never asking for stars or a good review, with a button straight to 
 outlet's Google review page. Its close button SHALL carry a
 five-second countdown; when it runs out, or the button, the backdrop or Escape is
 pressed, the popup SHALL become a banner fixed to the bottom of the screen over the
-menu — the popup's own button, "Leave a review. Get 5% off!", with a close where
-its arrow was. Closing either SHALL last for that
-visit only: a reload or a fresh scan SHALL ask again. When ops sends `popup: false`, the
+menu — the popup's own button, "Leave a review. Get 5% off!", arrow and all, one
+link to the review page with no close of its own. Closing the popup SHALL last for
+that visit only: a reload or a fresh scan SHALL ask again. When ops sends `popup: false`, the
 page SHALL skip the popup and show only the banner from the start — the quieter
 version an outlet may choose. With no ask, a null one, or
 one the page cannot show safely (not `https://`, or a percentage outside 1–50),
@@ -49,9 +49,9 @@ dock without its animations.
 - **WHEN** the outlet's manager switches the popup off on the ops outlet page
 - **THEN** within a minute the menu opens with no popup, showing only the bottom banner
 
-#### Scenario: The customer closes everything, then rescans
+#### Scenario: The customer closes the popup, then rescans
 
-- **WHEN** they close the banner and later open the menu again
+- **WHEN** they close the popup and later open the menu again
 - **THEN** the popup asks again
 
 ### Requirement: Every dish says whether it is vegetarian

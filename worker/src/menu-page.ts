@@ -558,7 +558,7 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 }
 .rv-g svg { width: 1.05rem; height: 1.05rem; }
 .rv-arrow { transition: transform 180ms cubic-bezier(0.34, 1.3, 0.64, 1); }
-.rv-cta:hover .rv-arrow { transform: translateX(4px); }
+.rv-cta:hover .rv-arrow, .rv-bar-link:hover .rv-arrow { transform: translateX(4px); }
 
 .rv-fine { margin: 0.875rem 0 0; color: var(--cream-dim); font-size: 0.9375rem; font-weight: 600; text-wrap: balance; animation-delay: 820ms; }
 .rv-fine strong { color: var(--flame-gold); font-weight: 800; }
@@ -568,8 +568,9 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 .rv-out .rv-frame { animation: rv-dock 420ms cubic-bezier(0.55, 0, 0.75, 0) both; }
 
 /* -- the banner ---------------------------------------------------------
-   The popup's own button, docked: the same flame pill, the same G, with a
-   close where its arrow was [owner, 2026-10-07]. */
+   The popup's own button, docked: the same flame pill, the same G, the same
+   arrow, so it reads as the link it is. It stays: it takes little room, and
+   there is nothing to close [owner, 2026-10-08]. */
 .rv-bar {
   position: fixed;
   left: 50%;
@@ -604,40 +605,24 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
   gap: 0.625rem;
   min-width: 0;
   min-height: 3.25rem;
-  padding: 0 0 0 1.25rem;
+  padding: 0 1.25rem;
   color: inherit;
   font-weight: 800;
   font-size: 1.0625rem;
   white-space: nowrap;
   text-decoration: none;
 }
-.rv-bar-x {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 2.75rem;
-  height: 3.25rem;
-  margin-right: 0.5rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font-size: 1.375rem;
-  line-height: 1;
-  cursor: pointer;
-}
-.rv-bar.rv-gone { animation: rv-bar-out 320ms cubic-bezier(0.55, 0, 0.75, 0) both; }
 /* The narrowest phones: smaller type and mark, so the line never clips. */
 @media (max-width: 359px) {
   .rv-bar-link { gap: 0.4rem; padding-left: 0.75rem; font-size: 0.875rem; }
   .rv-bar-link .rv-g { width: 1.5rem; height: 1.5rem; }
   .rv-bar-link .rv-g svg { width: 0.9rem; height: 0.9rem; }
-  .rv-bar-x { width: 2.25rem; margin-right: 0.25rem; }
+  .rv-bar-link { padding-right: 0.875rem; }
 }
 
 .rv button:focus-visible, .rv a:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
 /* Gold on a gold pill would vanish: the banner focuses in its own ink. */
-.rv-bar a:focus-visible, .rv-bar button:focus-visible { outline-color: #201404; outline-offset: -4px; border-radius: 999px; }
+.rv-bar a:focus-visible { outline-color: #201404; outline-offset: -4px; border-radius: 999px; }
 
 @keyframes rv-fade { from { opacity: 0; } }
 @keyframes rv-pop { from { opacity: 0; transform: scale(0.55) rotate(8deg) translateY(40px); } }
@@ -654,7 +639,6 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 }
 @keyframes rv-dock { to { opacity: 0; transform: translateY(42vh) scale(0.25); } }
 @keyframes rv-bar-in { from { opacity: 0; transform: translateX(-50%) translateY(120%) scale(0.9); } }
-@keyframes rv-bar-out { to { opacity: 0; transform: translateX(-50%) translateY(120%); } }
 
 /* Under reduced motion it still appears, counts down and docks — without
    the pops, the embers, the spinning border or the shine. The ring stays: it
@@ -662,8 +646,7 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 @media (prefers-reduced-motion: reduce) {
   .rv-backdrop, .rv-frame, .rv-stars svg, .rv-rise, .rv-title span,
   .rv-cta, .rv-cta::after, .rv-bar, .rv-bar::after, .rv-embers i,
-  .rv-frame::before, .rv-out .rv-backdrop, .rv-out .rv-frame,
-  .rv-bar.rv-gone { animation: none; }
+  .rv-frame::before, .rv-out .rv-backdrop, .rv-out .rv-frame { animation: none; }
   .rv-embers { display: none; }
 }
 `
@@ -697,17 +680,7 @@ const REVIEW_SCRIPT = `(function () {
       document.body.classList.add('rv-docked');
     }, reduce ? 0 : 400);
   }
-  function dismiss() {
-    if (state !== 'bar') return;
-    state = 'gone';
-    bar.classList.add('rv-gone');
-    setTimeout(function () {
-      bar.hidden = true;
-      document.body.classList.remove('rv-docked');
-    }, reduce ? 0 : 300);
-  }
   root.hidden = false;
-  root.querySelector('.rv-bar-x').addEventListener('click', dismiss);
   // The outlet keeps only the banner: no popup, no countdown.
   if (!pop) {
     state = 'bar';
@@ -763,8 +736,7 @@ function reviewAsk({ url, percent, popup }: PublicMenuReview): string {
   const href = escapeHtml(url)
   return `<div class="rv" id="rv" hidden>${popup === false ? '' : reviewPopup(href, percent)}
   <div class="rv-bar" role="complementary" aria-label="Leave a Google review" hidden>
-    <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span></a>
-    <button type="button" class="rv-bar-x" aria-label="Hide">×</button>
+    <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span><span class="rv-arrow" aria-hidden="true">→</span></a>
   </div>
 </div>`
 }
