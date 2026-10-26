@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { assertOnlyMenu, isMenuSlug, MenuSaysTooMuch, type PublicMenu } from '../src/menu'
 import {
   formatRupees,
+  POPUP,
   renderMenuNotFound,
   renderMenuPage,
   renderMenuUnavailable,
@@ -165,10 +166,20 @@ describe('the Google review ask', () => {
     expect(html).toContain('<div class="rv-bar" role="complementary"')
   })
 
-  it('names the percentage ops sets, in the headline, where it is claimed, and on the banner', () => {
+  it.runIf(POPUP === 'review')('names the percentage ops sets, in the headline, where it is claimed, and on the banner', () => {
     const html = renderMenuPage(aMenu({ review: { ...review, percent: 8 } }))
     expect(html).toContain('<span>get 8% off</span>')
     expect(html).toContain('Then show it at the counter</p>')
+    expect(html).toContain('<span>Leave a review. Get 8% off!</span>')
+    expect(html).not.toMatch(/(?<![\d.])5%/)
+    expect(html).not.toMatch(/5[- ]star|good review|positive review/i)
+  })
+
+  it.runIf(POPUP === 'tang')('opens with the shawarma message instead, the banner still naming the percentage', () => {
+    const html = renderMenuPage(aMenu({ review: { ...review, percent: 8 } }))
+    expect(html).toContain('<span>Our shawarmas are</span><span>intentionally</span><span>tangy</span><span class="rv-tang-sauce">thanks to our <strong>signature sauces</strong></span></h2>')
+    expect(html).toContain('Enjoy the distinctive flavour!</p>')
+    expect(html).not.toContain('class="rv-cta"')
     expect(html).toContain('<span>Leave a review. Get 8% off!</span>')
     expect(html).not.toMatch(/(?<![\d.])5%/)
     expect(html).not.toMatch(/5[- ]star|good review|positive review/i)

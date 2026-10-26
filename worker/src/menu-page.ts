@@ -562,6 +562,62 @@ body.rv-docked { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
 .rv-fine { margin: 0.875rem 0 0; color: var(--cream-dim); font-size: 0.9375rem; font-weight: 600; text-wrap: balance; animation-delay: 820ms; }
 .rv-fine strong { color: var(--flame-gold); font-weight: 800; }
 
+/* The shawarma message: the whole sentence is the headline, so the first
+   thing read makes sense; the lines under it in full cream and gold, not dim
+   [owner, 2026-10-26]. */
+.rv-tang-title { margin-top: 1rem; }
+.rv-tang-title span:nth-child(1) { font-size: 0.72em; color: var(--cream); }
+.rv-tang-title span:nth-child(3) {
+  animation-delay: 620ms;
+  width: fit-content;
+  margin: 0 auto;
+  background: var(--gradient-flame);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.rv-tang-title span:nth-child(2) { margin-top: 0.08em; }
+.rv-tang-rule {
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  margin: 1rem auto 0;
+  border-radius: 999px;
+  background: var(--gradient-flame);
+  animation-delay: 700ms;
+}
+/* The headline's last line: the sentence ends here, in the body face and
+   lowercase, so it reads as one sentence with the words above [owner,
+   2026-10-26]. */
+.rv-tang-title .rv-tang-sauce {
+  margin-top: 0.5rem;
+  color: var(--cream);
+  font-family: var(--font-text);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-transform: none;
+  text-wrap: balance;
+  animation-delay: 760ms;
+}
+.rv-tang-sauce strong { color: var(--flame-gold); font-weight: 800; }
+/* The sign-off: the message is already said, so it is the quietest line —
+   small, and always one line [owner, 2026-10-26]. */
+.rv-tang-enjoy {
+  margin: 0.75rem 0 0;
+  color: var(--cream-dim);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  animation-delay: 880ms;
+}
+/* On phones under 375 px "Intentionally" must still fit inside the card. */
+@media (max-width: 374px) {
+  .rv-tang-title { font-size: 1.875rem; }
+  .rv-tang-title .rv-tang-sauce { font-size: 1.0625rem; }
+  .rv-tang-enjoy { font-size: 0.875rem; }
+}
+
 /* Closing: the card shrinks and drops toward where the banner will be. */
 .rv-out .rv-backdrop { animation: rv-fade 380ms cubic-bezier(0.22, 1, 0.36, 1) reverse both; }
 .rv-out .rv-frame { animation: rv-dock 420ms cubic-bezier(0.55, 0, 0.75, 0) both; }
@@ -706,7 +762,8 @@ const REVIEW_SCRIPT = `(function () {
   ring.addEventListener('animationend', dock);
   root.querySelector('.rv-close').addEventListener('click', dock);
   root.querySelector('.rv-backdrop').addEventListener('click', dock);
-  root.querySelector('.rv-cta').addEventListener('click', function () { setTimeout(dock, 200); });
+  var cta = root.querySelector('.rv-cta');
+  if (cta) cta.addEventListener('click', function () { setTimeout(dock, 200); });
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') dock(); });
   // A menu opened in a background tab should still get its five seconds.
   function onVisibility() { root.classList.toggle('rv-paused', document.hidden); }
@@ -748,13 +805,49 @@ function reviewPopup(href: string, percent: number): string {
 }
 
 /**
+ * Which popup opens the menu. The review banner stays either way.
+ * `'tang'` while the shawarma message runs [owner, 2026-10-26]; set it back to
+ * `'review'` to bring back the review popup above, unchanged.
+ */
+export const POPUP: 'review' | 'tang' = 'tang'
+
+/**
+ * The shawarma message, in the owner's words split across the card: "Our
+ * shawarmas are intentionally tangy, thanks to our signature sauces. Enjoy the
+ * distinctive flavour!" The review popup's card, countdown and docking, with no
+ * stars and no button.
+ */
+function tangPopup(): string {
+  return `
+  <div class="rv-pop" role="dialog" aria-modal="true" aria-labelledby="rv-title">
+    <div class="rv-backdrop"></div>
+    <div class="rv-frame">
+      <div class="rv-card">
+        <div class="rv-embers" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button type="button" class="rv-close" aria-label="Close">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <defs><linearGradient id="rv-flame" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc53d"/><stop offset="0.52" stop-color="#f97316"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>
+            <circle class="rv-ring-track" cx="22" cy="22" r="18"/>
+            <circle class="rv-ring-arc" cx="22" cy="22" r="18"/>
+          </svg>
+          <b aria-hidden="true">×</b>
+        </button>
+        <h2 class="rv-title rv-tang-title" id="rv-title"><span>Our shawarmas are</span><span>intentionally</span><span>tangy</span><span class="rv-tang-sauce">thanks to our <strong>signature sauces</strong></span></h2>
+        <i class="rv-tang-rule rv-rise" aria-hidden="true"></i>
+        <p class="rv-tang-enjoy rv-rise">Enjoy the distinctive flavour!</p>
+      </div>
+    </div>
+  </div>`
+}
+
+/**
  * The review ask's markup: the popup, unless the outlet keeps only the banner,
  * and the banner it docks into. `popup` absent — an ops that predates the
  * switch — means the popup.
  */
 function reviewAsk({ url, percent, popup }: PublicMenuReview): string {
   const href = escapeHtml(url)
-  return `<div class="rv" id="rv" hidden>${popup === false ? '' : reviewPopup(href, percent)}
+  return `<div class="rv" id="rv" hidden>${popup === false ? '' : POPUP === 'tang' ? tangPopup() : reviewPopup(href, percent)}
   <div class="rv-bar" role="complementary" aria-label="Leave a Google review" hidden>
     <a class="rv-bar-link" href="${href}" target="_blank" rel="noopener">${GOOGLE_G}<span>Leave a review. Get ${percent}% off!</span>${GO_ARROW}</a>
   </div>

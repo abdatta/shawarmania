@@ -34,6 +34,12 @@ one the page cannot show safely (not `https://`, or a percentage outside 1–50)
 there SHALL be no popup. Under a reduced-motion preference it SHALL appear and
 dock without its animations.
 
+For a promotion the popup's words MAY be swapped, by one switch in the page's
+code, for a message about the food — currently "Our shawarmas are
+intentionally tangy, thanks to our signature sauces. Enjoy the distinctive
+flavour!", with no button — keeping the same countdown, close and docking, and
+the same review banner. Switching back SHALL restore the review popup unchanged.
+
 #### Scenario: A customer scans the code at Kalyani Cafe
 
 - **WHEN** the menu opens and the customer does nothing
