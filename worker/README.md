@@ -59,7 +59,8 @@ An outlet whose manager has turned on the Google review ask (ops: the-menu-asks-
 gets a popup asking for a review, which docks into a bottom banner after five seconds; its
 link and thank-you percentage arrive with the menu as `review`, so changing them needs no
 deploy. **Deploy this Worker before an ops migration adds a field to `public_menu`**: the
-reader refuses any field it does not know, and every menu would fail until it is.
+reader refuses any field it does not know, and every menu would fail until it is
+(see *Release order* under *Deploying it*).
 The reasoning is in `openspec/changes/the-table-menu-reads-ops/design.md` and,
 for the data, the ops repo's `the-menu-is-public`.
 
@@ -103,10 +104,62 @@ npm run worker:assets      # after changing the logo or a font
 
 ## Deploying it
 
+**A push to `main` deploys it.** `.github/workflows/worker-deploy.yml` ("Deploy Worker")
+runs on a push to `main` that touches `worker/**`, `wrangler.toml`, `package.json`,
+`package-lock.json`, `src/assets/brand/logo.png` (inlined by `worker:assets`),
+`src/data/brand.json` (read by `content.test.ts`) or the workflow itself. It is also
+under Actions → Deploy Worker → **Run workflow** for a redeploy with no change. Pull
+requests deploy nothing, and a manual run from any branch but `main` checks without
+deploying. It is separate from the Pages workflow, so either can fail without stopping
+the other.
+
+It deploys only after these pass on the same commit:
+
+1. `npm run worker:typecheck`
+2. `npm run worker:test`
+3. `npm run worker:assets` reproduces the committed `src/assets.generated.ts`
+   byte for byte. That file is what deploys, so a logo or font change nobody
+   regenerated fails here instead of shipping unseen.
+
+Then it runs `npm run worker:deploy`, with the wrangler version pinned in
+`package-lock.json`. Runs queue rather than cancel (concurrency group `worker-deploy`),
+so two quick pushes deploy in order and the second wins.
+
+It authenticates with two repo secrets (Settings → Secrets and variables → Actions):
+
+| Secret | What |
+|---|---|
+| `CLOUDFLARE_API_TOKEN` | custom token: Account · Workers Scripts · Edit; Zone · Workers Routes · Edit; Zone · Zone · Read; account and zone limited to Shawarmania and `shawarmania.in` |
+| `CLOUDFLARE_ACCOUNT_ID` | the Cloudflare account id |
+
+**`OPS_SERVICE_ROLE_KEY` is not one of them and never will be.** It stays a Cloudflare
+secret; `wrangler deploy` leaves it in place, and the token cannot read it. To rotate
+the token, roll it in Cloudflare (My Profile → API Tokens) and update the one GitHub
+secret.
+
+**By hand, as the fallback** (wrangler logged in with `npx wrangler login`):
+
 ```bash
 npx wrangler secret put OPS_SERVICE_ROLE_KEY   # the ops project's service-role key
 npm run worker:deploy
 ```
+
+**Rolling back**: Cloudflare → Workers & Pages → `shawarmania-receipt` → Deployments →
+roll back to the previous version (or `npx wrangler rollback`), then fix forward with
+a push.
+
+### Release order with ops
+
+The menu reader (`src/menu.ts`, `assertOnlyMenu` / `MenuSaysTooMuch`) refuses any
+`public_menu` field it does not know. When an ops migration (`shawarmania-ops`) **adds**
+one:
+
+1. push the Worker change that accepts the field to `main` here;
+2. wait for that commit's **Deploy Worker** run to go green;
+3. only then apply the ops migration.
+
+The other way round, every table menu fails until the Worker catches up. Removing a
+field is safe in either order.
 
 `wrangler.toml` carries the public Supabase URL and nothing secret. The apex route
 was enabled after the owner moved the zone to Cloudflare on 2026-09-10; the
@@ -119,7 +172,8 @@ and the `workers.dev` URL remain available independently of the apex route.
   never reachable by a browser. `npm run build` fails if the bundle contains
   anything resembling it — `worker/scripts/check-no-secret.mjs`.
 - **Rotating it**: rotate in Supabase, `wrangler secret put` the new value,
-  redeploy. Receipts refuse identically while the two disagree, which is an outage
+  redeploy (Actions → Deploy Worker → Run workflow, or `npm run worker:deploy`).
+  Receipts refuse identically while the two disagree, which is an outage
   of this page and nothing else — no counter, no ops surface and no billing path
   touches it.
 

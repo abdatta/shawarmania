@@ -53,13 +53,16 @@ Since the receipt page landed there are two independent things behind
 | | Deploys by | Serves |
 |---|---|---|
 | **The site** | `.github/workflows/deploy.yml` on a push to `main` | everything except `/bill*` and `/menu*` |
-| **The receipt + menu Worker** | `npm run worker:deploy` | `/bill*` and `/menu*` only |
+| **The receipt + menu Worker** | `.github/workflows/worker-deploy.yml` on a push to `main` that touches the Worker (`npm run worker:deploy` by hand as the fallback) | `/bill*` and `/menu*` only |
 
 The Worker is not part of the Vite build, does not enter the Pages artifact, and does not count
 against the page-weight budget — `npm run build` asserts the second and third. It exists because the
 ops database grants the anonymous role nothing, so **something server-side has to hold a credential
 to read a bill at all**; a static page cannot. Its own README carries the rest, including the secret
 and how to rotate it.
+
+The two workflows are independent: either can fail without blocking the other. The Worker's runs
+only when one of its files changes, and it deploys only after the Worker's typecheck and tests pass.
 
 ## Deploying the site
 

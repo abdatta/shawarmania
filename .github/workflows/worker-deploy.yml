@@ -1,0 +1,61 @@
+name: Deploy Worker
+
+# The receipt + menu Worker (`shawarmania-receipt`, `/bill*` and `/menu*`), deployed on
+# its own, beside the Pages workflow and never coupled to it. See worker/README.md.
+#
+# Credentials: CLOUDFLARE_API_TOKEN (scoped to this Worker's script and the
+# shawarmania.in routes) and CLOUDFLARE_ACCOUNT_ID, as repo secrets. The Worker's
+# own database key is a Cloudflare secret and is never given to GitHub;
+# `wrangler deploy` leaves it in place.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - worker/**
+      - wrangler.toml
+      - package.json
+      - package-lock.json
+      # Inlined into worker/src/assets.generated.ts by `npm run worker:assets`.
+      - src/assets/brand/logo.png
+      # Read by worker/test/content.test.ts.
+      - src/data/brand.json
+      - .github/workflows/worker-deploy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Queue, never cancel: a later push waits for the deploy in flight, so the live
+# Worker always ends on the newest commit and no upload is killed half-way.
+concurrency:
+  group: worker-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run worker:typecheck
+      - run: npm run worker:test
+      # The committed file is what deploys; this only checks it is not stale.
+      - name: Inlined assets are up to date
+        run: |
+          npm run worker:assets
+          git diff --exit-code -- worker/src/assets.generated.ts || {
+            echo "::error file=worker/src/assets.generated.ts::Stale. Run \`npm run worker:assets\` and commit the result."
+            exit 1
+          }
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'
+        run: npm run worker:deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: 'false'
