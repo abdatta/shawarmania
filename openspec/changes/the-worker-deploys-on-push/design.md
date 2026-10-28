@@ -107,8 +107,11 @@ the token. wrangler authenticates non-interactively from `CLOUDFLARE_API_TOKEN` 
   - Account resources: only the Shawarmania account. Optional: client IP filtering is not used
     (GitHub runners' IPs vary); a TTL is optional and, if set, needs a calendar reminder.
 
-  This is the smallest set the config needs as far as wrangler's documented API calls go; the first
-  real run confirms it. If it fails with a Cloudflare authentication error (code 10000) on a named
+  This is the smallest set the config needs as far as wrangler's documented API calls go. The
+  first real run (2026-10-28, version `9b17a497`) deployed the script and both routes with it.
+  Account Settings: Read and Workers Tail: Read are optional, harmless extras. Later bindings
+  (KV, R2) are added to the same token with **Edit**, which keeps its value, so the GitHub secret
+  never changes for a permission change. If it fails with a Cloudflare authentication error (code 10000) on a named
   endpoint, add only the read permission that endpoint names (most likely Account → Account
   Settings: Read) and re-run — the design does not pre-grant it.
 - `CLOUDFLARE_ACCOUNT_ID`: not secret, but kept beside the token so wrangler never needs

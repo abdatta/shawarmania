@@ -25,35 +25,35 @@
 
 ## 3. Owner: Cloudflare token and GitHub secrets (cannot be done by the agent)
 
-- [ ] 3.1 Cloudflare dashboard → profile icon (top right) → **My Profile** → **API Tokens** →
+- [x] 3.1 Cloudflare dashboard → profile icon (top right) → **My Profile** → **API Tokens** →
       **Create Token** → **Custom token: Get started**. Name `github-actions-shawarmania-receipt`.
       Permissions (use **+ Add more** for each row):
       `Account | Workers Scripts | Edit`, `Zone | Workers Routes | Edit`, `Zone | Zone | Read`.
       Account Resources: `Include | <the Shawarmania account>`. Zone Resources:
       `Include | Specific zone | shawarmania.in`. Leave IP filtering empty and TTL as you prefer →
       **Continue to summary** → **Create Token** → copy the token (shown once)
-- [ ] 3.2 Cloudflare dashboard → **Workers & Pages** (or the account home) → copy the **Account ID**
+- [x] 3.2 Cloudflare dashboard → **Workers & Pages** (or the account home) → copy the **Account ID**
       from the right-hand sidebar (or from the URL, `dash.cloudflare.com/<account id>/…`)
-- [ ] 3.3 GitHub → `abdatta/shawarmania` → **Settings** → **Secrets and variables** → **Actions** →
+- [x] 3.3 GitHub → `abdatta/shawarmania` → **Settings** → **Secrets and variables** → **Actions** →
       **New repository secret**: name `CLOUDFLARE_API_TOKEN`, value the token → **Add secret**; again for
       `CLOUDFLARE_ACCOUNT_ID` with the account id. Do not add `OPS_SERVICE_ROLE_KEY`
 
 ## 4. Verify
 
-- [ ] 4.1 GitHub → Actions → **Deploy Worker** → **Run workflow** on `main`; green, and Cloudflare →
+- [x] 4.1 GitHub → Actions → **Deploy Worker** → **Run workflow** on `main`; green, and Cloudflare →
       `shawarmania-receipt` → Deployments shows the new version. If the deploy fails with an auth error
       (code 10000), add only the read permission the error's endpoint needs, record it in
       `worker/README.md` and design §5, and re-run
-- [ ] 4.2 Push a comment-only change to `worker/src/menu-page.ts` to `main` (fast-forward); its push run
+- [x] 4.2 Push a comment-only change to `worker/src/menu-page.ts` to `main` (fast-forward); its push run
       deploys on its own; the Pages run behaves as before
 
 ## 5. Manual QA
 
-- [ ] 5.1 `https://shawarmania.in/menu/kalyani-cafe/` at 375 px and 1440 px: menu renders, the review
+- [x] 5.1 `https://shawarmania.in/menu/kalyani-cafe/` at 375 px and 1440 px: menu renders, the review
       popup appears and docks into the bottom banner after five seconds; with reduced motion on, the
       banner's arrow does not sway
 - [ ] 5.2 A real `/bill?t=…` link opens the receipt and its PDF downloads
-- [ ] 5.3 `https://shawarmania.in/` and `/qr/` load from Pages as before; `npm run build` passes
-- [ ] 5.4 Cloudflare → `shawarmania-receipt` → Settings → Variables and Secrets still lists
+- [x] 5.3 `https://shawarmania.in/` and `/qr/` load from Pages as before; `npm run build` passes
+- [x] 5.4 Cloudflare → `shawarmania-receipt` → Settings → Variables and Secrets still lists
       `OPS_SERVICE_ROLE_KEY`
 - [ ] 5.5 The next site-only push (e.g. `src/sections/**`) does not start "Deploy Worker"

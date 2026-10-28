@@ -129,8 +129,15 @@ It authenticates with two repo secrets (Settings → Secrets and variables → A
 
 | Secret | What |
 |---|---|
-| `CLOUDFLARE_API_TOKEN` | custom token: Account · Workers Scripts · Edit; Zone · Workers Routes · Edit; Zone · Zone · Read; account and zone limited to Shawarmania and `shawarmania.in` |
+| `CLOUDFLARE_API_TOKEN` | user token `github-actions-shawarmania-receipt`: Account · Workers Scripts · Edit; Zone · Workers Routes · Edit; Zone · Zone · Read; account and zone limited to Shawarmania and `shawarmania.in` |
 | `CLOUDFLARE_ACCOUNT_ID` | the Cloudflare account id |
+
+Those three are what a deploy needs. Account Settings · Read and Workers Tail · Read
+are harmless extras worth having. When the Worker grows a binding, add that
+permission to the **same** token (API Tokens → ⋯ → Edit): Workers KV Storage · Edit
+for KV, Workers R2 Storage · Edit for R2. A Durable Object needs nothing more.
+Editing a token's permissions keeps its value, so the GitHub secret does not change;
+only **Roll** issues a new one. Never widen it to DNS, Pages or other zones.
 
 **`OPS_SERVICE_ROLE_KEY` is not one of them and never will be.** It stays a Cloudflare
 secret; `wrangler deploy` leaves it in place, and the token cannot read it. To rotate
