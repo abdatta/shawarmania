@@ -35,7 +35,7 @@ refreshes live. Then publish:
 git add src/data && git commit -m "content: update menu/outlets" && git push
 ```
 
-Pushing to `main` redeploys the site automatically.
+Pushing to `main` redeploys the site automatically, and the Worker too when a push touches it.
 
 ## Scripts
 
