@@ -6,7 +6,8 @@ import type { PublicMenu, PublicMenuItem, PublicMenuReview } from './menu'
  *
  * Server-rendered from the ops menu on every cache miss, so a price changed or
  * an item marked unavailable in ops reaches the table within the Worker's
- * cache minute, with no deploy. The whole menu is in the HTML the first byte
+ * cache minute, with no deploy. A change to this file does need one, and a push
+ * to `main` is it: the Deploy Worker workflow ships it. The whole menu is in the HTML the first byte
  * brings; the one script only moves the section chips, and the page works
  * without it (the chips are plain in-page links).
  *
