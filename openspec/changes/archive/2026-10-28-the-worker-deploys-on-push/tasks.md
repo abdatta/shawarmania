@@ -52,8 +52,8 @@
 - [x] 5.1 `https://shawarmania.in/menu/kalyani-cafe/` at 375 px and 1440 px: menu renders, the review
       popup appears and docks into the bottom banner after five seconds; with reduced motion on, the
       banner's arrow does not sway
-- [ ] 5.2 A real `/bill?t=…` link opens the receipt and its PDF downloads
+- [x] 5.2 A real `/bill?t=…` link opens the receipt and its PDF downloads
 - [x] 5.3 `https://shawarmania.in/` and `/qr/` load from Pages as before; `npm run build` passes
 - [x] 5.4 Cloudflare → `shawarmania-receipt` → Settings → Variables and Secrets still lists
       `OPS_SERVICE_ROLE_KEY`
-- [ ] 5.5 The next site-only push (e.g. `src/sections/**`) does not start "Deploy Worker"
+- [x] 5.5 The next site-only push (e.g. `src/sections/**`) does not start "Deploy Worker"
