@@ -132,12 +132,12 @@ is recorded here so the owner knows what is left rather than what is merely clai
       full-width prose, comfortable tap targets; from `/messages/`, Terms and Privacy visible without
       scrolling
 - [x] 9.5 Print-preview one document and confirm it is legible on paper
-- [ ] 9.6 Footer on the landing page shows Privacy · Terms · Messaging, each navigates correctly, and
+- [x] 9.6 Footer on the landing page shows Privacy · Terms · Messaging, each navigates correctly, and
       the browser back button returns with the scroll runtime intact
 - [x] 9.7 The `/messages/` opt-out links open the right app with the right recipient — call rings
       `+91 89815 24778`, the mail link addresses `hello@shawarmania.in` — and no link on the page
       leads to the WhatsApp broadcast channel as a way to opt out
-- [ ] 9.8 Landing page regression: hero pin, marquee, menu gallery, counters and
+- [x] 9.8 Landing page regression: hero pin, marquee, menu gallery, counters and
       `prefers-reduced-motion` all behave as before, at 375 px and desktop
 - [x] 9.9 `/bill/<token>` against `wrangler dev`: renders, the small print reads `Shawarmania ·
       Kalyani` with no third line, and the PDF downloads
@@ -166,11 +166,15 @@ is recorded here so the owner knows what is left rather than what is merely clai
 ### QA run, 2 November 2026
 
 - 9.1 build passes, initial load 700 kB of 1.5 MB; the documents reuse the site's six woff2 files.
-- 9.2–9.5 checked on production: 200, no redirect, no `<script>`, no form controls, no `{{`; no
+- 9.2–9.5 checked on production: 200, no redirect, no form controls, no `{{`; the built HTML has
+  no `<script>`, **but Cloudflare injects its Web Analytics beacon (`static.cloudflareinsights.com`)
+  into every page at the edge, these three included** — see below; no
   horizontal scroll at 375 px and Terms/Privacy above the fold on `/messages/`; print renders black on
   white with link targets written out. With no script on the pages, 9.3 holds by construction.
-- 9.6 the landing footer links Privacy, Terms, Messaging to the right URLs; the back button was not
-  re-checked. 9.8 was not re-run: the landing page has shipped and been QA'd in later changes.
+- 9.6, 9.8 (headless Chromium against production, 1440 px and 375 px, with and without reduced
+  motion): hero parallax, marquee, counters (4.2 → 4.4) and the desktop menu pin all run, and all
+  stand still with final values under reduced motion. Footer → Privacy → Back returns to the landing
+  page with the scroll runtime still driving the hero, marquee and pin.
 - 9.7 `tel:+918981524778` and `mailto:hello@shawarmania.in` on all three; no WhatsApp link anywhere.
 - 9.9 a production PDF (bill 2290) reads `Shawarmania · Kalyani Cafe` / `Operated by De & Datta LLP`,
   no Kanchrapara and no messaging line. The operator line came later, on purpose (c84fe7c).
@@ -181,3 +185,17 @@ is recorded here so the owner knows what is left rather than what is merely clai
   now disclosed; the view record keeps a salted digest of the address, not the address. **Left as is by the owner (2 November 2026):**
   `/privacy/` promises removal on request, but ops has no erasure path — bills snapshot the phone
   and name and are append-only, and `data-retention-policy` says nothing is deleted.
+
+### Facts check, 2 November 2026 (9.10, still open)
+
+- **De & Datta LLP**: confirmed by the Certificate of Incorporation (LLPIN ADC-3200), the GST
+  certificate and the Udyam certificate in the LLP's Google Drive.
+- **Kalyani address**: the pages say *Ward 10, B-9 Diagonal Road, Near Central Park Ground* (from
+  Zomato and Google Maps). The Udyam certificate lists the Shawarmania unit at *B-10/265, Kalyani*;
+  the LLP's registered office is A-10/399. Owner to confirm which the pages should carry.
+- **FSSAI 22825123001193**: sourced from the Zomato listing; no FSSAI licence is in either Drive.
+- **hello@shawarmania.in**: MX is Cloudflare Email Routing, so it accepts mail; where it forwards
+  is in the Cloudflare dashboard.
+- **Analytics**: `/privacy/` says the site "runs no analytics" and carries no tracking scripts, and
+  this spec says the documents serve no `<script>`; Cloudflare Web Analytics' automatic beacon
+  contradicts both until it is turned off for the zone or disclosed.
