@@ -50,7 +50,10 @@ script, and SHALL NOT depend on script execution to render text, styling or navi
 - that a mobile number and messaging consent SHALL NOT be sold, rented, or disclosed to any third
   party for that party's own marketing;
 - who does process it on the business's behalf, by role — the messaging provider that delivers the
-  message, and the systems that hold the bill;
+  message, WhatsApp when the counter sends a receipt there because an SMS did not get through, and
+  the systems that hold the bill;
+- what opening a receipt link records, exactly as ops records it (the time, a salted digest of the
+  network address rather than the address, and the browser's identifier);
 - how long it is kept, and how a customer asks for it to be removed;
 - that ordering through a delivery platform happens under that platform's own policy, not this one;
 - the named legal entity, the outlet the document speaks for with its own FSSAI licence, a contact
@@ -73,29 +76,34 @@ script, and SHALL NOT depend on script execution to render text, styling or navi
 `/terms/` SHALL carry the website terms — that menu, prices and hours may change and the counter
 price governs, and that brand assets belong to the business — and SHALL carry a distinctly headed
 messaging section stating: what messages the programme sends, that it sends roughly one per bill,
-that message and data rates may apply, and how to get help or stop.
+that message and data rates may apply, how to get help, and that leaving the number out of a bill
+is how to not receive that bill's SMS. It SHALL NOT promise replying STOP or a messaging preference,
+because neither exists.
 
 #### Scenario: The messaging section is reachable
 
 - **WHEN** `/terms/` is read
 - **THEN** a clearly headed section describes the messaging programme, its frequency, its cost to the
-  recipient, and how to stop it
+  recipient, how to get help, and that skipping the number skips the SMS
 
 ### Requirement: The opt-in document describes the real consent, and links the other two
 
-`/messages/` SHALL state how consent is actually obtained — the customer gives their mobile number at
-the counter so that their bill can be sent to them — and SHALL quote the consent wording the counter
-uses.
+`/messages/` SHALL state how consent is actually obtained, as `receipt-messaging` defines it: giving
+a valid mobile number at the counter for a bill is the opt-in to one receipt SMS for that bill. It
+SHALL NOT describe a separate consent question, and SHALL NOT present any sentence as wording the
+counter says or shows unless the ops counter actually says or shows it.
 
-It SHALL state what arrives, from whom, and how often.
+It SHALL state what arrives, from whom, and how often, including that the counter may send the same
+receipt link on WhatsApp when an SMS does not get through.
 
-It SHALL offer at least two opt-out paths that work **without an inbound reply being processed** —
-telling the counter in person, a `tel:` link to a number that is answered, and a `mailto:` link to a
-mailbox that is read. Where replying STOP is offered, it SHALL be offered alongside those and only
-while that reply is honoured.
+It SHALL say how not to receive a receipt SMS — leave the number out of that bill — and SHALL offer
+help through a `tel:` link to a number that is answered and a `mailto:` link to a mailbox that is
+read. It SHALL NOT promise replying STOP, a stop setting or any other messaging preference, because
+the sender cannot receive replies and ops keeps no such preference. It SHALL keep a request to remove
+a customer's details distinct from not receiving an SMS, pointing to `/privacy/` for the former.
 
 It SHALL NOT offer a channel a customer cannot actually reach the business through. In particular a
-WhatsApp opt-out SHALL be offered only when a WhatsApp number that receives messages is configured;
+WhatsApp contact SHALL be offered only when a WhatsApp number that receives messages is configured;
 a broadcast channel SHALL NOT be presented as one, because a channel cannot be replied to.
 
 It SHALL link `/terms/` and `/privacy/`, and those links SHALL be visible without scrolling on a
@@ -104,16 +112,21 @@ It SHALL link `/terms/` and `/privacy/`, and those links SHALL be visible withou
 `/messages/` SHALL NOT present a form, a checkbox or any other web mechanism that implies consent can
 be given or recorded on the website, because no such mechanism exists.
 
-#### Scenario: A customer wants the messages to stop
+#### Scenario: A customer does not want a receipt SMS
 
 - **WHEN** a customer opens `/messages/` on a phone
-- **THEN** they find at least two opt-out paths that reach the business directly, at least one of
-  them a tappable link, none of them requiring an inbound reply to be processed
+- **THEN** it tells them to leave their number out of the bill, offers tappable call and email help,
+  and promises no STOP reply and no stop setting
+
+#### Scenario: A customer wants their details removed
+
+- **WHEN** a customer reads `/messages/` looking to be forgotten
+- **THEN** it points them to `/privacy/` for removal, separately from skipping an SMS
 
 #### Scenario: A channel that cannot receive messages
 
 - **WHEN** no WhatsApp number that receives messages is configured in the content layer
-- **THEN** `/messages/` offers no WhatsApp opt-out, and does not substitute the broadcast channel
+- **THEN** `/messages/` offers no WhatsApp contact, and does not substitute the broadcast channel
   for one
 
 #### Scenario: The required links are reachable from the opt-in page

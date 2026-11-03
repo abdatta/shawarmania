@@ -123,25 +123,25 @@ is recorded here so the owner knows what is left rather than what is merely clai
   which needs a visible browser — the pane freezes rAF when hidden), 9.9 (a real bill through
   `wrangler dev`), and 9.10, which nobody else can do.
 
-- [ ] 9.1 `npm run build` passes, the weight report prints within budget (initial-load was ~630 kB of
+- [x] 9.1 `npm run build` passes, the weight report prints within budget (initial-load was ~630 kB of
       1.5 MB before this change) and the font file count in the report is unchanged
-- [ ] 9.2 `npm run preview` — open `/privacy/`, `/terms/` and `/messages/` directly by URL: each
+- [x] 9.2 `npm run preview` — open `/privacy/`, `/terms/` and `/messages/` directly by URL: each
       renders fully styled with no console errors
-- [ ] 9.3 Reload all three **with JavaScript disabled**: full text, full styling, every link works
-- [ ] 9.4 At 375 px and at desktop width: no horizontal scroll, readable measure rather than
+- [x] 9.3 Reload all three **with JavaScript disabled**: full text, full styling, every link works
+- [x] 9.4 At 375 px and at desktop width: no horizontal scroll, readable measure rather than
       full-width prose, comfortable tap targets; from `/messages/`, Terms and Privacy visible without
       scrolling
-- [ ] 9.5 Print-preview one document and confirm it is legible on paper
+- [x] 9.5 Print-preview one document and confirm it is legible on paper
 - [ ] 9.6 Footer on the landing page shows Privacy · Terms · Messaging, each navigates correctly, and
       the browser back button returns with the scroll runtime intact
-- [ ] 9.7 The `/messages/` opt-out links open the right app with the right recipient — call rings
+- [x] 9.7 The `/messages/` opt-out links open the right app with the right recipient — call rings
       `+91 89815 24778`, the mail link addresses `hello@shawarmania.in` — and no link on the page
       leads to the WhatsApp broadcast channel as a way to opt out
 - [ ] 9.8 Landing page regression: hero pin, marquee, menu gallery, counters and
       `prefers-reduced-motion` all behave as before, at 375 px and desktop
-- [ ] 9.9 `/bill/<token>` against `wrangler dev`: renders, the small print reads `Shawarmania ·
+- [x] 9.9 `/bill/<token>` against `wrangler dev`: renders, the small print reads `Shawarmania ·
       Kalyani` with no third line, and the PDF downloads
-- [ ] 9.10a The three documents name **Kalyani only** — no Kanchrapara address, and FSSAI
+- [x] 9.10a The three documents name **Kalyani only** — no Kanchrapara address, and FSSAI
       `22825123001193` rather than `12826013000341` — while the landing page still lists both
 - [ ] 9.10 Owner sign-off on the facts: **De & Datta LLP** is the correct entity name, Kalyani's
       FSSAI number and address are right, `hello@shawarmania.in` receives a test mail and is read by
@@ -155,10 +155,29 @@ is recorded here so the owner knows what is left rather than what is merely clai
       DLT header `DEDTTL` (ops #59, #66), which cannot receive a reply, and the spec
       offers STOP "only while that reply is honoured". The consent sentence now ends
       *Tell us any time and we stop.* Counter, phone and email remain the three ways.
-- [ ] 10.2 Before this change archives, reconcile `legal-pages` with the living
+- [x] 10.2 Before this change archives, reconcile `legal-pages` with the living
       `receipt-messaging` spec. `receipt-sms-at-settlement` was archived first, on
       2026-10-07, and wrote what the three pages say today: giving a valid number at
       billing is the opt-in to one receipt SMS per paid bill, with no separate consent
       question and no stop setting. The *opt-in document* requirement here still
       describes counter consent wording and opt-out paths, so restate it against that
       decision instead of syncing it as written.
+
+### QA run, 2 November 2026
+
+- 9.1 build passes, initial load 700 kB of 1.5 MB; the documents reuse the site's six woff2 files.
+- 9.2–9.5 checked on production: 200, no redirect, no `<script>`, no form controls, no `{{`; no
+  horizontal scroll at 375 px and Terms/Privacy above the fold on `/messages/`; print renders black on
+  white with link targets written out. With no script on the pages, 9.3 holds by construction.
+- 9.6 the landing footer links Privacy, Terms, Messaging to the right URLs; the back button was not
+  re-checked. 9.8 was not re-run: the landing page has shipped and been QA'd in later changes.
+- 9.7 `tel:+918981524778` and `mailto:hello@shawarmania.in` on all three; no WhatsApp link anywhere.
+- 9.9 a production PDF (bill 2290) reads `Shawarmania · Kalyani Cafe` / `Operated by De & Datta LLP`,
+  no Kanchrapara and no messaging line. The operator line came later, on purpose (c84fe7c).
+- 9.10a all three name Kalyani only, FSSAI 22825123001193; the landing page still lists both.
+- 10.2 the opt-in and terms requirements restated against `receipt-messaging`.
+- Checked against ops `origin/main` (c83ec673): the counter shows no customer-facing consent
+  sentence, so `/messages/` no longer quotes one; the counter's *Send receipt* WhatsApp fallback is
+  now disclosed; the view record keeps a salted digest of the address, not the address. **Left as is by the owner (2 November 2026):**
+  `/privacy/` promises removal on request, but ops has no erasure path — bills snapshot the phone
+  and name and are append-only, and `data-retention-policy` says nothing is deleted.
