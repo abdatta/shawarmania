@@ -6,8 +6,8 @@ Read the parent change first: `shawarmania-ops/openspec/changes/a-dish-can-show-
 
 - [ ] 1.1 `worker/src/menu.ts`: call `public_menu_v2`, fall back to
   `public_menu` when PostgREST reports the function missing; extend the
-  validator to accept `photo` (`{ key: 64 hex, format: 'webp' | 'jpeg' }` or
-  null) and keep refusing unknown fields. Tests for v2, the fallback, a bad
+  validator to accept `photo` (`{ key: 64 hex, format: 'webp' | 'jpeg',
+  aspect: '4:3' | '1:1' | '4:5' }` or null) and keep refusing unknown fields. Tests for v2, the fallback, a bad
   photo shape and an unknown field.
 
 ## 2. The photo route
@@ -21,8 +21,9 @@ Read the parent change first: `shawarmania-ops/openspec/changes/a-dish-can-show-
 ## 3. The page
 
 - [ ] 3.1 `worker/src/menu-page.ts`: photo rows, the expand mark, sold-out
-  greying and the large view from the parent's design D8 and
-  `mockup/index.html`; emit the viewer only when the page has a photo; Back
+  greying and the large view from the parent's design D9 and
+  `mockup/index.html` (whose large view is always 4:3: size the view by the
+  photo's `aspect`, cap its height, and dissolve from the thumbnail's own crop); emit the viewer only when the page has a photo; Back
   closes the viewer through a history entry; reduced motion skips animation.
   Tests: a page with no photos is identical to today's output; a mixed page
   has the expected markup; highlights use ordinary rows.

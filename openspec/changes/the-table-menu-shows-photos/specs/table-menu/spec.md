@@ -11,8 +11,10 @@ continue beneath it. A sold-out dish SHALL keep its photo, greyed. A dish with
 no photo, and a menu with no photos, SHALL render exactly as before this
 change.
 
-The photo SHALL carry a subtle expand mark, and tapping it SHALL open a large
-view of the photo with the dish's name, price and description, closed by a
+The photo SHALL carry a subtle expand mark, and tapping it SHALL open the large
+photo, in the shape (4:3, 1:1 or 4:5) its manager chose, with its height capped
+so the dish's name and price stay in view, and with the dish's name, price and
+description, closed by a
 close button, a tap outside, Escape or Back, animated from and to the
 thumbnail except under a reduced-motion preference.
 

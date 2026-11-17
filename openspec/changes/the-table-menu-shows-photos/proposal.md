@@ -19,7 +19,9 @@ from ops, with dishes that have no photo left exactly as they read today.
 ## What Changes
 
 - **The Worker reads `public_menu_v2`.** Same response as `public_menu` plus a
-  `photo` per item: `{ key, format }` or null. If ops has not published
+  `photo` per item: `{ key, format, aspect }` or null, where `aspect` is the
+  large photo's shape, `4:3`, `1:1` or `4:5`, chosen by the manager in ops'
+  cropper. If ops has not published
   `public_menu_v2` yet (PostgREST reports the function missing), the Worker
   falls back to `public_menu`, so this repo can be released before or after
   ops. The response validator accepts `photo` and still refuses any field it
@@ -31,13 +33,17 @@ from ops, with dishes that have no photo left exactly as they read today.
   `Content-Type` and `Cache-Control: public, max-age=31536000, immutable`, and
   stores it in the edge cache. A key that is not 64 hex characters, or a format
   other than `webp`/`jpeg`, is 404 without calling ops.
-- **The menu page renders photos** as the parent's design D8 and spec describe:
-  photo floated left with an expand mark, name and price kept on one line,
-  description wrapping under the photo, sold-out photos greyed, Highlights in
-  the same rows as every section, and a large view that grows from the
-  thumbnail with name, price and description, closed by ×, a tap outside,
-  Escape or Back, with no animation under reduced motion. Thumbnails are lazy
-  and sized; the large image loads on open.
+- **The menu page renders photos** as the parent's design D9 and spec describe:
+  the square thumbnail (`-sm`, its own crop) floated left with an expand mark,
+  name and price kept on one line, description wrapping under the photo,
+  sold-out photos greyed, Highlights in the same rows as every section, and a
+  large view in the photo's own shape (height capped so name and price stay in
+  view) that grows from the thumbnail, dissolving from the thumbnail's framing
+  to the large photo's, with name, price and description, closed by ×, a tap
+  outside, Escape or Back, with no animation under reduced motion. Thumbnails
+  are lazy and sized; the large image loads on open, the thumbnail standing in
+  until it arrives. Photos are high quality by design (1600 px large, 400 px
+  thumbnail): the page must not scale or re-compress them.
 - **A menu with no photos is today's page, byte for byte**: no `has-photo`
   class, no viewer markup, no viewer script.
 
@@ -57,6 +63,8 @@ page, photo upload (ops), image resizing (done on the manager's phone).
       photo; a long name wraps and the price stays put.
 - [ ] Highlights renders as rows, never as a horizontal scroller.
 - [ ] A sold-out photographed dish shows a grey photo and *Unavailable*.
+- [ ] A 4:3, a 1:1 and a 4:5 photo each open in their own shape, and the 4:5
+      one still shows the name and price without scrolling.
 - [ ] Tapping a photo opens the large view with name, price and description;
       ×, tapping outside, Escape and the phone's Back each close it and the
       page is where it was.
