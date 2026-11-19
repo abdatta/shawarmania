@@ -5,6 +5,7 @@ import {
   NUNITO_WOFF2_BASE64,
 } from './assets.generated'
 import { isMenuSlug, readMenu, type PublicMenu } from './menu'
+import { parsePhotoPath, photoPath, photoRefusal, servePhoto } from './menu-photo'
 import {
   MENU_ASSET_PREFIX,
   renderMenuNotFound,
@@ -302,6 +303,9 @@ async function menuFor(
  *   GET /menu, /menu/        302 to the default outlet's menu
  *   GET /menu/<slug>         301 to the address with its trailing slash
  *   GET /menu/<slug>/        the menu, from ops, for any trading outlet
+ *   GET /menu/<slug>/photo/<key>[-sm].<format>
+ *                            a dish's photo or its thumbnail, from ops storage
+ *                            through the edge cache for a year (`menu-photo.ts`)
  *   GET /menu/_/…            this page's own logo and fonts
  *
  * Every outlet that is trading on ops and has something on its menu has one;
@@ -328,6 +332,20 @@ async function handleMenu(request: Request, env: Env, url: URL): Promise<Respons
     // redirect would be remembered by every phone that ever followed it.
     const target = env.DEFAULT_MENU_SLUG?.trim() || DEFAULT_MENU_SLUG
     return Response.redirect(`${url.origin}/menu/${target}/`, 302)
+  }
+
+  // A dish photo: its own route, cached at the edge for a year (`menu-photo.ts`).
+  const photo = /^([^/]+)\/photo\/([^/]+)$/.exec(rest)
+  if (photo) {
+    const address = parsePhotoPath(photo[1] ?? '', photo[2] ?? '')
+    if (!address) return photoRefusal()
+    return servePhoto(
+      { url: env.OPS_SUPABASE_URL, serviceRoleKey: env.OPS_SERVICE_ROLE_KEY },
+      address,
+      caches.default,
+      // The path alone: a query string must not make a second copy, or a miss.
+      `${url.origin}${photoPath(address.slug, address.key, address.format, address.thumbnail)}`,
+    )
   }
 
   const slug = rest.replace(/\/$/, '')

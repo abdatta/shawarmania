@@ -1,5 +1,6 @@
 import { OPERATOR_LINE } from './content'
-import type { PublicMenu, PublicMenuItem, PublicMenuReview } from './menu'
+import type { PublicMenu, PublicMenuItem, PublicMenuPhoto, PublicMenuReview } from './menu'
+import { photoPath } from './menu-photo'
 
 /**
  * The table menu: what a customer reads after scanning a table's QR code.
@@ -16,6 +17,9 @@ import type { PublicMenu, PublicMenuItem, PublicMenuReview } from './menu'
  * pill. What is new is **Unavailable**: an item the kitchen has run out of stays
  * on the page, greyed out, with the word where its price would be — the same
  * word the ops Menu screen and the counter use.
+ *
+ * A dish with a photo in ops shows it beside its name (see `PHOTO_STYLES`);
+ * the page's photos and their large view are on it only when a dish has one.
  */
 
 /** Strip the stylesheet's comments before it is served, as the receipt does. */
@@ -933,7 +937,331 @@ const SPY = `(function () {
   requestAnimationFrame(function () { requestAnimationFrame(function () { nav.classList.add('spy-ready'); }); });
 })();`
 
-function dish(item: PublicMenuItem): string {
+/**
+ * Dish photos (ops: a-dish-can-show-its-photo, design D9, approved on its
+ * mock-up on 2026-11-16).
+ *
+ * A photographed dish has its square thumbnail floated left: the name and price
+ * line, a flex container, stays beside it on one line with the price in the
+ * page's one right-hand column, and the description wraps beside it and on
+ * beneath. Tapping it opens the large photo in the shape its manager chose,
+ * growing out of the thumbnail. The thumbnail is its own crop, not the middle
+ * of the large photo, so the thumbnail is laid over the growing photo and fades
+ * out: the change of framing reads as a dissolve, not a jump.
+ *
+ * None of this is on the page unless at least one dish has a photo, so a menu
+ * with none is, byte for byte, the page it was before photos.
+ */
+const PHOTO_STYLES = `
+.dish.has-photo { display: flow-root; }
+.dish.has-photo .desc { padding-right: 0; }
+
+.thumb {
+  position: relative;
+  float: left;
+  width: 5.5rem;
+  aspect-ratio: 1;
+  margin: 0.125rem 0.875rem 0.375rem 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: var(--bg-raised);
+  cursor: zoom-in;
+  box-shadow: 0 0 0 1px rgb(245 228 199 / 0.1), 0 6px 18px rgb(0 0 0 / 0.35);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+.thumb:active { transform: scale(0.95); }
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thumb:hover img { transform: scale(1.05); }
+.dish.off .thumb img { filter: grayscale(1) brightness(0.6); }
+.thumb:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
+
+/* The hint: a small expand mark in the corner, glass-dark so it never fights the food. */
+.expand {
+  position: absolute;
+  right: 0.3rem;
+  bottom: 0.3rem;
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  background: rgb(20 16 11 / 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 0 0 1px rgb(245 228 199 / 0.18);
+}
+.expand svg {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  fill: none;
+  stroke: var(--cream);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* -- the large view ---------------------------------------------------
+   Above the review banner, below the review popup: a photo opened from the
+   menu must not have the banner across its description. */
+html.viewer-lock { overflow: hidden; }
+
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+}
+.viewer[hidden] { display: none; }
+
+.viewer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(10 8 5 / 0.86);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+
+/* The photo's own shape (--ar, set on open), up to 34rem wide, and never
+   taller than 62% of the screen, so a 4:5 photo leaves its name and price in
+   view. The top padding is the close button's row. */
+.viewer-sheet {
+  position: relative;
+  flex: none;
+  margin: auto;
+  padding-top: 3.25rem;
+  width: min(100%, 34rem, calc(62vh * var(--ar, 1.3333)));
+  width: min(100%, 34rem, calc(62dvh * var(--ar, 1.3333)));
+}
+
+.viewer-frame {
+  position: relative;
+  aspect-ratio: var(--ar, 1.3333);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: var(--bg-raised);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.55), 0 0 0 1px rgb(245 228 199 / 0.1);
+  will-change: transform, clip-path;
+}
+
+.viewer-photo, .viewer-thumb { position: absolute; display: block; object-fit: cover; }
+.viewer-photo { inset: 0; width: 100%; height: 100%; }
+
+.viewer-info { padding: 1.125rem 0.25rem 0; }
+.viewer-info .line h3 {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.625rem;
+  line-height: 1.1;
+}
+.viewer-info .line h3 .diet { vertical-align: 0.15rem; }
+.viewer-info .price { font-size: 1.625rem; }
+.viewer-info .desc { padding-right: 0; margin-top: 0.5rem; font-size: 1rem; }
+
+.viewer-close {
+  position: absolute;
+  top: 0;
+  right: -0.25rem;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(30 23 16 / 0.8);
+  box-shadow: 0 0 0 1px rgb(245 228 199 / 0.2);
+  color: var(--cream);
+  cursor: pointer;
+}
+.viewer-close svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.viewer-close:focus-visible { outline: 2px solid var(--flame-gold); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb, .thumb img { transition: none; }
+  .thumb:hover img { transform: none; }
+}
+`
+
+const EXPAND_MARK =
+  '<span class="expand" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9"/></svg></span>'
+
+/** The thumbnail is 400 × 400 (ops D4); the page shows it at 5.5rem. */
+const THUMB_PIXELS = 400
+
+function thumbnail(item: PublicMenuItem, photo: PublicMenuPhoto, slug: string): string {
+  const full = escapeHtml(photoPath(slug, photo.key, photo.format))
+  const small = escapeHtml(photoPath(slug, photo.key, photo.format, true))
+  return `<button type="button" class="thumb" data-full="${full}" data-aspect="${photo.aspect}" aria-label="See a photo of ${escapeHtml(item.name)}"><img src="${small}" alt="" loading="lazy" decoding="async" width="${THUMB_PIXELS}" height="${THUMB_PIXELS}">${EXPAND_MARK}</button>`
+}
+
+/*
+  The large view. Emitted once, at the end of the page, only when a dish on it
+  has a photo; filled from the tapped dish's own row.
+*/
+const VIEWER = `<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Dish photo" hidden>
+  <div class="viewer-backdrop"></div>
+  <div class="viewer-sheet">
+    <button type="button" class="viewer-close" aria-label="Close"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12"/></svg></button>
+    <div class="viewer-frame"><img class="viewer-photo" alt=""><img class="viewer-thumb" alt=""></div>
+    <div class="viewer-info"></div>
+  </div>
+</div>`
+
+/*
+  The large view's behaviour. A plain string for the same reason as the chip
+  script.
+
+  Opening lays the large photo out in place, then animates its frame from the
+  thumbnail's rectangle: a uniform scale plus a clip-path cropping it to a
+  centred square the thumbnail's size, to no transform and the full rounded
+  rectangle. The thumbnail itself sits in that centred square, over the large
+  photo, and fades out once the large photo has loaded (at once if it is
+  cached), so until it arrives the thumbnail stands in. Closing runs it all
+  backwards, the thumbnail fading back in as the frame lands.
+
+  Opening pushes a history entry, so the phone's Back closes the photo rather
+  than leaving the menu; the close button, a tap anywhere on the view and
+  Escape go back through that same entry. Reduced motion: no animation at all.
+*/
+const VIEWER_SCRIPT = `(function () {
+  var v = document.getElementById('viewer');
+  if (!v) return;
+  var html = document.documentElement;
+  var backdrop = v.querySelector('.viewer-backdrop');
+  var sheet = v.querySelector('.viewer-sheet');
+  var frame = v.querySelector('.viewer-frame');
+  var photo = v.querySelector('.viewer-photo');
+  var stand = v.querySelector('.viewer-thumb');
+  var info = v.querySelector('.viewer-info');
+  var close = v.querySelector('.viewer-close');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var RATIOS = { '4:3': 4 / 3, '1:1': 1, '4:5': 4 / 5 };
+  var EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+  var OPEN = { transform: 'none', clipPath: 'inset(0px 0px round 20px)' };
+  var from = null, busy = false, pending = false, pushed = false, shown = false;
+  function still() { return reduce.matches || typeof frame.animate !== 'function'; }
+  function overThumb() {
+    var t = from.getBoundingClientRect(), f = frame.getBoundingClientRect();
+    var s = Math.max(t.width / f.width, t.height / f.height);
+    var ix = (f.width - t.width / s) / 2, iy = (f.height - t.height / s) / 2;
+    var dx = t.left + t.width / 2 - (f.left + f.width / 2), dy = t.top + t.height / 2 - (f.top + f.height / 2);
+    return {
+      transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')',
+      clipPath: 'inset(' + iy + 'px ' + ix + 'px round ' + 14 / s + 'px)'
+    };
+  }
+  function fade(el, a, b, options) {
+    if (!still()) el.animate([{ opacity: a }, { opacity: b }], options);
+  }
+  function reveal() {
+    if (shown || v.hidden) return;
+    shown = true;
+    photo.style.opacity = '1';
+    stand.style.opacity = '0';
+    fade(photo, 0, 1, { duration: 150 });
+    fade(stand, 1, 0, { duration: 150 });
+  }
+  function settle() {
+    [frame, photo, stand, info, close, backdrop].forEach(function (el) {
+      if (el.getAnimations) el.getAnimations().forEach(function (a) { a.cancel(); });
+    });
+  }
+  function open(btn) {
+    if (busy || !v.hidden) return;
+    from = btn;
+    var dish = btn.closest('.dish');
+    var thumb = btn.querySelector('img');
+    var r = RATIOS[btn.getAttribute('data-aspect')] || 4 / 3;
+    var w = r >= 1 ? 100 / r : 100, h = r >= 1 ? 100 : 100 * r;
+    sheet.style.setProperty('--ar', String(r));
+    stand.style.width = w + '%';
+    stand.style.height = h + '%';
+    stand.style.left = (100 - w) / 2 + '%';
+    stand.style.top = (100 - h) / 2 + '%';
+    stand.src = thumb.currentSrc || thumb.src;
+    stand.style.opacity = '1';
+    photo.style.opacity = '0';
+    shown = false;
+    while (info.firstChild) info.removeChild(info.firstChild);
+    info.appendChild(dish.querySelector('.line').cloneNode(true));
+    var desc = dish.querySelector('.desc');
+    if (desc) info.appendChild(desc.cloneNode(true));
+    photo.onload = reveal;
+    photo.src = btn.getAttribute('data-full');
+    v.hidden = false;
+    html.classList.add('viewer-lock');
+    history.pushState({ dishPhoto: true }, '');
+    pushed = true;
+    if (photo.complete && photo.naturalWidth) reveal();
+    close.focus({ preventScroll: true });
+    if (still()) return;
+    busy = true;
+    var start = overThumb();
+    from.style.visibility = 'hidden';
+    backdrop.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' });
+    close.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 180, fill: 'backwards' });
+    info.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: 140, easing: EASE, fill: 'backwards' });
+    frame.animate([start, OPEN], { duration: 460, easing: EASE }).onfinish = function () {
+      busy = false;
+      if (pending) { pending = false; hide(); }
+    };
+  }
+  function hide() {
+    if (v.hidden) return;
+    if (busy) { pending = true; return; }
+    function done() {
+      v.hidden = true;
+      html.classList.remove('viewer-lock');
+      settle();
+      busy = false;
+      if (from) { from.style.visibility = ''; from.focus({ preventScroll: true }); }
+    }
+    if (still()) return done();
+    busy = true;
+    var end = overThumb();
+    if (shown) stand.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, delay: 210, fill: 'both' });
+    backdrop.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in', fill: 'forwards' });
+    info.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' });
+    close.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' });
+    frame.animate([OPEN, end], { duration: 360, easing: EASE, fill: 'forwards' }).onfinish = done;
+  }
+  function requestClose() {
+    if (v.hidden) return;
+    if (pushed) { pushed = false; history.back(); } else hide();
+  }
+  window.addEventListener('popstate', function () { pushed = false; hide(); });
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest && event.target.closest('.thumb[data-full]');
+    if (btn) { open(btn); return; }
+    if (!v.hidden && v.contains(event.target)) requestClose();
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !v.hidden) requestClose();
+  });
+})();`
+
+function dish(item: PublicMenuItem, slug: string): string {
   // The FSSAI mark: a square with a dot for veg, a triangle for non-veg —
   // shape as well as colour, so it reads without colour vision too.
   const label = item.is_veg ? 'Vegetarian' : 'Non-vegetarian'
@@ -942,9 +1270,16 @@ function dish(item: PublicMenuItem): string {
     ? `<span class="price"><span class="rupee">₹</span>${formatRupees(item.price_paise)}</span>`
     : '<span class="unavailable">Unavailable</span>'
   const desc = item.description ? `\n<p class="desc">${escapeHtml(item.description)}</p>` : ''
-  return `<li class="dish${item.is_available ? '' : ' off'}">
+  // The float comes first, so the line and the description flow beside it.
+  const photo = item.photo ? `\n${thumbnail(item, item.photo, slug)}` : ''
+  return `<li class="dish${item.is_available ? '' : ' off'}${photo ? ' has-photo' : ''}">${photo}
 <div class="line"><h3>${mark}${escapeHtml(item.name)}</h3>${price}</div>${desc}
 </li>`
+}
+
+/** Whether any dish on the menu, in any section, Highlights included, has a photo. */
+export function menuHasPhotos(menu: PublicMenu): boolean {
+  return menu.sections.some((section) => section.items.some((item) => Boolean(item.photo)))
 }
 
 function head(title: string, description: string, canonical: string | null, extraCss = ''): string {
@@ -977,6 +1312,8 @@ export function renderMenuPage(menu: PublicMenu, origin = 'https://shawarmania.i
   const ids = sectionIds(menu.sections.map((s) => s.name))
   const outletName = escapeHtml(menu.outlet.name)
   const review = reviewAskFor(menu)
+  const photos = menuHasPhotos(menu)
+  const slug = menu.outlet.slug
 
   const nav = menu.sections
     .map((s, i) => `<li><a href="#${ids[i]}">${escapeHtml(s.name)}</a></li>`)
@@ -987,7 +1324,7 @@ export function renderMenuPage(menu: PublicMenu, origin = 'https://shawarmania.i
       (s, i) => `<section class="course" id="${ids[i]}" aria-labelledby="${ids[i]}-h">
 <h2 id="${ids[i]}-h">${escapeHtml(s.name)}</h2>
 <ul class="dishes">
-${s.items.map(dish).join('\n')}
+${s.items.map((item) => dish(item, slug)).join('\n')}
 </ul>
 </section>`,
     )
@@ -1000,7 +1337,7 @@ ${head(
   `Menu — ${menu.outlet.name} · Shawarmania`,
   `The ${menu.outlet.name} menu, with today's prices and what is available right now.`,
   `${origin}/menu/${menu.outlet.slug}/`,
-  review ? REVIEW_STYLES : '',
+  `${review ? REVIEW_STYLES : ''}${photos ? PHOTO_STYLES : ''}`,
 )}
 </head>
 <body>
@@ -1017,7 +1354,7 @@ ${body}
 </main>
 ${FOOTER}
 <script>${SPY}</script>
-</body>
+${photos ? `${VIEWER}\n<script>${VIEWER_SCRIPT}</script>\n` : ''}</body>
 </html>`
 }
 

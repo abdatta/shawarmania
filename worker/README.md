@@ -45,8 +45,9 @@ production on 2026-10-02). Routing is decided from the URL alone in
 route lets in.
 
 | `GET /menu`, `/menu/` | 302 to `DEFAULT_MENU_SLUG` (`kalyani-cafe`) — printed `/menu/` QR codes keep working |
-| `GET /menu/<slug>/` | that outlet's menu, read live from ops through `public_menu(slug)` |
+| `GET /menu/<slug>/` | that outlet's menu, read live from ops through `public_menu_v2(slug)` (`public_menu(slug)` until ops publishes it) |
 | `GET /menu/<slug>` | 301 to the one canonical address: lowercase, trailing slash |
+| `GET /menu/<slug>/photo/<key>.<format>`, `…/<key>-sm.<format>` | a dish's photo and its square thumbnail, from ops storage through the edge cache |
 | `GET /menu/_/logo.png`, `/menu/_/fonts/*.woff2` | the menu page's own assets (`_` is never in a slug) |
 
 **The menu** is cached on its slug for a minute, so an ops edit reaches the table
@@ -63,6 +64,40 @@ reader refuses any field it does not know, and every menu would fail until it is
 (see *Release order* under *Deploying it*).
 The reasoning is in `openspec/changes/the-table-menu-reads-ops/design.md` and,
 for the data, the ops repo's `the-menu-is-public`.
+
+**Dish photos** (ops #84 `a-dish-can-show-its-photo`, here `the-table-menu-shows-photos`).
+The reader calls `public_menu_v2(slug)`, which is `public_menu` plus one item field,
+`photo`: `{ key, format, aspect }` or null. If PostgREST says the function does not exist
+(404, `PGRST202`), it calls `public_menu(slug)` instead and the menu has no photos, so this
+Worker and the ops migration can be released in either order. Any other failure is a
+failure, as before. A `photo` of any other shape is refused like an unknown field.
+Whether any photo is sent is ops' `dish-photos` gate: off, every `photo` is null, and
+within the menu's cache minute the page is the one it was before photos, byte for byte
+(`worker/test/fixtures/` holds that page, rendered before photos existed).
+
+A photographed dish gets its square thumbnail floated left; tapping it opens the large
+photo in the shape its manager chose (4:3, 1:1 or 4:5), growing out of the thumbnail and
+closed by ×, a tap, Escape or the phone's Back. The large view's markup and script are on
+the page only when a dish has a photo.
+
+The photos live in ops' **private** `menu-photos` bucket, so the Worker serves them:
+
+1. `<key>` that is not 64 lowercase hex, a format other than `webp`/`jpeg`, or an
+   address not in the canonical lowercase form is a 404 without calling ops.
+2. The edge cache, keyed on the path alone (a query string makes no second copy).
+3. On a miss, `public_menu_photo(slug, key)` names the file, or answers null for an
+   unknown outlet, a replaced or removed photo, the kept original's key or the gate off:
+   all 404, as is a format that differs from the address's. Storage is never reached for
+   a refusal.
+4. Otherwise it fetches `menu-photos/<outlet>/<key>[-sm].<format>` from ops storage with
+   `OPS_SERVICE_ROLE_KEY`, answers with `image/webp` or `image/jpeg` and
+   `Cache-Control: public, max-age=31536000, immutable`, and keeps it at the edge. A key
+   is the hash of the photo's bytes, so the year is safe; a re-cropped photo is a new
+   address. A file missing from storage is a 404, a failing store or ops a 502.
+
+Photo misses are not rate limited: one page legitimately asks for dozens at once from a
+cold edge, which the per-client ceiling would refuse. A miss costs one ops call, and an
+answered one is not a miss again at that edge for a year.
 
 Anything else under `/bill/` is refused. Anything outside it is not the Worker's
 business — the route pattern keeps it on Pages, and the Worker returns a plain
@@ -165,7 +200,9 @@ one:
 2. wait for that commit's **Deploy Worker** run to go green;
 3. only then apply the ops migration.
 
-The other way round, every table menu fails until the Worker catches up. Removing a
+The other way round, every table menu fails until the Worker catches up. (`photo`, from
+`public_menu_v2`, does not need this order: the Worker falls back to `public_menu` while
+the new function is missing.) Removing a
 field is safe in either order.
 
 `wrangler.toml` carries the public Supabase URL and nothing secret. The apex route

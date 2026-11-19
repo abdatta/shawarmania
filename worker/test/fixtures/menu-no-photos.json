@@ -1,0 +1,56 @@
+{
+  "outlet": { "name": "Kalyani Cafe", "slug": "kalyani-cafe" },
+  "sections": [
+    {
+      "name": "Highlights",
+      "items": [
+        {
+          "name": "Nashville Chicken Burger",
+          "description": "Crispy chicken glazed in fiery Nashville sauce, tucked into buttery brioche with fries.",
+          "price_paise": 30000,
+          "is_veg": false,
+          "is_available": true
+        }
+      ]
+    },
+    {
+      "name": "Shawarmas",
+      "items": [
+        {
+          "name": "Peri Peri Chicken Shawarma",
+          "description": "Our signature chicken shawarma with a fiery peri peri finish.",
+          "price_paise": 14500,
+          "is_veg": false,
+          "is_available": true
+        },
+        {
+          "name": "Mayonnaise Chicken Shawarma",
+          "description": null,
+          "price_paise": 15500,
+          "is_veg": false,
+          "is_available": false
+        },
+        {
+          "name": "Paneer Shawarma <Spicy> & \"Loaded\"",
+          "description": "Grilled paneer & peppers.",
+          "price_paise": 14550,
+          "is_veg": true,
+          "is_available": true
+        }
+      ]
+    },
+    {
+      "name": "Tea & Coffee",
+      "items": [
+        {
+          "name": "Milk Tea",
+          "description": "A comforting classic.",
+          "price_paise": 4000,
+          "is_veg": true,
+          "is_available": true
+        }
+      ]
+    }
+  ],
+  "review": { "url": "https://g.page/r/example/review", "percent": 5, "popup": true }
+}
