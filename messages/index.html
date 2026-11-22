@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- /messages/ describes the number-as-opt-in receipt SMS programme. No web consent form. -->
+<!-- /messages/ describes the number-as-opt-in receipt SMS programme and the occasional WhatsApp offers, with how to stop them. No web consent form. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,7 @@
     <title>How we message you — Shawarmania</title>
     <meta
       name="description"
-      content="Giving your number at Shawarmania gets your receipt and points by SMS. One message per bill, no marketing, no cost from us."
+      content="Giving your number at Shawarmania gets your receipt and points by SMS, one message per bill, and occasional offers on WhatsApp that you can stop at any time. No cost from us."
     />
     <link rel="canonical" href="https://shawarmania.in/messages/" />
     <link rel="icon" href="%BASE_URL%favicon.ico" sizes="48x48" />
@@ -28,16 +28,18 @@
 
       <main>
         <h1>How we message you</h1>
-        <p class="updated">Last updated 2 November 2026</p>
+        <p class="updated">Last updated 21 November 2026</p>
 
         <p class="lead">
           When you give your mobile number at {{brand.name}}'s counter, your receipt comes by SMS
           automatically after payment, together with the points the bill earned and your balance.
-          One message per bill, no offers, and no charge from us.
+          One SMS per bill, never an offer by SMS, and no charge from us. We may also send you an
+          occasional offer on WhatsApp, which you can stop at any time.
         </p>
 
         <ul class="actions">
           <li><a class="primary" href="#help">Get help</a></li>
+          <li><a href="#offers">Stop offers</a></li>
           <li><a href="%BASE_URL%terms/">Messaging terms</a></li>
           <li><a href="%BASE_URL%privacy/">Privacy</a></li>
         </ul>
@@ -46,12 +48,14 @@
         <p>
           There is one way, and it happens in person. Providing your mobile number at our counter
           opts you into an automatic receipt SMS for that purchase. The same number identifies your
-          points and gold at the outlet. There is no separate messaging checkbox or confirmation.
+          points and gold at the outlet, and means we may send you occasional offers and news on
+          WhatsApp until you ask us to stop. There is no separate messaging checkbox or confirmation.
         </p>
         <div class="callout">
           <p>
             <strong>
-              Your number gets your receipt and points by SMS. One message per bill, no offers.
+              Your number gets your receipt and points by SMS, one message per bill, and the
+              occasional offer on WhatsApp until you ask us to stop.
             </strong>
           </p>
         </div>
@@ -77,14 +81,33 @@
           </li>
         </ul>
         <p>
-          <strong>No offers, no promotions, no marketing.</strong> This programme is transactional and
-          that is all it is. If we ever want to send you an offer, we will ask you separately, and
-          saying no to that will not stop your bills arriving.
+          <strong>No offers by SMS.</strong> The receipt SMS is transactional and that is all it is.
+          Offers come only on WhatsApp, and stopping them will not stop your bills arriving.
+        </p>
+        <h2 id="offers">Offers and news on WhatsApp</h2>
+        <p>
+          We may send you an occasional offer or piece of news from {{brand.name}} on WhatsApp, a few
+          a month at most. It comes from our own WhatsApp Business number and is sent by us, not by a
+          marketing agency or a bulk-messaging service.
+        </p>
+        <p><strong>To stop them</strong>, do any one of these:</p>
+        <ul>
+          <li>Reply on that WhatsApp chat and ask us to stop. Any words will do; a person reads it.</li>
+          <li>Tell the counter next time you are in.</li>
+          <li>
+            Call <a href="tel:{{brand.phonePrimaryTel}}">{{brand.phonePrimary}}</a> or write to
+            <a href="{{brand.emailHref}}">{{brand.email}}</a>.
+          </li>
+        </ul>
+        <p>
+          We add your number to our stopped list, and nobody on that list is sent an offer or news
+          again. Stopping does not affect your receipt SMS or your points.
         </p>
 
         <h2>How often, and what it costs</h2>
         <p>
-          Roughly one message per bill — buy once, get one message. We charge you nothing.
+          Roughly one receipt SMS per bill — buy once, get one receipt. Offers on WhatsApp are
+          occasional. We charge you nothing.
           <strong>Message and data rates may apply</strong> on your own mobile plan.
         </p>
 
@@ -117,8 +140,9 @@
           {{brand.legalEntityName}}, operating {{brand.name}}, from
           {{outlet.kalyani.name}}. The message is delivered by a
           licensed messaging provider on our instruction; they cannot use your number for anything
-          else, and nobody else receives it, except WhatsApp when the counter sends a receipt
-          there instead. The detail is in our
+          else, and nobody else receives it, except WhatsApp, which carries our offers and any
+          receipt the counter sends there instead. Offers on WhatsApp come from our own WhatsApp
+          Business number, sent by us. The detail is in our
           <a href="%BASE_URL%privacy/">privacy notice</a>, and the programme's terms are in our
           <a href="%BASE_URL%terms/">terms</a>.
         </p>
